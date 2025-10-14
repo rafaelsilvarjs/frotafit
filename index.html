@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogFit – Inclusão e Edição de Projetos</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<style>
+body{font-family:"Segoe UI",sans-serif;background:#f8fafc;margin:0;color:#0f172a;}
+header{background:linear-gradient(90deg,#ff5a1f,#ff7a3e);color:white;display:flex;justify-content:space-between;align-items:center;padding:16px 30px;box-shadow:0 3px 8px rgba(0,0,0,.2);}
+header h2{font-weight:700;font-size:20px;margin:0}
+header button{background:white;color:#ff5a1f;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
+header button:hover{background:#ffe4d2}
+main{max-width:1300px;margin:30px auto;padding:0 20px}
+h1{text-align:center;margin-bottom:25px;font-size:26px;font-weight:700;}
+table{width:100%;border-collapse:collapse;background:white;box-shadow:0 3px 10px rgba(0,0,0,.1);border-radius:12px;overflow:hidden;}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid #e2e8f0;font-size:14px;}
+th{background:#e2e8f0;color:#0f172a;font-weight:700;}
+input,select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:6px;font-size:13px;}
+select[multiple]{height:85px;}
+input:focus,select:focus,textarea:focus{outline:2px solid #ff7a3e;}
+button.adicionar{margin-top:20px;background:#0284c7;color:white;border:none;border-radius:8px;padding:12px 22px;font-weight:600;cursor:pointer;box-shadow:0 3px 8px rgba(2,132,199,0.4);transition:.3s;}
+button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
+.excluir{color:#ef4444;cursor:pointer;font-weight:bold;}
+.upload-label{display:inline-block;background:#e2e8f0;color:#0f172a;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:13px;}
+.upload-label:hover{background:#cbd5e1;}
+.gerenciar-etapas{background:#f59e0b;color:#fff;border:none;border-radius:6px;padding:6px 10px;font-weight:600;cursor:pointer;}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);display:none;justify-content:center;align-items:center;z-index:1000;}
+.modal-content{background:white;padding:25px;border-radius:12px;width:600px;box-shadow:0 5px 20px rgba(0,0,0,0.4);animation:fadeIn .3s ease;max-height:90vh;overflow:auto;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+.modal h3{margin:0 0 15px;font-weight:700;}
+.etapa-linha{border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:10px;background:#f8fafc;}
+.etapa-linha span{color:#ef4444;font-size:16px;cursor:pointer;float:right;}
+</style>
+</head>
+<body>
+<header>
+  <h2>⚙️ LogFit – Inclusão e Edição de Projetos</h2>
+  <button onclick="location.href='home.html'">← Voltar ao Painel</button>
+</header>
+<main>
+  <h1>📋 Cadastro e Atualização de Projetos</h1>
+  <table id="tabelaProjetos">
+    <thead>
+      <tr>
+        <th>Projeto</th>
+        <th>Área</th>
+        <th>Prioridade</th>
+        <th>Status</th>
+        <th>Responsável</th>
+        <th>Prazo</th>
+        <th>Documentação</th>
+        <th>Etapas</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <button class="adicionar" onclick="adicionarProjeto()">+ Adicionar Projeto</button>
+</main>
+
+<!-- MODAL ETAPAS -->
+<div class="modal" id="modalEtapas">
+  <div class="modal-content">
+    <h3>📑 Gerenciar Etapas</h3>
+    <div id="listaEtapas"></div>
+    <button onclick="adicionarEtapaLinha()">+ Nova Etapa</button>
+    <div style="margin-top:15px;text-align:right;">
+      <button onclick="salvarEtapas()">💾 Salvar</button>
+      <button onclick="fecharModal()" style="background:#ef4444;margin-left:10px;">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const RESPONSAVEIS_FIXOS = ["RAFAEL","DIEGO","JOÃO","ANTONIO","LUCAS","CARLOS","IVAN","LUIZ","EQUIPE"];
+let projetoAtual=null;
+
+function carregarTabela(){
+  const tbody=document.querySelector("#tabelaProjetos tbody");
+  tbody.innerHTML="";
+  const dados=JSON.parse(localStorage.getItem("dadosProjetosLogFit")||"{}");
+  Object.entries(dados).forEach(([id,p])=>{
+    const responsaveis = p.responsavel ? p.responsavel.split(",") : [];
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td contenteditable onblur="editar('${id}','projeto',this.innerText)">${p.projeto}</td>
+      <td><select onchange="editar('${id}','area',this.value)">
+        <option ${p.area==='Planejamento'?'selected':''}>Planejamento</option>
+        <option ${p.area==='Programação'?'selected':''}>Programação</option>
+        <option ${p.area==='Transportadores'?'selected':''}>Transportadores</option>
+        <option ${p.area==='Logística'?'selected':''}>Logística</option>
+        <option ${p.area==='Corporativo'?'selected':''}>Corporativo</option>
+        <option ${p.area==='Outros'?'selected':''}>Outros</option>
+      </select></td>
+      <td><select onchange="editar('${id}','prioridade',this.value)">
+        <option ${p.prioridade==='Alta'?'selected':''}>Alta</option>
+        <option ${p.prioridade==='Média'?'selected':''}>Média</option>
+        <option ${p.prioridade==='Baixa'?'selected':''}>Baixa</option>
+      </select></td>
+      <td><select onchange="editar('${id}','status',this.value)">
+        <option ${p.status==='Backlog'?'selected':''}>Backlog</option>
+        <option ${p.status==='Desenvolvendo'?'selected':''}>Desenvolvendo</option>
+        <option ${p.status==='Concluído'?'selected':''}>Concluído</option>
+      </select></td>
+      <td><select multiple onchange="salvarResponsaveis('${id}',this)">
+        ${RESPONSAVEIS_FIXOS.map(r => `<option ${responsaveis.includes(r)?'selected':''}>${r}</option>`).join("")}
+      </select></td>
+      <td><input type="date" value="${p.prazo||''}" onchange="editar('${id}','prazo',this.value)"></td>
+      <td>
+        <input type="file" id="file_${id}" style="display:none" onchange="uploadArquivo('${id}',this)">
+        <label for="file_${id}" class="upload-label">📎 Anexar</label><br>
+        <input type="text" placeholder="ou cole o link..." value="${p.doc||''}" onblur="editar('${id}','doc',this.value)">
+      </td>
+      <td><button class="gerenciar-etapas" onclick="abrirModal('${id}')">⚙️ Etapas</button></td>
+      <td><span class="excluir" onclick="excluir('${id}')">🗑️</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function salvarResponsaveis(id,select){
+  const selecionados = Array.from(select.selectedOptions).map(o=>o.value);
+  editar(id,"responsavel",selecionados.join(","));
+}
+function adicionarProjeto(){
+  const dados=JSON.parse(localStorage.getItem("dadosProjetosLogFit")||"{}");
+  const novoId="projeto-"+(Object.keys(dados).length+1);
+  dados[novoId]={projeto:"Novo Projeto",area:"Planejamento",prioridade:"Média",status:"Backlog",responsavel:"",prazo:"",doc:"",etapas:[]};
+  localStorage.setItem("dadosProjetosLogFit",JSON.stringify(dados));
+  carregarTabela();
+}
+function editar(id,campo,valor){
+  const dados=JSON.parse(localStorage.getItem("dadosProjetosLogFit")||"{}");
+  if(!dados[id])return;
+  dados[id][campo]=valor.trim();
+  localStorage.setItem("dadosProjetosLogFit",JSON.stringify(dados));
+}
+function uploadArquivo(id,input){
+  const arquivo=input.files[0];
+  if(arquivo){
+    const urlFake="arquivo_local/"+arquivo.name;
+    editar(id,"doc",urlFake);
+    alert("📎 Arquivo anexado: "+arquivo.name);
+  }
+}
+function excluir(id){
+  if(confirm("Excluir este projeto?")){
+    const dados=JSON.parse(localStorage.getItem("dadosProjetosLogFit")||"{}");
+    delete dados[id];
+    localStorage.setItem("dadosProjetosLogFit",JSON.stringify(dados));
+    carregarTabela();
+  }
+}
+function abrirModal(id){
+  projetoAtual=id;
+  const dados=JSON.parse(localStorage.getItem("dadosProjetosLogFit")||"{}");
+  const etapas=dados[id]?.etapas||[];
+  const lista=document.getElementById("listaEtapas");
+  lista.innerHTML="";
+  etapas.forEach(et=> lista.appendChild(criarLinhaEtapa(et)));
+  document.getElementById("modalEtapas").style.display="flex";
+}
+function criarLinhaEtapa(et={nome:"",status:"Pendente",responsavel:"",prazo:"",descricao:"",anexo:""}){
+  const selecionados = et.responsavel ? et.responsavel.split(",") : [];
+  const div=document.createElement("div");
+  div.className="etapa-linha";
+  div.innerHTML=`
+    <span onclick="removerEtapa(this)">🗑️</span>
+    <label>Nome:</label><input type="text" value="${et.nome}" placeholder="Nome da Etapa">
+    <label>Status:</label><select>
+      <option ${et.status==='Pendente'?'selected':''}>Pendente</option>
+      <option ${et.status==='Desenvolvendo'?'selected':''}>Desenvolvendo</option>
+      <option ${et.status==='Concluído'?'selected':''}>Concluído</option>
+    </select>
+    <label>Responsável:</label><select multiple>
+      ${RESPONSAVEIS_FIXOS.map(r=>`<option ${selecionados.includes(r)?'selected':''}>${r}</option>`).join("")}
+    </select>
+    <label>Prazo:</label><input type="date" value="${et.prazo||''}">
+    <label>Descrição:</label><textarea rows="2" placeholder="Detalhes da etapa...">${et.descricao||''}</textarea>
+    <label>Anexo:</label><input type="file" onchange="this.nextElementSibling.value=this.files[0].name">
+    <input type="text" placeholder="ou link do arquivo..." value="${et.anexo||''}">
+  `;
+  return div;
+}
+function adicionarEtapaLinha(){document.getElementById("listaEtapas").appendChild(criarLinhaEtapa());}
+function removerEtapa(el){el.parentElement.remove();}
+function salvarEtapas(){
+  const lista=document.querySelectorAll("#listaEtapas .etapa-linha");
+  const etapas=[];
+  lista.forEach(l=>{
+    const inputs=l.querySelectorAll("input,select,textarea");
+    const nome=inputs[0].value.trim();
+    const status=inputs[1].value;
+    const responsaveis=Array.from(inputs[2].selectedOptions).map(o=>o.value).join(",");
+    const prazo=inputs[3].value;
+    const descricao=inputs[4].value.trim();
+    const anexo=inputs[6].value.trim();
+    if(nome) etapas.push({nome,status,responsavel:responsaveis,prazo,descricao,anexo});
+  });
+  const dados=JSON.parse(localStorage.getItem("dadosProjetosLogFit")||"{}");
+  if(projetoAtual && dados[projetoAtual]){
+    dados[projetoAtual].etapas=etapas;
+    localStorage.setItem("dadosProjetosLogFit",JSON.stringify(dados));
+  }
+  fecharModal();
+  alert("✅ Etapas salvas com sucesso!");
+}
+function fecharModal(){document.getElementById("modalEtapas").style.display="none";}
+window.addEventListener("DOMContentLoaded",carregarTabela);
+</script>
+</body>
+</html>

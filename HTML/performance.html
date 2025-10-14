@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboards – Quadro Scrum</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    body{font-family:"Segoe UI",sans-serif;background:#f8fafc;margin:0;color:#1e293b}
+    header{background:#ff5a1f;color:#fff;padding:16px 30px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.15);position:sticky;top:0;z-index:10}
+    header h2{font-weight:600;font-size:20px;text-transform:uppercase;letter-spacing:.5px}
+    header button{background:#fff;color:#ff5a1f;border:none;padding:8px 14px;border-radius:6px;font-weight:bold;cursor:pointer;transition:.3s}
+    header button:hover{background:#ffe4d2}
+    h1{text-align:center;margin:30px 0 10px;font-size:26px;color:#0f172a;font-weight:700}
+    h1::after{content:"";display:block;width:80px;height:4px;background:#ff5a1f;margin:10px auto 0;border-radius:10px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px;max-width:1100px;margin:40px auto;padding:0 20px}
+    .card{background:#fff;border-radius:16px;box-shadow:0 5px 15px rgba(0,0,0,.1);padding:25px;text-align:center;transition:all .3s ease;cursor:pointer;position:relative;overflow:hidden}
+    .card::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:4px;background:linear-gradient(90deg,#ff5a1f,#ff7a3e);transition:left .4s ease}
+    .card:hover::before{left:0}
+    .card:hover{transform:translateY(-6px);box-shadow:0 10px 20px rgba(0,0,0,.15)}
+    .card img{width:64px;height:64px;margin-bottom:10px}
+    .card h2{color:#0f172a;font-size:18px;margin-bottom:6px;font-weight:600}
+    .card p{color:#64748b;font-size:14px;margin-bottom:14px;min-height:40px}
+    .card button{background:#0284c7;color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:bold;transition:background .3s}
+    .card button:hover{background:#0369a1}
+  </style>
+</head>
+<body>
+<header>
+  <h2>DASHBOARDS LOGFIT - QUADROS SCRUM</h2>
+  <button onclick="location.href='index.html'">Voltar</button>
+</header>
+
+<h1>📊 Dashboards Operacionais & Analíticos</h1>
+
+<div class="grid">
+
+  <div class="card" onclick="location.href='dashboard-programacao.html'">
+    <img src="https://img.icons8.com/color/96/combo-chart.png"/>
+    <h2>Dashboard Programação</h2>
+    <p>KPIs de performance e volume programado</p>
+    <button>Abrir Quadro</button>
+  </div>
+
+  <div class="card" onclick="location.href='dashboard-faturamento.html'">
+    <img src="https://img.icons8.com/color/96/paid.png"/>
+    <h2>Dashboard Faturamento</h2>
+    <p>Análise de faturamento e eficiência operacional</p>
+    <button>Abrir Quadro</button>
+  </div>
+
+  <div class="card" onclick="location.href='dashboard-tanques.html'">
+    <img src="https://img.icons8.com/color/96/oil-industry.png"/>
+    <h2>Dashboard Tanques</h2>
+    <p>Capacidade, volume e ocupação em tempo real</p>
+    <button>Abrir Quadro</button>
+  </div>
+
+  <div class="card" onclick="location.href='dashboard-aderencia.html'">
+    <img src="https://img.icons8.com/color/96/calendar--v1.png"/>
+    <h2>Dashboard Aderência</h2>
+    <p>Monitoramento de pontualidade de agendamentos</p>
+    <button>Abrir Quadro</button>
+  </div>
+
+  <div class="card" onclick="location.href='dashboard-frota.html'">
+    <img src="https://img.icons8.com/color/96/truck.png"/>
+    <h2>Dashboard Frota</h2>
+    <p>Controle de disponibilidade e desempenho de veículos</p>
+    <button>Abrir Quadro</button>
+  </div>
+
+  <div class="card" onclick="location.href='dashboard-bios.html'">
+    <img src="https://img.icons8.com/color/96/organization.png"/>
+    <h2>Dashboard Bios</h2>
+    <p>Análise de eficiência e produtividade da mesa BIOS</p>
+    <button>Abrir Quadro</button>
+  </div>
+
+</div>
+</body>
+</html>

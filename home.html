@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogFit – Gestão de Projetos</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<style>
+:root {
+  --laranja: #ff5a1f;
+  --laranja2: #ff7a3e;
+  --azul: #0f172a;
+  --cinza: #f1f5f9;
+  --texto: #1e293b;
+  --verde: #22c55e;
+  --vermelho: #ef4444;
+  --amarelo: #f59e0b;
+}
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: var(--cinza);
+  color: var(--texto);
+  margin: 0;
+}
+/* ===== HEADER ===== */
+header {
+  background: linear-gradient(90deg, var(--laranja), var(--laranja2));
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 35px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.25);
+}
+header h2 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 20px;
+}
+.nav-buttons {
+  display: flex;
+  gap: 12px;
+}
+.nav-buttons button {
+  background: #fff;
+  color: var(--laranja);
+  border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .3s;
+  box-shadow: 0 2px 5px rgba(0,0,0,.2);
+}
+.nav-buttons button:hover {
+  background: #fff2eb;
+  transform: scale(1.05);
+}
+/* ===== RESUMO ===== */
+main {
+  max-width: 1300px;
+  margin: 40px auto;
+  padding: 0 25px;
+}
+.resumo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.cardResumo {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 3px 8px rgba(0,0,0,.1);
+  text-align: center;
+  position: relative;
+  transition: all .3s;
+}
+.cardResumo:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0,0,0,.15);
+}
+.cardResumo::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 5px;
+  background: var(--laranja);
+}
+.cardResumo h3 {
+  color: #475569;
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+.cardResumo span {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--laranja);
+}
+/* ===== FILTROS ===== */
+.filtros {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px;
+}
+select {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  background: #f8fafc;
+  transition: all .3s;
+}
+select:hover { border-color: var(--laranja); }
+button.limpar {
+  background: var(--azul);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: .3s;
+}
+button.limpar:hover { background: #1e3a8a; }
+/* ===== TABELA ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,.1);
+}
+th, td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  font-size: 14px;
+}
+th {
+  background: #f1f5f9;
+  font-weight: 700;
+  color: #334155;
+}
+tr:hover td { background: #f9fafb; }
+.prioridade {
+  display: inline-block;
+  color: #000;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+}
+.alta { background: #fee2e2; border: 1px solid var(--vermelho); }
+.media, .média { background: #fff4c2; border: 1px solid #facc15; }
+.baixa { background: #dcfce7; border: 1px solid var(--verde); }
+.abrir {
+  background: var(--laranja);
+  color: white;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: .3s;
+}
+.abrir:hover { background: var(--laranja2); }
+.expand-btn {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 16px;
+  color: #475569;
+  transition: transform .2s ease;
+}
+.expand-btn.rotated { transform: rotate(90deg); }
+.etapas-row td { background: #f9fafb; border-top: 1px solid #e2e8f0; }
+.etapas-container { padding: 10px 20px; animation: fadeIn .3s ease; }
+.etapa {
+  margin-bottom: 8px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,.05);
+}
+.etapa h4 { margin: 0 0 4px; font-size: 14px; color: var(--azul); }
+.etapa p { margin: 0; font-size: 13px; color: #475569; }
+.status-etapa {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 12px;
+  color: white;
+}
+.status-pendente { background: var(--vermelho); }
+.status-desenvolvendo { background: var(--amarelo); color: #000; }
+.status-concluido { background: var(--verde); }
+a.link-anexo {
+  color: #0284c7;
+  font-weight: 600;
+  text-decoration: none;
+}
+a.link-anexo:hover { text-decoration: underline; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+footer {
+  text-align: center;
+  background: var(--azul);
+  color: #cbd5e1;
+  padding: 16px;
+  margin-top: 40px;
+  font-size: 13px;
+}
+</style>
+</head>
+<body>
+<header>
+  <h2>📊 LogFit – Gestão de Projetos</h2>
+  <div class="nav-buttons">
+    <button onclick="location.href='index.html'">+ Incluir / Editar Projetos</button>
+    <button onclick="location.href='painel-geral.html'">🏠 Página Inicial</button>
+    <button onclick="sair()">🚪 Sair</button>
+  </div>
+</header>
+<main>
+  <div class="resumo">
+    <div class="cardResumo"><h3>Total</h3><span id="total">0</span></div>
+    <div class="cardResumo"><h3>📁 Backlog</h3><span id="backlog">0</span></div>
+    <div class="cardResumo"><h3>⚙️ Desenvolvendo</h3><span id="andamento">0</span></div>
+    <div class="cardResumo"><h3>✅ Concluídos</h3><span id="concluido">0</span></div>
+  </div>
+  <div class="filtros">
+    <select id="filtroArea" onchange="filtrar()"><option value="">Filtrar por Área</option></select>
+    <select id="filtroStatus" onchange="filtrar()"><option value="">Filtrar por Status</option><option>Backlog</option><option>Desenvolvendo</option><option>Concluído</option></select>
+    <select id="filtroPrioridade" onchange="filtrar()"><option value="">Filtrar por Prioridade</option><option>Alta</option><option>Média</option><option>Baixa</option></select>
+    <select id="filtroResponsavel" onchange="filtrar()"><option value="">Filtrar por Responsável</option></select>
+    <button class="limpar" onclick="limparFiltros()">🔄 Limpar</button>
+  </div>
+  <table id="tabelaProjetos">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Projeto</th>
+        <th>Área</th>
+        <th>Prioridade</th>
+        <th>Status</th>
+        <th>Responsável</th>
+        <th>Prazo</th>
+        <th>Anexo</th>
+        <th>Ação</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</main>
+<footer>Desenvolvido por Rafael Silva | LogFit • 2025</footer>
+<script>
+function sair() {
+  localStorage.removeItem("usuarioLogado");
+  window.location.href = "login.html";
+}
+function carregarProjetos(filtros = {}) {
+  const dados = JSON.parse(localStorage.getItem("dadosProjetosLogFit") || "{}");
+  const tbody = document.querySelector("#tabelaProjetos tbody");
+  tbody.innerHTML = "";
+  let total = 0, backlog = 0, andamento = 0, concluido = 0;
+  const areas = new Set(), responsaveis = new Set();
+  Object.entries(dados).forEach(([id, d]) => {
+    if (filtros.area && d.area !== filtros.area) return;
+    if (filtros.status && d.status !== filtros.status) return;
+    if (filtros.prioridade && d.prioridade !== filtros.prioridade) return;
+    if (filtros.responsavel && d.responsavel !== filtros.responsavel) return;
+    total++;
+    areas.add(d.area);
+    responsaveis.add(d.responsavel);
+    if (d.status === "Backlog") backlog++;
+    if (d.status === "Desenvolvendo" || d.status === "Em Andamento") andamento++;
+    if (d.status === "Concluído") concluido++;
+    const linkAnexo = d.doc ? `<a href="${d.doc}" target="_blank" class="link-anexo">📎 Abrir</a>` : "—";
+    const prioridadeClass = d.prioridade.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><button class="expand-btn" onclick="toggleEtapas('${d.projeto}', this)">▶</button></td>
+      <td><strong>${d.projeto}</strong></td>
+      <td>${d.area}</td>
+      <td><span class="prioridade ${prioridadeClass}">${d.prioridade}</span></td>
+      <td>${d.status}</td>
+      <td>${d.responsavel || "—"}</td>
+      <td>${d.prazo || "—"}</td>
+      <td>${linkAnexo}</td>
+      <td><button class="abrir" onclick="abrirScrum('${d.projeto}')">Abrir Scrum</button></td>
+    `;
+    const etapasRow = document.createElement("tr");
+    etapasRow.className = "etapas-row";
+    etapasRow.style.display = "none";
+    const etapasCell = document.createElement("td");
+    etapasCell.colSpan = 9;
+    etapasCell.innerHTML = renderEtapas(d.projeto);
+    etapasRow.appendChild(etapasCell);
+    tbody.appendChild(tr);
+    tbody.appendChild(etapasRow);
+  });
+  document.getElementById("total").textContent = total;
+  document.getElementById("backlog").textContent = backlog;
+  document.getElementById("andamento").textContent = andamento;
+  document.getElementById("concluido").textContent = concluido;
+  atualizarFiltros(areas, responsaveis);
+}
+function renderEtapas(nomeProjeto) {
+  const dados = JSON.parse(localStorage.getItem("dadosProjetosLogFit") || "{}");
+  const projeto = Object.values(dados).find(p => p.projeto === nomeProjeto);
+  if (!projeto || !projeto.etapas || projeto.etapas.length === 0) {
+    return `<div class="etapas-container"><p style="color:#64748b;font-size:13px;">Nenhuma etapa cadastrada.</p></div>`;
+  }
+  return `<div class="etapas-container">
+    ${projeto.etapas.map(et => `
+      <div class="etapa">
+        <h4>${et.nome}</h4>
+        <p><span class="status-etapa ${classeStatus(et.status)}">${et.status}</span></p>
+        <p><b>Responsável:</b> ${et.responsavel || "—"} | <b>Prazo:</b> ${et.prazo || "—"}</p>
+        <p><b>Descrição:</b> ${et.descricao || "—"}</p>
+        <p><b>Anexo:</b> ${et.anexo ? `<a href="${et.anexo}" target="_blank" class="link-anexo">📎 Abrir</a>` : "—"}</p>
+      </div>
+    `).join("")}
+  </div>`;
+}
+function classeStatus(status) {
+  switch (status) {
+    case "Pendente": return "status-pendente";
+    case "Desenvolvendo": return "status-desenvolvendo";
+    case "Concluído": return "status-concluido";
+    default: return "";
+  }
+}
+function toggleEtapas(id, btn) {
+  const row = btn.closest("tr").nextElementSibling;
+  const visible = row.style.display === "table-row";
+  row.style.display = visible ? "none" : "table-row";
+  btn.classList.toggle("rotated", !visible);
+}
+function atualizarFiltros(areas, responsaveis) {
+  const filtroArea = document.getElementById("filtroArea");
+  filtroArea.innerHTML = '<option value="">Filtrar por Área</option>';
+  [...areas].sort().forEach(a => filtroArea.innerHTML += `<option>${a}</option>`);
+  const filtroResp = document.getElementById("filtroResponsavel");
+  filtroResp.innerHTML = '<option value="">Filtrar por Responsável</option>';
+  [...responsaveis].sort().forEach(r => filtroResp.innerHTML += `<option>${r}</option>`);
+}
+function filtrar() {
+  carregarProjetos({
+    area: document.getElementById("filtroArea").value,
+    status: document.getElementById("filtroStatus").value,
+    prioridade: document.getElementById("filtroPrioridade").value,
+    responsavel: document.getElementById("filtroResponsavel").value
+  });
+}
+function limparFiltros() {
+  document.querySelectorAll("select").forEach(s => s.value = "");
+  carregarProjetos();
+}
+function abrirScrum(nomeProjeto) {
+  window.location.href = `scrum.html?projeto=${encodeURIComponent(nomeProjeto)}`;
+}
+window.addEventListener("DOMContentLoaded", () => carregarProjetos());
+</script>
+</body>
+</html>
