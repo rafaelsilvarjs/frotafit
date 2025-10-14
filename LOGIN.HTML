@@ -25,6 +25,7 @@ button.login-btn:hover{background:#ff7a3e;box-shadow:0 3px 10px rgba(255,90,31,0
 .forgot a{text-decoration:none;color:#64748b;}
 .forgot a:hover{color:#ff5a1f;}
 footer{position:absolute;bottom:10px;font-size:12px;color:#94a3b8;}
+.msg{margin-top:10px;font-size:13px;}
 @media(max-width:850px){body{flex-direction:column;}.left{height:40vh;}.right{height:60vh;}}
 </style>
 </head>
@@ -32,33 +33,79 @@ footer{position:absolute;bottom:10px;font-size:12px;color:#94a3b8;}
 <div class="left"></div>
 <div class="right">
   <img src="./images/logo-fit.png" alt="LogFit" class="logo">
-  <div class="version">Versão 4.102.33.0.2js</div>
-  <form onsubmit="login();return false;">
+  <div class="version">Versão 4.102.33.0.3js</div>
+
+  <form onsubmit="login(event)">
     <label for="usuario">Login</label>
-    <input type="text" id="usuario" placeholder="Digite seu login">
+    <input type="email" id="usuario" placeholder="Digite seu email" required>
+
     <label for="senha">Senha</label>
     <div class="input-group">
-      <input type="password" id="senha" placeholder="Digite sua senha">
+      <input type="password" id="senha" placeholder="Digite sua senha" required>
       <button type="button" class="toggle-password" onclick="toggleSenha()">👁️</button>
     </div>
+
     <button class="login-btn" type="submit">ACESSAR</button>
-    <div class="forgot"><a href="#">Esqueceu sua senha?</a></div>
+    <div class="forgot"><a href="#" onclick="resetSenha()">Esqueceu sua senha?</a></div>
+    <div class="msg" id="msg"></div>
   </form>
+
   <footer>© LogFit Logística • Refit • 2025</footer>
 </div>
-<script>
-function toggleSenha(){
-  const input=document.getElementById("senha");
-  input.type=input.type==="password"?"text":"password";
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+// 🔗 Configuração Supabase
+const SUPABASE_URL = 'https://cczuqesooeguvqimeoks.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg'
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+window.toggleSenha = function() {
+  const input = document.getElementById("senha")
+  input.type = input.type === "password" ? "text" : "password"
 }
-function login(){
-  const usuario=document.getElementById("usuario").value.trim();
-  const senha=document.getElementById("senha").value.trim();
-  if(usuario==="admin"&&senha==="1234"){
-    localStorage.setItem("usuarioLogado",usuario);
-    window.location.href="painel-geral.html";
-  }else{
-    alert("Usuário ou senha incorretos.");
+
+window.login = async function(event) {
+  event.preventDefault()
+  const usuario = document.getElementById("usuario").value.trim()
+  const senha = document.getElementById("senha").value.trim()
+  const msg = document.getElementById("msg")
+
+  msg.textContent = "⏳ Verificando credenciais..."
+  msg.style.color = "#475569"
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: usuario,
+    password: senha
+  })
+
+  if (error) {
+    msg.textContent = "❌ Usuário ou senha incorretos."
+    msg.style.color = "#ef4444"
+    return
+  }
+
+  msg.textContent = "✅ Login realizado com sucesso!"
+  msg.style.color = "#22c55e"
+  localStorage.setItem("usuarioLogado", data.user.email)
+  setTimeout(() => window.location.href = "painel-geral.html", 1000)
+}
+
+// 🧡 Reset de senha (envio de link)
+window.resetSenha = async function() {
+  const email = prompt("Digite o e-mail para redefinição de senha:")
+  if (!email) return
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: "http://127.0.0.1:5500/reset.html"
+  })
+
+  if (error) {
+    alert("❌ Erro ao enviar e-mail de redefinição.")
+    console.error(error)
+  } else {
+    alert("📩 E-mail de redefinição enviado! Verifique sua caixa de entrada.")
   }
 }
 </script>

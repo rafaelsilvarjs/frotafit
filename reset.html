@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redefinir Senha – LogFit</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<style>
+body{font-family:"Segoe UI",sans-serif;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;}
+.container{background:white;padding:30px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.1);text-align:center;width:340px;}
+h2{color:#ff5a1f;margin-bottom:10px;}
+p{color:#475569;font-size:14px;margin-bottom:25px;}
+input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;margin-bottom:12px;font-size:14px;}
+button{background:#ff5a1f;color:white;border:none;border-radius:8px;padding:12px;width:100%;font-weight:600;cursor:pointer;transition:.3s;}
+button:hover{background:#ff7a3e;}
+.msg{margin-top:10px;font-size:13px;}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🔑 Redefinir Senha</h2>
+  <p>Insira sua nova senha abaixo:</p>
+  <input type="password" id="novaSenha" placeholder="Nova senha">
+  <button id="btnReset">Salvar nova senha</button>
+  <div class="msg" id="msg"></div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const SUPABASE_URL = 'https://cczuqesooeguvqimeoks.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg'
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+document.getElementById("btnReset").addEventListener("click", async () => {
+  const novaSenha = document.getElementById("novaSenha").value.trim()
+  const msg = document.getElementById("msg")
+
+  if (novaSenha.length < 6) {
+    msg.textContent = "❌ A senha deve ter pelo menos 6 caracteres."
+    msg.style.color = "#ef4444"
+    return
+  }
+
+  const { data, error } = await supabase.auth.updateUser({ password: novaSenha })
+
+  if (error) {
+    msg.textContent = "❌ Erro ao redefinir senha."
+    msg.style.color = "#ef4444"
+    console.error(error)
+  } else {
+    msg.textContent = "✅ Senha redefinida com sucesso!"
+    msg.style.color = "#22c55e"
+    setTimeout(() => window.location.href = "login.html", 1500)
+  }
+})
+</script>
+
+</body>
+</html>

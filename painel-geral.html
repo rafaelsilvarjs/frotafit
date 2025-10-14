@@ -24,7 +24,6 @@
     flex-direction: column;
   }
 
-  /* ===== HEADER ===== */
   header {
     background: linear-gradient(90deg, var(--laranja), var(--laranja2));
     color: white;
@@ -35,12 +34,7 @@
     box-shadow: 0 2px 10px rgba(0,0,0,.15);
   }
 
-  header h1 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
+  header h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
 
   #logout {
     background: #fff;
@@ -52,13 +46,11 @@
     cursor: pointer;
     transition: 0.3s;
   }
-
   #logout:hover {
     background: #fff5f0;
     transform: scale(1.05);
   }
 
-  /* ===== MAIN ===== */
   main {
     flex: 1;
     display: flex;
@@ -67,18 +59,9 @@
     padding: 40px 20px;
   }
 
-  h2 {
-    font-size: 28px;
-    color: var(--laranja);
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-
-  p.subtitulo {
-    font-size: 15px;
-    color: #475569;
-    margin-bottom: 40px;
-  }
+  h2 { font-size: 28px; color: var(--laranja); font-weight: 700; margin-bottom: 10px; }
+  p.subtitulo { font-size: 15px; color: #475569; margin-bottom: 30px; }
+  #usuarioLogado { font-size: 14px; color: #64748b; margin-bottom: 40px; }
 
   .cards {
     display: flex;
@@ -121,19 +104,9 @@
     margin-bottom: 12px;
   }
 
-  .card h3 {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--azul-escuro);
-    margin: 6px 0;
-  }
+  .card h3 { font-size: 17px; font-weight: 700; color: var(--azul-escuro); margin: 6px 0; }
+  .card p { font-size: 13px; color: #64748b; }
 
-  .card p {
-    font-size: 13px;
-    color: #64748b;
-  }
-
-  /* ===== FOOTER ===== */
   footer {
     text-align: center;
     padding: 15px;
@@ -148,12 +121,13 @@
 
 <header>
   <h1>📊 Painel Geral – LogFit</h1>
-  <button id="logout" onclick="sair()">Sair</button>
+  <button id="logout">Sair</button>
 </header>
 
 <main>
   <h2>Bem-vindo à Central de Projetos</h2>
   <p class="subtitulo">Escolha uma das opções abaixo para continuar</p>
+  <div id="usuarioLogado">Verificando login...</div>
 
   <div class="cards">
     <a href="home.html" class="card">
@@ -172,11 +146,31 @@
 
 <footer>© LogFit Logística • Refit • 2025</footer>
 
-<script>
-function sair() {
-  localStorage.removeItem("usuarioLogado");
-  window.location.href = "login.html";
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+// Conexão Supabase
+const SUPABASE_URL = 'https://cczuqesooeguvqimeoks.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg'
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+// Verificação de sessão
+const { data: { session } } = await supabase.auth.getSession()
+const divUser = document.getElementById('usuarioLogado')
+
+if (!session) {
+  divUser.textContent = "Sessão expirada. Redirecionando..."
+  setTimeout(() => window.location.href = "login.html", 1000)
+} else {
+  divUser.textContent = "Usuário logado: " + session.user.email
 }
+
+// Logout
+document.getElementById("logout").addEventListener("click", async () => {
+  await supabase.auth.signOut()
+  localStorage.removeItem("usuarioLogado")
+  window.location.href = "login.html"
+})
 </script>
 
 </body>

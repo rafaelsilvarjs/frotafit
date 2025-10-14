@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Debug – LogFit</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body style="font-family:Segoe UI, sans-serif; display:flex; flex-direction:column; align-items:center; padding-top:80px; background:#f8fafc;">
+
+<h2>🔍 Teste de Login – Debug Supabase</h2>
+<p style="color:#475569">Vamos descobrir o motivo exato da falha.</p>
+
+<input id="email" placeholder="Email" style="padding:10px; width:260px; margin:8px;">
+<input id="senha" type="password" placeholder="Senha" style="padding:10px; width:260px; margin:8px;">
+<button id="btn" style="padding:10px 20px; background:#ff5a1f; color:white; border:none; border-radius:8px; cursor:pointer;">Entrar</button>
+
+<pre id="resultado" style="margin-top:30px; background:#fff; padding:20px; border-radius:8px; width:400px; max-width:90%; box-shadow:0 0 10px rgba(0,0,0,.1);"></pre>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+// 🟢 NOVO PROJETO SUPABASE - CORRETO
+const SUPABASE_URL = 'https://cczuqesooeguvqimeoks.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+document.getElementById("btn").onclick = async () => {
+  const email = document.getElementById("email").value.trim();
+  const senha = document.getElementById("senha").value.trim();
+  const resultado = document.getElementById("resultado");
+  resultado.innerText = "⏳ Tentando autenticar...";
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: senha
+    });
+
+    if (error) {
+      resultado.innerText = "❌ ERRO:\n" + JSON.stringify(error, null, 2);
+      console.error(error);
+    } else {
+      resultado.innerText = "✅ SUCESSO:\n" + JSON.stringify(data.user, null, 2);
+      console.log(data);
+    }
+  } catch (err) {
+    resultado.innerText = "⚠️ ERRO DE EXECUÇÃO:\n" + err.message;
+  }
+};
+</script>
+
+</body>
+</html>

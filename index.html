@@ -31,6 +31,9 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
 .modal h3{margin:0 0 15px;font-weight:700;}
 .etapa-linha{border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:10px;background:#f8fafc;}
 .etapa-linha span{color:#ef4444;font-size:16px;cursor:pointer;float:right;}
+.status-msg{margin:15px 0;padding:10px;border-radius:8px;display:none;text-align:center;}
+.status-ok{background:#dcfce7;color:#166534;}
+.status-erro{background:#fee2e2;color:#991b1b;}
 </style>
 </head>
 <body>
@@ -38,8 +41,10 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
   <h2>⚙️ LogFit – Inclusão e Edição de Projetos</h2>
   <button onclick="location.href='home.html'">← Voltar ao Painel</button>
 </header>
+
 <main>
   <h1>📋 Cadastro e Atualização de Projetos</h1>
+  <div id="status" class="status-msg"></div>
   <table id="tabelaProjetos">
     <thead>
       <tr>
@@ -72,140 +77,165 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
   </div>
 </div>
 
-<script>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const SUPABASE_URL = 'https://cczuqesooeguvqimeoks.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg';
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const RESPONSAVEIS_FIXOS = ["RAFAEL","DIEGO","JOÃO","ANTONIO","LUCAS","CARLOS","IVAN","LUIZ","EQUIPE"];
 let projetoAtual=null;
 
-function carregarTabela(){
+const statusDiv=document.getElementById("status");
+function showStatus(msg,tipo="ok"){
+  statusDiv.textContent=msg;
+  statusDiv.className=`status-msg ${tipo==="ok"?"status-ok":"status-erro"}`;
+  statusDiv.style.display="block";
+  setTimeout(()=>statusDiv.style.display="none",3000);
+}
+
+// ======== CARREGAR PROJETOS ========
+async function carregarTabela(){
   const tbody=document.querySelector("#tabelaProjetos tbody");
   tbody.innerHTML="";
-  const dados=JSON.parse(localStorage.getItem("dadosProjetosLogFit")||"{}");
-  Object.entries(dados).forEach(([id,p])=>{
-    const responsaveis = p.responsavel ? p.responsavel.split(",") : [];
+  const { data: projetos, error } = await supabase.from("projetos").select("*").order("id",{ascending:true});
+  if(error){console.error(error);showStatus("Erro ao carregar projetos.","erro");return;}
+  if(!projetos || projetos.length===0){
+    tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:#64748b;">Nenhum projeto cadastrado ainda.</td></tr>`;
+    return;
+  }
+  projetos.forEach(p=>{
+    const responsaveis=p.responsavel?p.responsavel.split(","):[];
     const tr=document.createElement("tr");
     tr.innerHTML=`
-      <td contenteditable onblur="editar('${id}','projeto',this.innerText)">${p.projeto}</td>
-      <td><select onchange="editar('${id}','area',this.value)">
-        <option ${p.area==='Planejamento'?'selected':''}>Planejamento</option>
-        <option ${p.area==='Programação'?'selected':''}>Programação</option>
-        <option ${p.area==='Transportadores'?'selected':''}>Transportadores</option>
-        <option ${p.area==='Logística'?'selected':''}>Logística</option>
-        <option ${p.area==='Corporativo'?'selected':''}>Corporativo</option>
-        <option ${p.area==='Outros'?'selected':''}>Outros</option>
+      <td contenteditable onblur="editar(${p.id},'nome',this.innerText)">${p.nome||"Novo Projeto"}</td>
+      <td><select onchange="editar(${p.id},'area',this.value)">
+        ${["Planejamento","Programação","Transportadores","Logística","Corporativo","Outros"]
+          .map(a=>`<option ${a===p.area?"selected":""}>${a}</option>`).join("")}
       </select></td>
-      <td><select onchange="editar('${id}','prioridade',this.value)">
-        <option ${p.prioridade==='Alta'?'selected':''}>Alta</option>
-        <option ${p.prioridade==='Média'?'selected':''}>Média</option>
-        <option ${p.prioridade==='Baixa'?'selected':''}>Baixa</option>
+      <td><select onchange="editar(${p.id},'prioridade',this.value)">
+        ${["Alta","Média","Baixa"].map(a=>`<option ${a===p.prioridade?"selected":""}>${a}</option>`).join("")}
       </select></td>
-      <td><select onchange="editar('${id}','status',this.value)">
-        <option ${p.status==='Backlog'?'selected':''}>Backlog</option>
-        <option ${p.status==='Desenvolvendo'?'selected':''}>Desenvolvendo</option>
-        <option ${p.status==='Concluído'?'selected':''}>Concluído</option>
+      <td><select onchange="editar(${p.id},'status',this.value)">
+        ${["Backlog","Desenvolvendo","Concluído"].map(a=>`<option ${a===p.status?"selected":""}>${a}</option>`).join("")}
       </select></td>
-      <td><select multiple onchange="salvarResponsaveis('${id}',this)">
-        ${RESPONSAVEIS_FIXOS.map(r => `<option ${responsaveis.includes(r)?'selected':''}>${r}</option>`).join("")}
+      <td><select multiple onchange="salvarResponsaveis(${p.id},this)">
+        ${RESPONSAVEIS_FIXOS.map(r=>`<option ${responsaveis.includes(r)?"selected":""}>${r}</option>`).join("")}
       </select></td>
-      <td><input type="date" value="${p.prazo||''}" onchange="editar('${id}','prazo',this.value)"></td>
+      <td><input type="date" value="${p.prazo||""}" onchange="editar(${p.id},'prazo',this.value)"></td>
       <td>
-        <input type="file" id="file_${id}" style="display:none" onchange="uploadArquivo('${id}',this)">
-        <label for="file_${id}" class="upload-label">📎 Anexar</label><br>
-        <input type="text" placeholder="ou cole o link..." value="${p.doc||''}" onblur="editar('${id}','doc',this.value)">
+        <input type="file" id="file_${p.id}" style="display:none" onchange="uploadArquivo(${p.id},this)">
+        <label for="file_${p.id}" class="upload-label">📎 Anexar</label><br>
+        <input type="text" placeholder="ou cole o link..." value="${p.doc||""}" onblur="editar(${p.id},'doc',this.value)">
       </td>
-      <td><button class="gerenciar-etapas" onclick="abrirModal('${id}')">⚙️ Etapas</button></td>
-      <td><span class="excluir" onclick="excluir('${id}')">🗑️</span></td>`;
+      <td><button class="gerenciar-etapas" onclick="abrirModal(${p.id})">⚙️ Etapas</button></td>
+      <td><span class="excluir" onclick="excluir(${p.id})">🗑️</span></td>`;
     tbody.appendChild(tr);
   });
 }
 
-function salvarResponsaveis(id,select){
-  const selecionados = Array.from(select.selectedOptions).map(o=>o.value);
-  editar(id,"responsavel",selecionados.join(","));
-}
-function adicionarProjeto(){
-  const dados=JSON.parse(localStorage.getItem("dadosProjetosLogFit")||"{}");
-  const novoId="projeto-"+(Object.keys(dados).length+1);
-  dados[novoId]={projeto:"Novo Projeto",area:"Planejamento",prioridade:"Média",status:"Backlog",responsavel:"",prazo:"",doc:"",etapas:[]};
-  localStorage.setItem("dadosProjetosLogFit",JSON.stringify(dados));
-  carregarTabela();
-}
-function editar(id,campo,valor){
-  const dados=JSON.parse(localStorage.getItem("dadosProjetosLogFit")||"{}");
-  if(!dados[id])return;
-  dados[id][campo]=valor.trim();
-  localStorage.setItem("dadosProjetosLogFit",JSON.stringify(dados));
-}
-function uploadArquivo(id,input){
-  const arquivo=input.files[0];
-  if(arquivo){
-    const urlFake="arquivo_local/"+arquivo.name;
-    editar(id,"doc",urlFake);
-    alert("📎 Arquivo anexado: "+arquivo.name);
-  }
-}
-function excluir(id){
-  if(confirm("Excluir este projeto?")){
-    const dados=JSON.parse(localStorage.getItem("dadosProjetosLogFit")||"{}");
-    delete dados[id];
-    localStorage.setItem("dadosProjetosLogFit",JSON.stringify(dados));
+// ======== ADICIONAR PROJETO ========
+window.adicionarProjeto=async()=>{
+  const { error } = await supabase.from("projetos").insert([{
+    nome:"Novo Projeto",
+    area:"Planejamento",
+    prioridade:"Média",
+    status:"Backlog",
+    responsavel:"",
+    prazo:null,
+    doc:"",
+    etapas:[],
+    criado_por:"admin"
+  }]);
+  if(error){
+    console.error(error);
+    showStatus("Erro ao adicionar projeto.","erro");
+  } else {
+    showStatus("✅ Projeto adicionado com sucesso!");
     carregarTabela();
   }
-}
-function abrirModal(id){
+};
+
+// ======== EDITAR ========
+window.editar=async(id,campo,valor)=>{
+  const { error } = await supabase.from("projetos").update({ [campo]:valor }).eq("id",id);
+  if(error) console.error(error);
+};
+
+// ======== SALVAR RESPONSÁVEIS ========
+window.salvarResponsaveis=(id,select)=>{
+  const selecionados=Array.from(select.selectedOptions).map(o=>o.value);
+  editar(id,"responsavel",selecionados.join(","));
+};
+
+// ======== EXCLUIR ========
+window.excluir=async(id)=>{
+  if(confirm("Excluir este projeto?")){
+    await supabase.from("projetos").delete().eq("id",id);
+    showStatus("🗑️ Projeto excluído com sucesso!");
+    carregarTabela();
+  }
+};
+
+// ======== MODAL ETAPAS ========
+window.abrirModal=async(id)=>{
   projetoAtual=id;
-  const dados=JSON.parse(localStorage.getItem("dadosProjetosLogFit")||"{}");
-  const etapas=dados[id]?.etapas||[];
+  const { data, error } = await supabase.from("projetos").select("etapas").eq("id",id).single();
+  if(error) return;
+  const etapas=data?.etapas||[];
   const lista=document.getElementById("listaEtapas");
   lista.innerHTML="";
   etapas.forEach(et=> lista.appendChild(criarLinhaEtapa(et)));
   document.getElementById("modalEtapas").style.display="flex";
-}
+};
+
 function criarLinhaEtapa(et={nome:"",status:"Pendente",responsavel:"",prazo:"",descricao:"",anexo:""}){
-  const selecionados = et.responsavel ? et.responsavel.split(",") : [];
+  const selecionados=et.responsavel?et.responsavel.split(","):[];
   const div=document.createElement("div");
   div.className="etapa-linha";
   div.innerHTML=`
-    <span onclick="removerEtapa(this)">🗑️</span>
-    <label>Nome:</label><input type="text" value="${et.nome}" placeholder="Nome da Etapa">
+    <span onclick="this.parentElement.remove()">🗑️</span>
+    <label>Nome:</label><input type="text" value="${et.nome}">
     <label>Status:</label><select>
-      <option ${et.status==='Pendente'?'selected':''}>Pendente</option>
-      <option ${et.status==='Desenvolvendo'?'selected':''}>Desenvolvendo</option>
-      <option ${et.status==='Concluído'?'selected':''}>Concluído</option>
+      <option ${et.status==="Pendente"?"selected":""}>Pendente</option>
+      <option ${et.status==="Desenvolvendo"?"selected":""}>Desenvolvendo</option>
+      <option ${et.status==="Concluído"?"selected":""}>Concluído</option>
     </select>
     <label>Responsável:</label><select multiple>
-      ${RESPONSAVEIS_FIXOS.map(r=>`<option ${selecionados.includes(r)?'selected':''}>${r}</option>`).join("")}
+      ${RESPONSAVEIS_FIXOS.map(r=>`<option ${selecionados.includes(r)?"selected":""}>${r}</option>`).join("")}
     </select>
-    <label>Prazo:</label><input type="date" value="${et.prazo||''}">
-    <label>Descrição:</label><textarea rows="2" placeholder="Detalhes da etapa...">${et.descricao||''}</textarea>
+    <label>Prazo:</label><input type="date" value="${et.prazo||""}">
+    <label>Descrição:</label><textarea rows="2">${et.descricao||""}</textarea>
     <label>Anexo:</label><input type="file" onchange="this.nextElementSibling.value=this.files[0].name">
-    <input type="text" placeholder="ou link do arquivo..." value="${et.anexo||''}">
+    <input type="text" value="${et.anexo||""}">
   `;
   return div;
 }
-function adicionarEtapaLinha(){document.getElementById("listaEtapas").appendChild(criarLinhaEtapa());}
-function removerEtapa(el){el.parentElement.remove();}
-function salvarEtapas(){
+
+window.adicionarEtapaLinha=()=>document.getElementById("listaEtapas").appendChild(criarLinhaEtapa());
+
+window.salvarEtapas=async()=>{
   const lista=document.querySelectorAll("#listaEtapas .etapa-linha");
   const etapas=[];
   lista.forEach(l=>{
     const inputs=l.querySelectorAll("input,select,textarea");
-    const nome=inputs[0].value.trim();
-    const status=inputs[1].value;
-    const responsaveis=Array.from(inputs[2].selectedOptions).map(o=>o.value).join(",");
-    const prazo=inputs[3].value;
-    const descricao=inputs[4].value.trim();
-    const anexo=inputs[6].value.trim();
-    if(nome) etapas.push({nome,status,responsavel:responsaveis,prazo,descricao,anexo});
+    etapas.push({
+      nome:inputs[0].value,
+      status:inputs[1].value,
+      responsavel:Array.from(inputs[2].selectedOptions).map(o=>o.value).join(","),
+      prazo:inputs[3].value,
+      descricao:inputs[4].value,
+      anexo:inputs[6].value
+    });
   });
-  const dados=JSON.parse(localStorage.getItem("dadosProjetosLogFit")||"{}");
-  if(projetoAtual && dados[projetoAtual]){
-    dados[projetoAtual].etapas=etapas;
-    localStorage.setItem("dadosProjetosLogFit",JSON.stringify(dados));
-  }
+  await supabase.from("projetos").update({ etapas }).eq("id",projetoAtual);
+  showStatus("✅ Etapas salvas com sucesso!");
   fecharModal();
-  alert("✅ Etapas salvas com sucesso!");
-}
-function fecharModal(){document.getElementById("modalEtapas").style.display="none";}
+  carregarTabela();
+};
+
+window.fecharModal=()=>document.getElementById("modalEtapas").style.display="none";
 window.addEventListener("DOMContentLoaded",carregarTabela);
 </script>
 </body>
