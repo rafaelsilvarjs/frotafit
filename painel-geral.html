@@ -130,16 +130,25 @@
   <div id="usuarioLogado">Verificando login...</div>
 
   <div class="cards">
+    <!-- Página Inicial -->
     <a href="home.html" class="card">
       <div class="icon">🏠</div>
       <h3>Página Inicial</h3>
       <p>Acompanhar todos os projetos</p>
     </a>
 
+    <!-- Inclusão / Edição -->
     <a href="index.html" class="card">
       <div class="icon">🗂️</div>
       <h3>Incluir / Editar Projetos</h3>
       <p>Cadastrar e atualizar dados</p>
+    </a>
+
+    <!-- SPLINT -->
+    <a href="etapas.html" class="card">
+      <div class="icon">📆</div>
+      <h3>SPLINT</h3>
+      <p>Gerenciar etapas e cronogramas</p>
     </a>
   </div>
 </main>
@@ -162,7 +171,6 @@ const conteudo = document.getElementById('conteudoPrincipal')
   const { data: { session } } = await supabase.auth.getSession()
 
   if (!session) {
-    // substitui o conteúdo por aviso
     conteudo.innerHTML = `
       <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:60vh;text-align:center;">
         <h2>🔒 Acesso restrito</h2>
