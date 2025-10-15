@@ -1,384 +1,153 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LogFit – Gestão de Projetos</title>
-<link rel="icon" type="image/x-icon" href="favicon.ico" />
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
-:root {
-  --laranja: #ff5a1f;
-  --laranja2: #ff7a3e;
-  --azul: #0f172a;
-  --cinza: #f8fafc;
-  --borda: #e2e8f0;
-}
-body {
-  font-family: "Segoe UI", sans-serif;
-  background: var(--cinza);
-  color: var(--azul);
-  margin: 0;
-}
-
-/* ===== HEADER ===== */
-header {
-  background: linear-gradient(90deg, var(--laranja), var(--laranja2));
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 30px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
-}
-header h1 {
-  font-size: 20px;
-  margin: 0;
-  font-weight: 700;
-}
-header .botoes {
-  display: flex;
-  gap: 10px;
-}
-button {
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.btn-laranja {
-  background: white;
-  color: var(--laranja);
-  padding: 8px 14px;
-}
-.btn-laranja:hover {
-  background: #ffe4d2;
-}
-
-/* ===== CARDS ===== */
-.cards {
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-  flex-wrap: wrap;
-  margin: 25px auto;
-  max-width: 1100px;
-}
-.card {
-  flex: 1;
-  min-width: 200px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  padding: 16px;
-  text-align: center;
-}
-.card h3 {
-  margin: 0;
-  font-size: 15px;
-  color: #64748b;
-}
-.card span {
-  display: block;
-  margin-top: 6px;
-  font-size: 28px;
-  font-weight: 700;
-}
-
-/* ===== FILTROS ===== */
-.filtros {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-select,
-button.limpar {
-  padding: 8px 10px;
-  border: 1px solid var(--borda);
-  border-radius: 8px;
-  background: white;
-  font-size: 14px;
-}
-button.limpar {
-  background: #64748b;
-  color: white;
-  border: none;
-}
-button.limpar:hover {
-  background: #475569;
-}
-
-/* ===== TABELA ===== */
-table {
-  width: 95%;
-  margin: 0 auto 40px;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-th,
-td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--borda);
-  text-align: left;
-  font-size: 14px;
-}
-th {
-  background: #f1f5f9;
-}
-.status.Backlog {
-  color: #ef4444;
-}
-.status.Desenvolvendo {
-  color: #f59e0b;
-}
-.status.Concluído {
-  color: #22c55e;
-}
-
-/* ===== EXPANDIR ETAPAS ===== */
-.expandir {
-  cursor: pointer;
-  color: var(--laranja);
-  font-size: 16px;
-  user-select: none;
-  font-weight: bold;
-}
-.etapas-linha {
-  background: #f9fafb;
-}
-.etapa {
-  border-left: 3px solid var(--laranja2);
-  margin: 5px 0;
-  padding: 6px 12px;
-  font-size: 13px;
-}
-.etapa strong {
-  color: var(--azul);
-}
-footer {
-  text-align: center;
-  font-size: 13px;
-  padding: 10px;
-  color: #94a3b8;
-  border-top: 1px solid #e2e8f0;
-}
+body{font-family:"Segoe UI",sans-serif;background:#f8fafc;margin:0;color:#0f172a;}
+header{background:linear-gradient(90deg,#ff5a1f,#ff7a3e);color:white;display:flex;justify-content:space-between;align-items:center;padding:16px 30px;box-shadow:0 3px 8px rgba(0,0,0,.2);}
+header h2{font-weight:700;font-size:20px;margin:0}
+header button{background:white;color:#ff5a1f;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
+header button:hover{background:#ffe4d2}
+main{max-width:1300px;margin:30px auto;padding:0 20px}
+.cards{display:flex;flex-wrap:wrap;justify-content:center;gap:25px;margin-bottom:30px;}
+.card{flex:1;min-width:200px;background:white;padding:18px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.1);text-align:center;}
+.card h3{margin:0;font-size:16px;color:#475569;}
+.card span{display:block;font-size:28px;font-weight:700;color:#0f172a;margin-top:5px;}
+table{width:100%;border-collapse:collapse;background:white;box-shadow:0 3px 10px rgba(0,0,0,.1);border-radius:12px;overflow:hidden;}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid #e2e8f0;font-size:14px;}
+th{background:#e2e8f0;color:#0f172a;font-weight:700;}
+tr.etapas-row td{background:#f8fafc;}
+.status-badge{padding:3px 8px;border-radius:6px;font-weight:600;font-size:12px;color:white;}
+.status-Pendente{background:#ef4444;}
+.status-Desenvolvendo{background:#f59e0b;}
+.status-Concluído{background:#22c55e;}
+.toggle-btn{cursor:pointer;font-size:16px;transition:0.2s;}
+.toggle-btn:hover{transform:scale(1.2);}
+footer{text-align:center;background:#f8fafc;padding:12px;font-size:13px;color:#64748b;border-top:1px solid #e2e8f0;}
 </style>
 </head>
-
 <body>
 <header>
-  <h1>📊 LogFit – Gestão de Projetos</h1>
-  <div class="botoes">
-    <button class="btn-laranja" onclick="location.href='index.html'">+ Incluir / Editar Projetos</button>
-    <button class="btn-laranja" onclick="location.href='painel-geral.html'">🏠 Página Inicial</button>
-    <button class="btn-laranja" onclick="logout()">Sair</button>
+  <h2>📊 LogFit – Gestão de Projetos</h2>
+  <div>
+    <button onclick="location.href='index.html'">+ Incluir / Editar Projetos</button>
+    <button onclick="location.href='painel-geral.html'">🏠 Página Inicial</button>
+    <button onclick="logout()">Sair</button>
   </div>
 </header>
 
-<!-- ===== CARDS ===== -->
-<section class="cards">
-  <div class="card"><h3>Total</h3><span id="total">0</span></div>
-  <div class="card"><h3>🟥 Backlog</h3><span id="backlog">0</span></div>
-  <div class="card"><h3>🟨 Desenvolvendo</h3><span id="desenvolvendo">0</span></div>
-  <div class="card"><h3>🟩 Concluídos</h3><span id="concluidos">0</span></div>
-</section>
+<main>
+  <section class="cards">
+    <div class="card"><h3>Total</h3><span id="total">0</span></div>
+    <div class="card"><h3>🟥 Backlog</h3><span id="backlog">0</span></div>
+    <div class="card"><h3>🟨 Desenvolvendo</h3><span id="desenvolvendo">0</span></div>
+    <div class="card"><h3>🟩 Concluídos</h3><span id="concluidos">0</span></div>
+  </section>
 
-<!-- ===== FILTROS ===== -->
-<section class="filtros">
-  <select id="filtroArea"><option value="">Filtrar por Área</option></select>
-  <select id="filtroStatus"><option value="">Filtrar por Status</option></select>
-  <select id="filtroPrioridade"><option value="">Filtrar por Prioridade</option></select>
-  <select id="filtroResp"><option value="">Filtrar por Responsável</option></select>
-  <button class="limpar" onclick="limparFiltros()">Limpar</button>
-</section>
-
-<!-- ===== TABELA ===== -->
-<table id="tabelaProjetos">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Projeto</th>
-      <th>Área</th>
-      <th>Prioridade</th>
-      <th>Status</th>
-      <th>Responsável</th>
-      <th>Prazo</th>
-      <th>Anexo</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+  <table id="tabelaProjetos">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Projeto</th>
+        <th>Área</th>
+        <th>Prioridade</th>
+        <th>Status</th>
+        <th>Responsável</th>
+        <th>Prazo</th>
+        <th>Anexo</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</main>
 
 <footer>© LogFit Logística • Refit • 2025</footer>
 
 <script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const SUPABASE_URL = "https://cczuqesooeguvqimeoks.supabase.co";
-const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const SUPABASE_URL = 'https://cczuqesooeguvqimeoks.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-window.logout = async function () {
-  await supabase.auth.signOut();
+// 🔒 Verifica se o usuário está logado
+const { data: { session } } = await supabase.auth.getSession();
+if (!session) {
   window.location.href = "login.html";
-};
-
-let projetos = [];
-
-async function carregarProjetos() {
-  const { data, error } = await supabase
-    .from("projetos")
-    .select("*")
-    .order("id", { ascending: true });
-
-  if (error) {
-    console.error(error);
-    alert("Erro ao carregar projetos.");
-    return;
-  }
-
-  projetos = data || [];
-  atualizarCards();
-  preencherFiltros();
-  renderTabela();
 }
 
-function atualizarCards() {
-  document.getElementById("total").textContent = projetos.length;
-  document.getElementById("backlog").textContent = projetos.filter(
-    (p) => p.status === "Backlog"
-  ).length;
-  document.getElementById("desenvolvendo").textContent = projetos.filter(
-    (p) => p.status === "Desenvolvendo"
-  ).length;
-  document.getElementById("concluidos").textContent = projetos.filter(
-    (p) => p.status === "Concluído"
-  ).length;
-}
+// Carregar projetos
+const { data: projetos, error } = await supabase.from('projetos').select('*').order('id', { ascending: true });
+if (error) console.error('Erro ao carregar projetos:', error);
 
-function preencherFiltros() {
-  preencherSelect(
-    "filtroArea",
-    [...new Set(projetos.map((p) => p.area).filter(Boolean))]
-  );
-  preencherSelect(
-    "filtroStatus",
-    [...new Set(projetos.map((p) => p.status).filter(Boolean))]
-  );
-  preencherSelect(
-    "filtroPrioridade",
-    [...new Set(projetos.map((p) => p.prioridade).filter(Boolean))]
-  );
-  preencherSelect(
-    "filtroResp",
-    [...new Set(projetos.map((p) => p.responsavel).filter(Boolean))]
-  );
-}
+// Atualiza cards
+document.getElementById("total").textContent = projetos.length;
+document.getElementById("backlog").textContent = projetos.filter(p => p.status === "Backlog").length;
+document.getElementById("desenvolvendo").textContent = projetos.filter(p => p.status === "Desenvolvendo").length;
+document.getElementById("concluidos").textContent = projetos.filter(p => p.status === "Concluído").length;
 
-function preencherSelect(id, valores) {
-  const select = document.getElementById(id);
-  select.innerHTML = `<option value="">Filtrar por ${
-    select.id.replace("filtro", "")
-  }</option>`;
-  valores.forEach((v) => {
-    const opt = document.createElement("option");
-    opt.value = v;
-    opt.textContent = v;
-    select.appendChild(opt);
-  });
-}
-
-function renderTabela(filtro = {}) {
-  const tbody = document.querySelector("#tabelaProjetos tbody");
-  tbody.innerHTML = "";
-
-  const filtrados = projetos.filter((p) => {
-    return (
-      (!filtro.area || p.area === filtro.area) &&
-      (!filtro.status || p.status === filtro.status) &&
-      (!filtro.prioridade || p.prioridade === filtro.prioridade) &&
-      (!filtro.responsavel || p.responsavel === filtro.responsavel)
-    );
-  });
-
-  filtrados.forEach((p) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td class="expandir" onclick="toggleEtapas(${p.id}, this)">▶</td>
-      <td>${p.nome}</td>
-      <td>${p.area}</td>
-      <td>${p.prioridade}</td>
-      <td class="status ${p.status}">${p.status}</td>
-      <td>${p.responsavel || "-"}</td>
-      <td>${p.prazo || "-"}</td>
-      <td>${p.doc ? `<a href="${p.doc}" target="_blank">Abrir</a>` : "-"}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
-window.toggleEtapas = function (id, el) {
-  const linha = el.parentElement;
-  const jaExiste = linha.nextElementSibling?.classList.contains("etapas-linha");
-
-  if (jaExiste) {
-    linha.nextElementSibling.remove();
-    el.textContent = "▶";
-    return;
-  }
-
-  const projeto = projetos.find((p) => p.id === id);
-  const etapas = projeto.etapas || [];
-
+// Renderizar tabela
+const tbody = document.querySelector("#tabelaProjetos tbody");
+projetos.forEach(p => {
   const tr = document.createElement("tr");
-  tr.classList.add("etapas-linha");
-  const td = document.createElement("td");
-  td.colSpan = 8;
 
-  if (etapas.length === 0) {
-    td.innerHTML = `<div class="etapa">Nenhuma etapa cadastrada.</div>`;
+  // Cores das prioridades
+  let corPrioridade = "#86efac"; // verde padrão (baixa)
+  if (p.prioridade === "Alta") corPrioridade = "#fca5a5"; // vermelho
+  else if (p.prioridade === "Média") corPrioridade = "#fde68a"; // amarelo
+
+  tr.innerHTML = `
+    <td><span class="toggle-btn">⯈</span></td>
+    <td>${p.nome}</td>
+    <td>${p.area}</td>
+    <td><span style="background:${corPrioridade};padding:4px 8px;border-radius:6px;font-weight:600;">${p.prioridade}</span></td>
+    <td>${p.status}</td>
+    <td>${p.responsavel || "—"}</td>
+    <td>${p.prazo || "—"}</td>
+    <td>${p.doc ? `<a href="${p.doc}" target="_blank">Abrir</a>` : "—"}</td>
+  `;
+  tbody.appendChild(tr);
+
+  // Linha oculta com as etapas
+  const trEtapas = document.createElement("tr");
+  trEtapas.classList.add("etapas-row");
+  trEtapas.style.display = "none";
+
+  let etapasHTML = "";
+  if (p.etapas && Array.isArray(p.etapas) && p.etapas.length > 0) {
+    p.etapas.forEach(e => {
+      etapasHTML += `
+        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:8px;">
+          <strong>${e.nome || "Etapa sem nome"}</strong><br>
+          <span class="status-badge status-${e.status}">${e.status}</span><br>
+          <small>Responsável: ${e.responsavel || "—"} | Prazo: ${e.prazo || "—"}</small><br>
+          <small>Descrição: ${e.descricao || "—"}</small><br>
+          <small>Anexo: ${e.anexo ? `<a href="${e.anexo}" target="_blank">Abrir</a>` : "—"}</small>
+        </div>
+      `;
+    });
   } else {
-    td.innerHTML = etapas
-      .map(
-        (e) => `
-        <div class="etapa">
-          <strong>${e.nome || "Sem nome"}</strong> – ${e.status || "Pendente"} 
-          ${e.responsavel ? "• " + e.responsavel : ""}
-          ${e.prazo ? "• Prazo: " + e.prazo : ""}
-        </div>`
-      )
-      .join("");
+    etapasHTML = `<em style="color:#64748b;">Nenhuma etapa cadastrada</em>`;
   }
 
-  tr.appendChild(td);
-  linha.insertAdjacentElement("afterend", tr);
-  el.textContent = "▼";
-};
+  trEtapas.innerHTML = `<td colspan="8">${etapasHTML}</td>`;
+  tbody.appendChild(trEtapas);
 
-document.querySelectorAll("select").forEach((s) => {
-  s.addEventListener("change", () => {
-    const filtro = {
-      area: document.getElementById("filtroArea").value,
-      status: document.getElementById("filtroStatus").value,
-      prioridade: document.getElementById("filtroPrioridade").value,
-      responsavel: document.getElementById("filtroResp").value,
-    };
-    renderTabela(filtro);
+  // Toggle
+  tr.querySelector(".toggle-btn").addEventListener("click", e => {
+    const isOpen = trEtapas.style.display === "table-row";
+    trEtapas.style.display = isOpen ? "none" : "table-row";
+    e.target.textContent = isOpen ? "⯈" : "⯆";
   });
 });
 
-window.limparFiltros = function () {
-  document.querySelectorAll("select").forEach((s) => (s.value = ""));
-  renderTabela();
+// 🔚 Logout
+window.logout = async function() {
+  await supabase.auth.signOut();
+  window.location.href = "login.html";
 };
-
-window.addEventListener("DOMContentLoaded", carregarProjetos);
 </script>
 </body>
 </html>
