@@ -256,13 +256,13 @@ function renderTabela(lista){
       <td>${p.doc?`<a href="${p.doc}" target="_blank">Abrir</a>`:"—"}</td>`;
     tbody.appendChild(tr);
 
-    const trEtapas=document.createElement("tr");
-    trEtapas.classList.add("etapas-row");
-    trEtapas.style.display="none";
-    let etapasHTML="";
+    const trSprints=document.createElement("tr");
+    trSprints.classList.add("etapas-row");
+    trSprints.style.display="none";
+    let sprintsHTML="";
     if(p.etapas&&Array.isArray(p.etapas)&&p.etapas.length>0){
       p.etapas.forEach(e=>{
-        etapasHTML+=`
+        sprintsHTML+=`
           <div style="border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:8px;">
             <strong>${e.nome||"Sprint sem nome"}</strong><br>
             <span class="status-badge status-${e.status}">${e.status}</span><br>
@@ -271,13 +271,13 @@ function renderTabela(lista){
             <small>Anexo: ${e.anexo?`<a href="${e.anexo}" target="_blank">Abrir</a>`:"—"}</small>
           </div>`;
       });
-    } else etapasHTML=`<em style="color:#64748b;">Nenhuma sprint cadastrada</em>`;
-    trEtapas.innerHTML=`<td colspan="8">${etapasHTML}</td>`;
-    tbody.appendChild(trEtapas);
+    } else sprintsHTML=`<em style="color:#64748b;">Nenhuma sprint cadastrada</em>`;
+    trSprints.innerHTML=`<td colspan="8">${sprintsHTML}</td>`;
+    tbody.appendChild(trSprints);
 
     tr.querySelector(".toggle-btn").addEventListener("click",e=>{
-      const open=trEtapas.style.display==="table-row";
-      trEtapas.style.display=open?"none":"table-row";
+      const open=trSprints.style.display==="table-row";
+      trSprints.style.display=open?"none":"table-row";
       e.target.textContent=open?"⯈":"⯆";
     });
   });
