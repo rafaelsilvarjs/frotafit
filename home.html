@@ -140,7 +140,7 @@ footer{
   <div>
     <button onclick="location.href='index.html'">+ Incluir / Editar Projetos</button>
     <button onclick="location.href='painel-geral.html'">🏠 Página Inicial</button>
-    <button onclick="location.href='etapas.html'">📆 SPLINT</button>
+    <button onclick="location.href='etapas.html'">📆 SPRINT</button>
     <button onclick="logout()">Sair</button>
   </div>
 </header>
@@ -264,14 +264,14 @@ function renderTabela(lista){
       p.etapas.forEach(e=>{
         etapasHTML+=`
           <div style="border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:8px;">
-            <strong>${e.nome||"Etapa sem nome"}</strong><br>
+            <strong>${e.nome||"Sprint sem nome"}</strong><br>
             <span class="status-badge status-${e.status}">${e.status}</span><br>
             <small>Responsável: ${e.responsavel||"—"} | Prazo: ${e.prazo||"—"}</small><br>
             <small>Descrição: ${e.descricao||"—"}</small><br>
             <small>Anexo: ${e.anexo?`<a href="${e.anexo}" target="_blank">Abrir</a>`:"—"}</small>
           </div>`;
       });
-    } else etapasHTML=`<em style="color:#64748b;">Nenhuma etapa cadastrada</em>`;
+    } else etapasHTML=`<em style="color:#64748b;">Nenhuma sprint cadastrada</em>`;
     trEtapas.innerHTML=`<td colspan="8">${etapasHTML}</td>`;
     tbody.appendChild(trEtapas);
 
