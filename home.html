@@ -71,13 +71,14 @@ main{max-width:1300px;margin:30px auto;padding:0 20px;}
   gap:10px;
   margin-bottom:20px;
 }
-.filtros select{
+.filtros select, .filtros input{
   padding:8px 10px;
   border:1px solid var(--cinza2);
   border-radius:6px;
   font-size:14px;
   background:#fff;
 }
+.filtros input::placeholder{color:#94a3b8;}
 .filtros button{
   border:none;
   border-radius:6px;
@@ -156,6 +157,8 @@ footer{
 
   <!-- FILTROS -->
   <div class="filtros">
+    <input type="text" id="filtroProjeto" placeholder="🔍 Filtrar por nome do projeto..." onkeyup="filtrarTabela()">
+
     <select id="filtroArea" onchange="filtrarTabela()">
       <option value="">Filtrar por Área</option>
       <option>Planejamento</option>
@@ -285,14 +288,17 @@ function renderTabela(lista){
 
 // FILTRAR
 window.filtrarTabela=function(){
+  const nome=document.getElementById("filtroProjeto").value.toLowerCase();
   const area=document.getElementById("filtroArea").value;
   const status=document.getElementById("filtroStatus").value;
   const prioridade=document.getElementById("filtroPrioridade").value;
   const resp=document.getElementById("filtroResponsavel").value;
+
   const filtrados=projetos.filter(p=>
-    (!area||p.area===area)&&
-    (!status||p.status===status)&&
-    (!prioridade||p.prioridade===prioridade)&&
+    (!nome || p.nome?.toLowerCase().includes(nome)) &&
+    (!area||p.area===area) &&
+    (!status||p.status===status) &&
+    (!prioridade||p.prioridade===prioridade) &&
     (!resp||p.responsavel===resp)
   );
   renderTabela(filtrados);
@@ -300,7 +306,7 @@ window.filtrarTabela=function(){
 
 // LIMPAR
 window.limparFiltros=function(){
-  document.querySelectorAll(".filtros select").forEach(s=>s.value="");
+  document.querySelectorAll(".filtros select, .filtros input").forEach(s=>s.value="");
   renderTabela(projetos);
 }
 
