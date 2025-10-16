@@ -63,56 +63,37 @@ main{max-width:1300px;margin:30px auto;padding:0 20px;}
 .card h3{margin:0;font-size:16px;color:#475569;}
 .card span{display:block;font-size:28px;font-weight:700;color:var(--azul);margin-top:5px;}
 
-/* ===== FILTROS MULTI-SELEÇÃO ===== */
+/* ===== FILTROS ===== */
 .filtros{
-  background:#fff;
-  border:1px solid var(--cinza2);
-  border-radius:12px;
-  padding:20px;
   display:flex;
   flex-wrap:wrap;
-  gap:30px;
-  justify-content:space-around;
+  justify-content:center;
+  gap:10px;
   margin-bottom:20px;
-  box-shadow:0 3px 8px rgba(0,0,0,.08);
 }
-.filtro-box{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  min-width:160px;
-}
-.filtro-box h4{
-  margin:0;
-  color:var(--azul);
-  font-size:14px;
-  font-weight:700;
-}
-.filtro-box label{
-  font-size:13px;
-  color:#475569;
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.filtros input[type="checkbox"]{cursor:pointer;}
-.filtros input[type="text"]{
-  width:250px;
+.filtros select, .filtros input{
   padding:8px 10px;
   border:1px solid var(--cinza2);
   border-radius:6px;
   font-size:14px;
+  background:#fff;
+}
+.filtros input::placeholder{color:#94a3b8;}
+.filtros button{
+  border:none;
+  border-radius:6px;
+  font-weight:600;
+  cursor:pointer;
+  padding:8px 14px;
+  font-size:14px;
+}
+.filtros .filtrar{
+  background:var(--laranja);
+  color:#fff;
 }
 .filtros .limpar{
   background:#0f172a;
   color:#fff;
-  border:none;
-  border-radius:6px;
-  padding:8px 14px;
-  font-weight:600;
-  height:38px;
-  align-self:flex-end;
-  cursor:pointer;
 }
 
 /* ===== TABELA ===== */
@@ -176,38 +157,34 @@ footer{
 
   <!-- FILTROS -->
   <div class="filtros">
-    <div class="filtro-box">
-      <h4>🔍 Projeto</h4>
-      <input type="text" id="filtroProjeto" placeholder="Digite parte do nome...">
-    </div>
+    <input type="text" id="filtroProjeto" placeholder="🔍 Filtrar por nome do projeto..." onkeyup="filtrarTabela()">
 
-    <div class="filtro-box" id="areaBox">
-      <h4>Área</h4>
-      <label><input type="checkbox" value="Planejamento">Planejamento</label>
-      <label><input type="checkbox" value="Programação">Programação</label>
-      <label><input type="checkbox" value="Transportadores">Transportadores</label>
-      <label><input type="checkbox" value="Logística">Logística</label>
-      <label><input type="checkbox" value="Corporativo">Corporativo</label>
-    </div>
+    <select id="filtroArea" onchange="filtrarTabela()">
+      <option value="">Filtrar por Área</option>
+      <option>Planejamento</option>
+      <option>Programação</option>
+      <option>Transportadores</option>
+      <option>Logística</option>
+      <option>Corporativo</option>
+    </select>
 
-    <div class="filtro-box" id="statusBox">
-      <h4>Status</h4>
-      <label><input type="checkbox" value="Backlog">Backlog</label>
-      <label><input type="checkbox" value="Desenvolvendo">Desenvolvendo</label>
-      <label><input type="checkbox" value="Concluído">Concluído</label>
-    </div>
+    <select id="filtroStatus" onchange="filtrarTabela()">
+      <option value="">Filtrar por Status</option>
+      <option>Backlog</option>
+      <option>Desenvolvendo</option>
+      <option>Concluído</option>
+    </select>
 
-    <div class="filtro-box" id="prioridadeBox">
-      <h4>Prioridade</h4>
-      <label><input type="checkbox" value="Alta">Alta</label>
-      <label><input type="checkbox" value="Média">Média</label>
-      <label><input type="checkbox" value="Baixa">Baixa</label>
-    </div>
+    <select id="filtroPrioridade" onchange="filtrarTabela()">
+      <option value="">Filtrar por Prioridade</option>
+      <option>Alta</option>
+      <option>Média</option>
+      <option>Baixa</option>
+    </select>
 
-    <div class="filtro-box" id="responsavelBox">
-      <h4>Responsável</h4>
-      <div id="responsavelChecks"></div>
-    </div>
+    <select id="filtroResponsavel" onchange="filtrarTabela()">
+      <option value="">Filtrar por Responsável</option>
+    </select>
 
     <button class="limpar" onclick="limparFiltros()">🧹 Limpar</button>
   </div>
@@ -252,12 +229,12 @@ document.getElementById("backlog").textContent=projetos.filter(p=>p.status==="Ba
 document.getElementById("desenvolvendo").textContent=projetos.filter(p=>p.status==="Desenvolvendo").length;
 document.getElementById("concluidos").textContent=projetos.filter(p=>p.status==="Concluído").length;
 
-// Preenche responsáveis dinamicamente
-const respDiv=document.getElementById("responsavelChecks");
+// Popula responsáveis no filtro
+const filtroResp=document.getElementById("filtroResponsavel");
 [...new Set(projetos.map(p=>p.responsavel).filter(Boolean))].forEach(r=>{
-  const label=document.createElement("label");
-  label.innerHTML=`<input type="checkbox" value="${r}">${r}`;
-  respDiv.appendChild(label);
+  const opt=document.createElement("option");
+  opt.value=r; opt.textContent=r;
+  filtroResp.appendChild(opt);
 });
 
 // Renderizar tabela
@@ -309,35 +286,27 @@ function renderTabela(lista){
   });
 }
 
-// FILTRO GERAL
-function filtrarTabela(){
+// FILTRAR
+window.filtrarTabela=function(){
   const nome=document.getElementById("filtroProjeto").value.toLowerCase();
-
-  const areas=[...document.querySelectorAll("#areaBox input:checked")].map(i=>i.value);
-  const status=[...document.querySelectorAll("#statusBox input:checked")].map(i=>i.value);
-  const prioridades=[...document.querySelectorAll("#prioridadeBox input:checked")].map(i=>i.value);
-  const responsaveis=[...document.querySelectorAll("#responsavelBox input:checked")].map(i=>i.value);
+  const area=document.getElementById("filtroArea").value;
+  const status=document.getElementById("filtroStatus").value;
+  const prioridade=document.getElementById("filtroPrioridade").value;
+  const resp=document.getElementById("filtroResponsavel").value;
 
   const filtrados=projetos.filter(p=>
-    (!nome||p.nome?.toLowerCase().includes(nome)) &&
-    (areas.length===0||areas.includes(p.area)) &&
-    (status.length===0||status.includes(p.status)) &&
-    (prioridades.length===0||prioridades.includes(p.prioridade)) &&
-    (responsaveis.length===0||responsaveis.includes(p.responsavel))
+    (!nome || p.nome?.toLowerCase().includes(nome)) &&
+    (!area||p.area===area) &&
+    (!status||p.status===status) &&
+    (!prioridade||p.prioridade===prioridade) &&
+    (!resp||p.responsavel===resp)
   );
-
   renderTabela(filtrados);
 }
 
-// ESCUTA TODOS OS FILTROS
-document.querySelectorAll('.filtros input').forEach(el=>el.addEventListener('input',filtrarTabela));
-
 // LIMPAR
 window.limparFiltros=function(){
-  document.querySelectorAll('.filtros input').forEach(el=>{
-    if(el.type==="text") el.value="";
-    if(el.type==="checkbox") el.checked=false;
-  });
+  document.querySelectorAll(".filtros select, .filtros input").forEach(s=>s.value="");
   renderTabela(projetos);
 }
 
