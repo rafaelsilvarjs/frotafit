@@ -14,6 +14,15 @@ header button{background:white;color:#ff5a1f;border:none;padding:8px 14px;border
 header button:hover{background:#ffe4d2}
 main{max-width:1300px;margin:30px auto;padding:0 20px}
 h1{text-align:center;margin-bottom:25px;font-size:26px;font-weight:700;}
+.filtros{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-bottom:18px;}
+.dropdown{position:relative;}
+.dropdown-button{background:white;border:1px solid #e2e8f0;border-radius:6px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-width:200px;}
+.dropdown-button:hover{background:#f1f5f9;}
+.dropdown-content{display:none;position:absolute;top:110%;left:0;background:white;border:1px solid #e2e8f0;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,0.1);z-index:1000;padding:10px 14px;max-height:200px;overflow-y:auto;}
+.dropdown-content label{display:flex;align-items:center;gap:6px;font-size:14px;margin-bottom:5px;color:#334155;}
+.dropdown.open .dropdown-content{display:block;}
+.limpar{background:#0f172a;color:#fff;border:none;border-radius:6px;padding:8px 14px;font-weight:600;cursor:pointer;height:38px;display:flex;align-items:center;gap:6px;}
+.limpar:hover{background:#1e293b;}
 table{width:100%;border-collapse:collapse;background:white;box-shadow:0 3px 10px rgba(0,0,0,.1);border-radius:12px;overflow:hidden;}
 th,td{padding:12px 14px;text-align:left;border-bottom:1px solid #e2e8f0;font-size:14px;}
 th{background:#e2e8f0;color:#0f172a;font-weight:700;}
@@ -29,7 +38,6 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
 .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);display:none;justify-content:center;align-items:center;z-index:1000;}
 .modal-content{background:white;padding:25px;border-radius:12px;width:600px;box-shadow:0 5px 20px rgba(0,0,0,0.4);animation:fadeIn .3s ease;max-height:90vh;overflow:auto;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);} }
-.modal h3{margin:0 0 15px;font-weight:700;}
 .etapa-linha{border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:10px;background:#f8fafc;}
 .etapa-linha span{color:#ef4444;font-size:16px;cursor:pointer;float:right;}
 .status-msg{margin:15px 0;padding:10px;border-radius:8px;display:none;text-align:center;}
@@ -48,7 +56,18 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
 
 <main>
   <h1>📋 Cadastro e Atualização de Projetos</h1>
+
+  <!-- 🔽 FILTROS -->
+  <div class="filtros">
+    <div class="dropdown" id="responsavelDropdown">
+      <div class="dropdown-button">Filtrar por Responsável ▾</div>
+      <div class="dropdown-content" id="responsavelChecks"></div>
+    </div>
+    <button class="limpar" onclick="limparFiltros()">🧹 Limpar</button>
+  </div>
+
   <div id="status" class="status-msg"></div>
+
   <table id="tabelaProjetos">
     <thead>
       <tr>
@@ -83,22 +102,33 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const supabase=createClient('https://cczuqesooeguvqimeoks.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg');
 
-const SUPABASE_URL = 'https://cczuqesooeguvqimeoks.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg';
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const RESPONSAVEIS_FIXOS=["RAFAEL","DIEGO","JOÃO","ANTONIO","LUCAS","CARLOS","IVAN","LUIZ","EQUIPE"];
+let projetosGlobal=[];
 
-const RESPONSAVEIS_FIXOS = ["RAFAEL","DIEGO","JOÃO","ANTONIO","LUCAS","CARLOS","IVAN","LUIZ","EQUIPE"];
-let projetoAtual=null;
+// LOGIN
+const {data:{session}}=await supabase.auth.getSession();
+if(!session) window.location.href="login.html";
+carregarTabela();
 
-// 🔒 LOGIN
-(async ()=>{
-  const { data: { session } } = await supabase.auth.getSession();
-  if(!session){window.location.href='login.html';return;}
-  carregarTabela();
-})();
+// FILTRO DROPDOWN
+const dropdown=document.getElementById("responsavelDropdown");
+const checksDiv=document.getElementById("responsavelChecks");
+dropdown.querySelector(".dropdown-button").addEventListener("click",()=>dropdown.classList.toggle("open"));
+document.addEventListener("click",e=>{if(!dropdown.contains(e.target)) dropdown.classList.remove("open");});
+RESPONSAVEIS_FIXOS.forEach(r=>{
+  const label=document.createElement("label");
+  label.innerHTML=`<input type="checkbox" value="${r}">${r}`;
+  checksDiv.appendChild(label);
+});
+document.querySelectorAll("#responsavelChecks input").forEach(chk=>chk.addEventListener("change",filtrarProjetos));
+window.limparFiltros=()=>{
+  document.querySelectorAll("#responsavelChecks input").forEach(i=>i.checked=false);
+  renderTabela(projetosGlobal);
+};
 
-// ALERTA STATUS
+// STATUS
 const statusDiv=document.getElementById("status");
 function showStatus(msg,tipo="ok"){
   statusDiv.textContent=msg;
@@ -107,25 +137,37 @@ function showStatus(msg,tipo="ok"){
   setTimeout(()=>statusDiv.style.display="none",3000);
 }
 
-// ======= CARREGAR TABELA =======
+// CARREGAR
 async function carregarTabela(){
+  const {data:projetos,error}=await supabase.from("projetos").select("*").order("id",{ascending:true});
+  if(error){showStatus("Erro ao carregar projetos","erro");return;}
+  projetosGlobal=projetos;
+  renderTabela(projetos);
+}
+
+// FILTRAR
+function filtrarProjetos(){
+  const selecionados=[...document.querySelectorAll("#responsavelChecks input:checked")].map(i=>i.value);
+  if(selecionados.length===0){renderTabela(projetosGlobal);return;}
+  const filtrados=projetosGlobal.filter(p=>selecionados.some(r=>p.responsavel?.includes(r)));
+  renderTabela(filtrados);
+}
+
+// RENDER
+function renderTabela(projetos){
   const tbody=document.querySelector("#tabelaProjetos tbody");
   tbody.innerHTML="";
-  const { data: projetos, error } = await supabase.from("projetos").select("*").order("id",{ascending:true});
-  if(error){showStatus("Erro ao carregar projetos","erro");return;}
   if(!projetos.length){
-    tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:#64748b;">Nenhum projeto cadastrado.</td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:#64748b;">Nenhum projeto encontrado.</td></tr>`;
     return;
   }
-
   projetos.forEach(p=>{
     const responsaveis=p.responsavel?p.responsavel.split(","):[];
     const tr=document.createElement("tr");
     tr.innerHTML=`
       <td contenteditable onblur="editar(${p.id},'nome',this.innerText)">${p.nome||"Novo Projeto"}</td>
       <td><select onchange="editar(${p.id},'area',this.value)">
-        ${["Planejamento","Programação","Transportadores","Logística","Corporativo","Outros"]
-          .map(a=>`<option ${a===p.area?"selected":""}>${a}</option>`).join("")}
+        ${["Planejamento","Programação","Transportadores","Logística","Corporativo","Outros"].map(a=>`<option ${a===p.area?"selected":""}>${a}</option>`).join("")}
       </select></td>
       <td><select onchange="editar(${p.id},'prioridade',this.value)">
         ${["Alta","Média","Baixa"].map(a=>`<option ${a===p.prioridade?"selected":""}>${a}</option>`).join("")}
@@ -148,23 +190,20 @@ async function carregarTabela(){
   });
 }
 
-// ======= FUNÇÕES CRUD =======
+// CRUD
 window.adicionarProjeto=async()=>{
   const {error}=await supabase.from("projetos").insert([{nome:"Novo Projeto"}]);
   if(error) showStatus("Erro ao adicionar","erro");
   else {showStatus("Projeto criado!");carregarTabela();}
 }
-
 window.editar=async(id,campo,valor)=>{
   const {error}=await supabase.from("projetos").update({[campo]:valor}).eq("id",id);
   if(error) showStatus("Erro ao atualizar","erro");
 }
-
 window.salvarResponsaveis=(id,select)=>{
   const valores=[...select.selectedOptions].map(o=>o.value).join(",");
   editar(id,"responsavel",valores);
 }
-
 window.excluir=async(id)=>{
   if(confirm("Excluir este projeto?")){
     const {error}=await supabase.from("projetos").delete().eq("id",id);
@@ -173,10 +212,10 @@ window.excluir=async(id)=>{
   }
 }
 
-// ======= MODAL DE ETAPAS =======
+// MODAL ETAPAS
 const modal=document.getElementById("modalEtapas");
 const lista=document.getElementById("listaEtapas");
-
+let projetoAtual=null;
 window.abrirModal=async(id)=>{
   projetoAtual=id;
   lista.innerHTML="";
@@ -185,50 +224,28 @@ window.abrirModal=async(id)=>{
   etapas.forEach(e=>criarLinhaEtapa(e));
   modal.style.display="flex";
 }
-
 window.fecharModal=()=>{modal.style.display="none";projetoAtual=null;}
-
 function criarLinhaEtapa(et={}){
   const div=document.createElement("div");
   div.classList.add("etapa-linha");
   div.innerHTML=`
     <span onclick="this.parentElement.remove()">🗑️</span>
-    <label>Nome:</label>
-    <input type="text" value="${et.nome||""}">
-    <label>Status:</label>
-    <select>
-      ${["Pendente","Desenvolvendo","Concluído"].map(s=>`<option ${s===et.status?"selected":""}>${s}</option>`).join("")}
-    </select>
-    <label>Responsável:</label>
-    <select multiple>
-      ${RESPONSAVEIS_FIXOS.map(r=>`<option ${et.responsavel&&et.responsavel.includes(r)?"selected":""}>${r}</option>`).join("")}
-    </select>
-    <label>Prazo:</label>
-    <input type="date" value="${et.prazo||""}">
-    <label>Descrição:</label>
-    <textarea>${et.descricao||""}</textarea>
-    <label>Anexo:</label>
-    <input type="file"><br>
-    <input type="text" placeholder="ou cole o link..." value="${et.anexo||""}">
+    <label>Nome:</label><input type="text" value="${et.nome||""}">
+    <label>Status:</label><select>${["Pendente","Desenvolvendo","Concluído"].map(s=>`<option ${s===et.status?"selected":""}>${s}</option>`).join("")}</select>
+    <label>Responsável:</label><select multiple>${RESPONSAVEIS_FIXOS.map(r=>`<option ${et.responsavel&&et.responsavel.includes(r)?"selected":""}>${r}</option>`).join("")}</select>
+    <label>Prazo:</label><input type="date" value="${et.prazo||""}">
+    <label>Descrição:</label><textarea>${et.descricao||""}</textarea>
+    <label>Anexo:</label><input type="file"><br><input type="text" placeholder="ou cole o link..." value="${et.anexo||""}">
   `;
   lista.appendChild(div);
 }
-
 window.adicionarEtapaLinha=()=>criarLinhaEtapa();
-
 window.salvarEtapas=async()=>{
   const etapas=[...lista.querySelectorAll(".etapa-linha")].map(div=>{
     const inputs=div.querySelectorAll("input,select,textarea");
     const [nome,status,resp,prazo,descricao,_,anexo]=inputs;
     const responsaveis=[...div.querySelectorAll("select[multiple] option:checked")].map(o=>o.value);
-    return {
-      nome:nome.value.trim(),
-      status:status.value,
-      responsavel:responsaveis.join(","),
-      prazo:prazo.value,
-      descricao:descricao.value,
-      anexo:anexo.value
-    };
+    return {nome:nome.value.trim(),status:status.value,responsavel:responsaveis.join(","),prazo:prazo.value,descricao:descricao.value,anexo:anexo.value};
   });
   const {error}=await supabase.from("projetos").update({etapas}).eq("id",projetoAtual);
   if(error) showStatus("Erro ao salvar etapas","erro");
