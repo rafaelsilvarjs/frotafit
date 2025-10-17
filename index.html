@@ -56,7 +56,6 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
 
 <main>
   <h1>📋 Cadastro e Atualização de Projetos</h1>
-
   <div class="filtros">
     <div class="dropdown" id="responsavelDropdown">
       <div class="dropdown-button">Filtrar por Responsável ▾</div>
@@ -64,22 +63,17 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
     </div>
     <button class="limpar" onclick="limparFiltros()">🧹 Limpar</button>
   </div>
-
   <div id="status" class="status-msg"></div>
 
   <table id="tabelaProjetos">
     <thead>
-      <tr>
-        <th>Projeto</th><th>Área</th><th>Prioridade</th><th>Status</th>
-        <th>Responsável</th><th>Prazo</th><th>Documentação</th><th>Etapas</th><th>Ações</th>
-      </tr>
+      <tr><th>Projeto</th><th>Área</th><th>Prioridade</th><th>Status</th><th>Responsável</th><th>Prazo</th><th>Documentação</th><th>Etapas</th><th>Ações</th></tr>
     </thead>
     <tbody></tbody>
   </table>
   <button class="adicionar" onclick="adicionarProjeto()">+ Adicionar Projeto</button>
 </main>
 
-<!-- MODAL ETAPAS -->
 <div class="modal" id="modalEtapas">
   <div class="modal-content">
     <h3>📑 Gerenciar Etapas</h3>
@@ -94,34 +88,29 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-const supabase=createClient('https://cczuqesooeguvqimeoks.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg');
+const supabase = createClient('https://cczuqesooeguvqimeoks.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg');
 
 const RESPONSAVEIS_FIXOS=["RAFAEL","DIEGO","JOÃO","ANTONIO","LUCAS","CARLOS","IVAN","LUIZ","EQUIPE"];
 let projetosGlobal=[];
-
 const {data:{session}}=await supabase.auth.getSession();
 if(!session) window.location.href="login.html";
 carregarTabela();
 
-// FILTROS
 const dropdown=document.getElementById("responsavelDropdown");
 const checksDiv=document.getElementById("responsavelChecks");
 dropdown.querySelector(".dropdown-button").addEventListener("click",()=>dropdown.classList.toggle("open"));
 document.addEventListener("click",e=>{if(!dropdown.contains(e.target)) dropdown.classList.remove("open");});
-RESPONSAVEIS_FIXOS.forEach(r=>{
-  const label=document.createElement("label");
-  label.innerHTML=`<input type="checkbox" value="${r}">${r}`;
-  checksDiv.appendChild(label);
-});
+RESPONSAVEIS_FIXOS.forEach(r=>{const label=document.createElement("label");label.innerHTML=`<input type="checkbox" value="${r}">${r}`;checksDiv.appendChild(label);});
 document.querySelectorAll("#responsavelChecks input").forEach(chk=>chk.addEventListener("change",filtrarProjetos));
 window.limparFiltros=()=>{document.querySelectorAll("#responsavelChecks input").forEach(i=>i.checked=false);renderTabela(projetosGlobal);};
 
 const statusDiv=document.getElementById("status");
-function showStatus(msg,tipo="ok"){statusDiv.textContent=msg;statusDiv.className=`status-msg ${tipo==="ok"?"status-ok":"status-erro"}`;statusDiv.style.display="block";setTimeout(()=>statusDiv.style.display="none",3000);}
+function showStatus(msg,tipo="ok"){statusDiv.textContent=msg;statusDiv.className=`status-msg ${tipo==="ok"?"status-ok":"status-erro"}`;statusDiv.style.display="block";setTimeout(()=>statusDiv.style.display="none",4000);}
 
 async function carregarTabela(){
   const {data:projetos,error}=await supabase.from("projetos").select("*").order("id",{ascending:true});
-  if(error){showStatus("Erro ao carregar projetos","erro");return;}
+  if(error){showStatus("Erro ao carregar projetos","erro");console.error(error);return;}
   projetosGlobal=projetos;renderTabela(projetos);
 }
 
@@ -170,35 +159,36 @@ window.editar=async(id,campo,valor)=>{const {error}=await supabase.from("projeto
 window.salvarResponsaveis=(id,select)=>{const valores=[...select.selectedOptions].map(o=>o.value).join(",");editar(id,"responsavel",valores);}
 window.excluir=async(id)=>{if(confirm("Excluir este projeto?")){const {error}=await supabase.from("projetos").delete().eq("id",id);if(error) showStatus("Erro ao excluir","erro");else {showStatus("Excluído com sucesso!");carregarTabela();}}}
 
-const modal=document.getElementById("modalEtapas");const lista=document.getElementById("listaEtapas");let projetoAtual=null;
-window.abrirModal=async(id)=>{projetoAtual=id;lista.innerHTML="";const {data:projeto}=await supabase.from("projetos").select("etapas").eq("id",id).single();const etapas=projeto.etapas||[];etapas.forEach(e=>criarLinhaEtapa(e));modal.style.display="flex";}
-window.fecharModal=()=>{modal.style.display="none";projetoAtual=null;}
-function criarLinhaEtapa(et={}){const div=document.createElement("div");div.classList.add("etapa-linha");div.innerHTML=`<span onclick="this.parentElement.remove()">🗑️</span><label>Nome:</label><input type="text" value="${et.nome||""}"><label>Status:</label><select>${["Pendente","Desenvolvendo","Concluído"].map(s=>`<option ${s===et.status?"selected":""}>${s}</option>`).join("")}</select><label>Responsável:</label><select multiple>${RESPONSAVEIS_FIXOS.map(r=>`<option ${et.responsavel&&et.responsavel.includes(r)?"selected":""}>${r}</option>`).join("")}</select><label>Prazo:</label><input type="date" value="${et.prazo||""}"><label>Descrição:</label><textarea>${et.descricao||""}</textarea><label>Anexo:</label><input type="file" onchange="uploadAnexoEtapa(this)"><br><input type="text" placeholder="ou cole o link..." value="${et.anexo||""}">`;lista.appendChild(div);}
-window.adicionarEtapaLinha=()=>criarLinhaEtapa();
-window.salvarEtapas=async()=>{const etapas=[...lista.querySelectorAll(".etapa-linha")].map(div=>{const inputs=div.querySelectorAll("input,select,textarea");const [nome,status,resp,prazo,descricao,_,anexo]=inputs;const responsaveis=[...div.querySelectorAll("select[multiple] option:checked")].map(o=>o.value);return {nome:nome.value.trim(),status:status.value,responsavel:responsaveis.join(","),prazo:prazo.value,descricao:descricao.value,anexo:anexo.value};});const {error}=await supabase.from("projetos").update({etapas}).eq("id",projetoAtual);if(error) showStatus("Erro ao salvar etapas","erro");else {showStatus("Etapas salvas com sucesso!");fecharModal();}}
-
-// === UPLOAD DE ARQUIVOS DO PROJETO ===
+// ====================== UPLOAD COM DEBUG ======================
 window.uploadArquivo = async (id, input) => {
   const arquivo = input.files[0];
   if (!arquivo) return;
+
   const caminho = `projetos/${id}_${Date.now()}_${arquivo.name}`;
-  const { error } = await supabase.storage.from("uploads").upload(caminho, arquivo, { upsert: true });
-  if (error) { showStatus("❌ Erro ao anexar arquivo","erro"); return; }
+  console.log("📤 Iniciando upload para:", caminho);
+
+  const { data, error } = await supabase.storage.from("uploads").upload(caminho, arquivo, { upsert: true });
+
+  if (error) {
+    console.error("❌ Erro no upload Supabase:", error);
+    showStatus("❌ Erro ao anexar arquivo: " + error.message, "erro");
+    return;
+  }
+
+  console.log("✅ Upload concluído:", data);
+
   const { data: publicURL } = supabase.storage.from("uploads").getPublicUrl(caminho);
-  await supabase.from("projetos").update({ doc: publicURL.publicUrl }).eq("id", id);
+  console.log("🌐 URL pública:", publicURL.publicUrl);
+
+  const { error: updateError } = await supabase.from("projetos").update({ doc: publicURL.publicUrl }).eq("id", id);
+  if (updateError) {
+    console.error("⚠️ Erro ao salvar URL no banco:", updateError);
+    showStatus("Erro ao salvar link no banco", "erro");
+    return;
+  }
+
   showStatus("📎 Arquivo anexado com sucesso!");
   carregarTabela();
-};
-
-// === UPLOAD DE ARQUIVOS NAS ETAPAS ===
-window.uploadAnexoEtapa = async (input) => {
-  const arquivo = input.files[0];
-  if (!arquivo) return;
-  const caminho = `etapas/${Date.now()}_${arquivo.name}`;
-  const { error } = await supabase.storage.from("uploads").upload(caminho, arquivo, { upsert: true });
-  if (error) { showStatus("❌ Erro no upload da etapa","erro"); return; }
-  const { data: publicURL } = supabase.storage.from("uploads").getPublicUrl(caminho);
-  input.parentElement.querySelector('input[type="text"]').value = publicURL.publicUrl;
 };
 </script>
 </body>
