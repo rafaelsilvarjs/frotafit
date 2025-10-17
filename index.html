@@ -183,12 +183,30 @@ function renderTabela(projetos){
         <input type="file" id="file_${p.id}" style="display:none" onchange="uploadArquivo(${p.id},this)">
         <label for="file_${p.id}" class="upload-label">📎 Anexar</label><br>
         <input type="text" placeholder="ou cole o link..." value="${p.doc||""}" onblur="editar(${p.id},'doc',this.value)">
+        ${p.doc?`<br><a href="${p.doc}" target="_blank">Abrir</a>`:""}
       </td>
       <td><button class="gerenciar-etapas" onclick="abrirModal(${p.id})">⚙️ Etapas</button></td>
       <td><span class="excluir" onclick="excluir(${p.id})">🗑️</span></td>`;
     tbody.appendChild(tr);
   });
 }
+
+// UPLOAD FUNCIONAL
+window.uploadArquivo=async(id,input)=>{
+  const file=input.files[0];
+  if(!file) return;
+  const path=`projetos/${Date.now()}_${file.name}`;
+  const { data: uploadData, error: uploadError } = await supabase.storage
+    .from("uploads")
+    .upload(path, file, { upsert: true });
+  if(uploadError){alert("❌ Erro ao enviar: "+uploadError.message);return;}
+  const { data } = supabase.storage.from("uploads").getPublicUrl(path);
+  const publicUrl = data.publicUrl;
+  if(!publicUrl){alert("⚠️ Enviado, mas sem link público.");return;}
+  const { error: dbError } = await supabase.from("projetos").update({ doc: publicUrl }).eq("id", id);
+  if(dbError){alert("Erro ao salvar link: "+dbError.message);}
+  else{alert("✅ Upload realizado com sucesso!");location.reload();}
+};
 
 // CRUD
 window.adicionarProjeto=async()=>{
