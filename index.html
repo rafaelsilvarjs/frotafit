@@ -42,7 +42,6 @@ header button {
   transition:.3s;
 }
 header button:hover {background:#ffe4d2;}
-
 main {max-width:1300px;margin:30px auto;padding:0 20px;}
 .cards {
   display:grid;
@@ -60,15 +59,12 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
 }
 .card h3 {margin:0;font-size:16px;color:#475569;}
 .card span {display:block;font-size:28px;font-weight:700;color:var(--azul);margin-top:5px;}
-
-/* FILTROS */
 .filtros {
   display:flex;
   flex-wrap:wrap;
   justify-content:center;
   gap:12px;
   margin-bottom:20px;
-  position:relative;
 }
 .filtros input[type="text"] {
   padding:8px 10px;
@@ -131,8 +127,6 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
   gap:6px;
 }
 .filtros .limpar:hover {background:#1e293b;}
-
-/* TABELA */
 table {
   width:100%;
   border-collapse:collapse;
@@ -177,6 +171,11 @@ footer {
   color:#64748b;
   border-top:1px solid var(--cinza2);
 }
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);display:none;justify-content:center;align-items:center;z-index:1000;}
+.modal-content{background:white;padding:25px;border-radius:12px;width:600px;box-shadow:0 5px 20px rgba(0,0,0,0.4);animation:fadeIn .3s ease;max-height:90vh;overflow:auto;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);} }
+.etapa-linha{border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:10px;background:#f8fafc;}
+.etapa-linha span{color:#ef4444;font-size:16px;cursor:pointer;float:right;}
 </style>
 </head>
 <body>
@@ -203,12 +202,10 @@ footer {
   <!-- FILTROS -->
   <div class="filtros">
     <input type="text" id="filtroProjeto" placeholder="🔍 Filtrar por nome do projeto...">
-
     <div class="dropdown" id="responsavelDropdown">
       <div class="dropdown-button">Filtrar por Responsável ▾</div>
       <div class="dropdown-content" id="responsavelChecks"></div>
     </div>
-
     <button class="limpar" onclick="limparFiltros()">🧹 Limpar</button>
   </div>
 
@@ -230,13 +227,24 @@ footer {
   </table>
 </main>
 
+<!-- MODAL ETAPAS -->
+<div class="modal" id="modalEtapas">
+  <div class="modal-content">
+    <h3>📑 Etapas do Projeto</h3>
+    <div id="listaEtapas"></div>
+    <button onclick="adicionarEtapa()">+ Nova Etapa</button>
+    <div style="text-align:right;margin-top:15px;">
+      <button onclick="salvarEtapas()" style="background:#22c55e;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:600;">💾 Salvar</button>
+      <button onclick="fecharModal()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:600;">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <footer>© LogFit Logística • Refit • 2025</footer>
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-const SUPABASE_URL='https://cczuqesooeguvqimeoks.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg';
-const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
+const supabase=createClient('https://cczuqesooeguvqimeoks.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg');
 
 // LOGIN
 const {data:{session}}=await supabase.auth.getSession();
@@ -245,14 +253,12 @@ if(!session) window.location.href="login.html";
 // CARREGAR PROJETOS
 const {data:projetos,error}=await supabase.from('projetos').select('*').order('id',{ascending:true});
 if(error) console.error(error);
-
-// Atualiza contadores
 document.getElementById("total").textContent=projetos.length;
 document.getElementById("backlog").textContent=projetos.filter(p=>p.status==="Backlog").length;
 document.getElementById("desenvolvendo").textContent=projetos.filter(p=>p.status==="Desenvolvendo").length;
 document.getElementById("concluidos").textContent=projetos.filter(p=>p.status==="Concluído").length;
 
-// Filtro de responsável
+// Responsáveis
 const respDiv=document.getElementById("responsavelChecks");
 [...new Set(projetos.flatMap(p=>p.responsavel?.split(",")||[]))].filter(Boolean).forEach(r=>{
   const label=document.createElement("label");
@@ -260,17 +266,7 @@ const respDiv=document.getElementById("responsavelChecks");
   respDiv.appendChild(label);
 });
 
-// Dropdown abrir/fechar
-document.querySelectorAll('.dropdown-button').forEach(btn=>{
-  btn.addEventListener('click',()=>btn.parentElement.classList.toggle('open'));
-});
-document.addEventListener('click',e=>{
-  document.querySelectorAll('.dropdown').forEach(dd=>{
-    if(!dd.contains(e.target)) dd.classList.remove('open');
-  });
-});
-
-// Tabela
+// TABELA
 const tbody=document.querySelector("#tabelaProjetos tbody");
 renderTabela(projetos);
 
@@ -278,14 +274,11 @@ function renderTabela(lista){
   tbody.innerHTML="";
   lista.forEach(p=>{
     const tr=document.createElement("tr");
-    let cor="#86efac";
-    if(p.prioridade==="Alta") cor="#fca5a5";
-    else if(p.prioridade==="Média") cor="#fde68a";
     tr.innerHTML=`
-      <td><span class="toggle-btn">⯈</span></td>
+      <td><button onclick="abrirModal(${p.id})">⚙️</button></td>
       <td>${p.nome}</td>
       <td>${p.area}</td>
-      <td><span style="background:${cor};padding:4px 8px;border-radius:6px;font-weight:600;">${p.prioridade}</span></td>
+      <td>${p.prioridade}</td>
       <td>${p.status}</td>
       <td>${p.responsavel||"—"}</td>
       <td>${p.prazo||"—"}</td>
@@ -295,69 +288,85 @@ function renderTabela(lista){
         ${p.doc?`<br><a href="${p.doc}" target="_blank">Abrir</a>`:""}
       </td>`;
     tbody.appendChild(tr);
-
-    const trEtapas=document.createElement("tr");
-    trEtapas.classList.add("etapas-row");
-    trEtapas.style.display="none";
-    let etapasHTML="";
-    if(p.etapas && p.etapas.length){
-      p.etapas.forEach(e=>{
-        etapasHTML+=`
-        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:8px;">
-          <strong>${e.nome||"Etapa sem nome"}</strong><br>
-          <span class="status-badge status-${e.status}">${e.status}</span><br>
-          <small>Responsável: ${e.responsavel||"—"} | Prazo: ${e.prazo||"—"}</small><br>
-          <small>Descrição: ${e.descricao||"—"}</small><br>
-          <small>Anexo: ${e.anexo?`<a href="${e.anexo}" target="_blank">Abrir</a>`:"—"}</small>
-        </div>`;
-      });
-    } else etapasHTML=`<em style="color:#64748b;">Nenhuma etapa cadastrada</em>`;
-    trEtapas.innerHTML=`<td colspan="8">${etapasHTML}</td>`;
-    tbody.appendChild(trEtapas);
-
-    tr.querySelector(".toggle-btn").addEventListener("click",e=>{
-      const open=trEtapas.style.display==="table-row";
-      trEtapas.style.display=open?"none":"table-row";
-      e.target.textContent=open?"⯈":"⯆";
-    });
   });
 }
 
-// Upload via Supabase Storage
+// UPLOAD PRINCIPAL
 window.uploadArquivo=async(id,input)=>{
   const file=input.files[0];
   if(!file) return;
   const path=`projetos/${Date.now()}_${file.name}`;
-  const {error:uploadError}=await supabase.storage.from("uploads").upload(path,file);
-  if(uploadError){alert("Erro no upload.");return;}
-  const {data:publicURL}=supabase.storage.from("uploads").getPublicUrl(path);
-  await supabase.from("projetos").update({doc:publicURL.publicUrl}).eq("id",id);
+  const { error:uploadError }=await supabase.storage.from("uploads").upload(path,file);
+  if(uploadError){alert("Erro ao enviar arquivo.");return;}
+  const { data:urlData }=supabase.storage.from("uploads").getPublicUrl(path);
+  await supabase.from("projetos").update({doc:urlData.publicUrl}).eq("id",id);
   alert("Arquivo anexado!");
   location.reload();
-}
+};
 
-// Filtragem
-document.querySelectorAll('#responsavelDropdown input, #filtroProjeto').forEach(el=>el.addEventListener('input',filtrar));
-function filtrar(){
-  const nome=document.getElementById("filtroProjeto").value.toLowerCase();
-  const responsaveis=[...document.querySelectorAll('#responsavelDropdown input:checked')].map(i=>i.value);
-  const filtrados=projetos.filter(p=>
-    (!nome || p.nome?.toLowerCase().includes(nome)) &&
-    (responsaveis.length===0 || responsaveis.some(r=>p.responsavel?.includes(r)))
-  );
-  renderTabela(filtrados);
+// ===== MODAL ETAPAS =====
+window.abrirModal=async(id)=>{
+  document.getElementById("modalEtapas").style.display="flex";
+  window.projetoAtual=id;
+  const {data:projeto}=await supabase.from("projetos").select("etapas").eq("id",id).single();
+  const etapas=projeto?.etapas||[];
+  const lista=document.getElementById("listaEtapas");
+  lista.innerHTML="";
+  etapas.forEach((e,i)=>{
+    lista.appendChild(criarEtapaHTML(e,i));
+  });
+};
+window.fecharModal=()=>document.getElementById("modalEtapas").style.display="none";
+
+function criarEtapaHTML(e={},idx){
+  const div=document.createElement("div");
+  div.className="etapa-linha";
+  div.innerHTML=`
+    <span onclick="this.parentElement.remove()">🗑️</span>
+    <label>Nome:</label><input type="text" value="${e.nome||""}">
+    <label>Status:</label><select><option ${e.status==="Pendente"?"selected":""}>Pendente</option><option ${e.status==="Desenvolvendo"?"selected":""}>Desenvolvendo</option><option ${e.status==="Concluído"?"selected":""}>Concluído</option></select>
+    <label>Responsável:</label><input type="text" value="${e.responsavel||""}">
+    <label>Prazo:</label><input type="date" value="${e.prazo||""}">
+    <label>Descrição:</label><textarea>${e.descricao||""}</textarea>
+    <label>Anexo:</label>
+      <label class="upload-label" for="etapaFile_${idx}">📎 Anexar</label>
+      <input type="file" id="etapaFile_${idx}" style="display:none" onchange="uploadEtapaArquivo(this)">
+      <input type="text" placeholder="ou cole o link..." value="${e.anexo||""}">
+  `;
+  return div;
 }
-window.limparFiltros=function(){
-  document.querySelectorAll('#responsavelDropdown input').forEach(i=>i.checked=false);
-  document.getElementById("filtroProjeto").value="";
-  renderTabela(projetos);
-}
+window.adicionarEtapa=()=>document.getElementById("listaEtapas").appendChild(criarEtapaHTML());
+
+window.uploadEtapaArquivo=async(input)=>{
+  const file=input.files[0];
+  if(!file) return;
+  const path=`etapas/${Date.now()}_${file.name}`;
+  const {error:err}=await supabase.storage.from("uploads").upload(path,file);
+  if(err){alert("Erro no upload da etapa.");return;}
+  const {data:url}=supabase.storage.from("uploads").getPublicUrl(path);
+  input.parentElement.querySelector("input[type=text]").value=url.publicUrl;
+  alert("Arquivo da etapa anexado!");
+};
+
+window.salvarEtapas=async()=>{
+  const etapas=[...document.querySelectorAll("#listaEtapas .etapa-linha")].map(div=>{
+    const inputs=div.querySelectorAll("input,select,textarea");
+    return {
+      nome:inputs[0].value,
+      status:inputs[1].value,
+      responsavel:inputs[2].value,
+      prazo:inputs[3].value,
+      descricao:inputs[4].value,
+      anexo:inputs[6].value
+    };
+  });
+  await supabase.from("projetos").update({etapas}).eq("id",window.projetoAtual);
+  alert("Etapas salvas!");
+  fecharModal();
+};
 
 // LOGOUT
-window.logout=async function(){
-  await supabase.auth.signOut();
-  window.location.href="login.html";
-};
+window.logout=async()=>{await supabase.auth.signOut();window.location.href="login.html";}
 </script>
 </body>
 </html>
