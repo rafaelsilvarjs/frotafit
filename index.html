@@ -56,6 +56,8 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
 
 <main>
   <h1>📋 Cadastro e Atualização de Projetos</h1>
+
+  <!-- 🔽 FILTROS -->
   <div class="filtros">
     <div class="dropdown" id="responsavelDropdown">
       <div class="dropdown-button">Filtrar por Responsável ▾</div>
@@ -110,7 +112,7 @@ const {data:{session}}=await supabase.auth.getSession();
 if(!session) window.location.href="login.html";
 carregarTabela();
 
-// ====== FILTRO DE RESPONSÁVEL ======
+// FILTRO DROPDOWN
 const dropdown=document.getElementById("responsavelDropdown");
 const checksDiv=document.getElementById("responsavelChecks");
 dropdown.querySelector(".dropdown-button").addEventListener("click",()=>dropdown.classList.toggle("open"));
@@ -126,7 +128,7 @@ window.limparFiltros=()=>{
   renderTabela(projetosGlobal);
 };
 
-// ===== STATUS MENSAGEM =====
+// STATUS
 const statusDiv=document.getElementById("status");
 function showStatus(msg,tipo="ok"){
   statusDiv.textContent=msg;
@@ -135,7 +137,7 @@ function showStatus(msg,tipo="ok"){
   setTimeout(()=>statusDiv.style.display="none",3000);
 }
 
-// ===== CARREGAR TABELA =====
+// CARREGAR
 async function carregarTabela(){
   const {data:projetos,error}=await supabase.from("projetos").select("*").order("id",{ascending:true});
   if(error){showStatus("Erro ao carregar projetos","erro");return;}
@@ -143,7 +145,7 @@ async function carregarTabela(){
   renderTabela(projetos);
 }
 
-// ===== FILTRAR =====
+// FILTRAR
 function filtrarProjetos(){
   const selecionados=[...document.querySelectorAll("#responsavelChecks input:checked")].map(i=>i.value);
   if(selecionados.length===0){renderTabela(projetosGlobal);return;}
@@ -151,7 +153,7 @@ function filtrarProjetos(){
   renderTabela(filtrados);
 }
 
-// ===== RENDER TABELA =====
+// RENDER
 function renderTabela(projetos){
   const tbody=document.querySelector("#tabelaProjetos tbody");
   tbody.innerHTML="";
@@ -180,7 +182,6 @@ function renderTabela(projetos){
       <td>
         <input type="file" id="file_${p.id}" style="display:none" onchange="uploadArquivo(${p.id},this)">
         <label for="file_${p.id}" class="upload-label">📎 Anexar</label><br>
-        ${p.doc?`<a href="${p.doc}" target="_blank">Abrir</a><br>`:""}
         <input type="text" placeholder="ou cole o link..." value="${p.doc||""}" onblur="editar(${p.id},'doc',this.value)">
       </td>
       <td><button class="gerenciar-etapas" onclick="abrirModal(${p.id})">⚙️ Etapas</button></td>
@@ -189,31 +190,32 @@ function renderTabela(projetos){
   });
 }
 
-// ===== UPLOAD GERAL =====
-window.uploadArquivo=async(id,input)=>{
-  const file=input.files[0];
-  if(!file) return;
-  const path=`projetos/${Date.now()}_${file.name}`;
-  const { data: uploadData, error: uploadError } = await supabase.storage.from("uploads").upload(path,file,{upsert:true});
-  if(uploadError){alert("❌ Erro no upload: "+uploadError.message);return;}
-  const { data } = supabase.storage.from("uploads").getPublicUrl(path);
-  const publicUrl=data.publicUrl;
-  const { error: dbError } = await supabase.from("projetos").update({ doc: publicUrl }).eq("id",id);
-  if(dbError) alert("Erro ao salvar link no banco");
-  else {alert("✅ Arquivo enviado!");carregarTabela();}
-};
+// CRUD
+window.adicionarProjeto=async()=>{
+  const {error}=await supabase.from("projetos").insert([{nome:"Novo Projeto"}]);
+  if(error) showStatus("Erro ao adicionar","erro");
+  else {showStatus("Projeto criado!");carregarTabela();}
+}
+window.editar=async(id,campo,valor)=>{
+  const {error}=await supabase.from("projetos").update({[campo]:valor}).eq("id",id);
+  if(error) showStatus("Erro ao atualizar","erro");
+}
+window.salvarResponsaveis=(id,select)=>{
+  const valores=[...select.selectedOptions].map(o=>o.value).join(",");
+  editar(id,"responsavel",valores);
+}
+window.excluir=async(id)=>{
+  if(confirm("Excluir este projeto?")){
+    const {error}=await supabase.from("projetos").delete().eq("id",id);
+    if(error) showStatus("Erro ao excluir","erro");
+    else {showStatus("Excluído com sucesso!");carregarTabela();}
+  }
+}
 
-// ===== CRUD =====
-window.adicionarProjeto=async()=>{const {error}=await supabase.from("projetos").insert([{nome:"Novo Projeto"}]);if(error)showStatus("Erro ao adicionar","erro");else{showStatus("Projeto criado!");carregarTabela();}}
-window.editar=async(id,campo,valor)=>{const {error}=await supabase.from("projetos").update({[campo]:valor}).eq("id",id);if(error)showStatus("Erro ao atualizar","erro");}
-window.salvarResponsaveis=(id,select)=>{const valores=[...select.selectedOptions].map(o=>o.value).join(",");editar(id,"responsavel",valores);}
-window.excluir=async(id)=>{if(confirm("Excluir este projeto?")){const {error}=await supabase.from("projetos").delete().eq("id",id);if(error)showStatus("Erro ao excluir","erro");else{showStatus("Excluído com sucesso!");carregarTabela();}}}
-
-// ===== MODAL ETAPAS =====
+// MODAL ETAPAS
 const modal=document.getElementById("modalEtapas");
 const lista=document.getElementById("listaEtapas");
 let projetoAtual=null;
-
 window.abrirModal=async(id)=>{
   projetoAtual=id;
   lista.innerHTML="";
@@ -223,11 +225,9 @@ window.abrirModal=async(id)=>{
   modal.style.display="flex";
 }
 window.fecharModal=()=>{modal.style.display="none";projetoAtual=null;}
-
 function criarLinhaEtapa(et={}){
   const div=document.createElement("div");
   div.classList.add("etapa-linha");
-  const uid=Date.now()+Math.floor(Math.random()*1000);
   div.innerHTML=`
     <span onclick="this.parentElement.remove()">🗑️</span>
     <label>Nome:</label><input type="text" value="${et.nome||""}">
@@ -235,42 +235,17 @@ function criarLinhaEtapa(et={}){
     <label>Responsável:</label><select multiple>${RESPONSAVEIS_FIXOS.map(r=>`<option ${et.responsavel&&et.responsavel.includes(r)?"selected":""}>${r}</option>`).join("")}</select>
     <label>Prazo:</label><input type="date" value="${et.prazo||""}">
     <label>Descrição:</label><textarea>${et.descricao||""}</textarea>
-    <label>Anexo:</label>
-      <input type="file" id="etapaFile_${uid}" style="display:none" onchange="uploadEtapaArquivo(this,${uid})">
-      <label for="etapaFile_${uid}" class="upload-label">📎 Enviar</label><br>
-      ${et.anexo?`<a href="${et.anexo}" target="_blank">Abrir</a><br>`:""}
-      <input type="text" id="etapaLink_${uid}" value="${et.anexo||""}" placeholder="ou cole o link...">
+    <label>Anexo:</label><input type="file"><br><input type="text" placeholder="ou cole o link..." value="${et.anexo||""}">
   `;
   lista.appendChild(div);
 }
-
-// ===== UPLOAD DENTRO DAS ETAPAS =====
-window.uploadEtapaArquivo=async(input,uid)=>{
-  const file=input.files[0];
-  if(!file)return;
-  const path=`etapas/${Date.now()}_${file.name}`;
-  const {data:uploadData,error:uploadError}=await supabase.storage.from("uploads").upload(path,file,{upsert:true});
-  if(uploadError){alert("❌ Erro no upload da etapa: "+uploadError.message);return;}
-  const {data}=supabase.storage.from("uploads").getPublicUrl(path);
-  const publicUrl=data.publicUrl;
-  document.getElementById(`etapaLink_${uid}`).value=publicUrl;
-  alert("✅ Arquivo da etapa enviado!");
-};
-
-// ===== SALVAR ETAPAS =====
+window.adicionarEtapaLinha=()=>criarLinhaEtapa();
 window.salvarEtapas=async()=>{
   const etapas=[...lista.querySelectorAll(".etapa-linha")].map(div=>{
     const inputs=div.querySelectorAll("input,select,textarea");
     const [nome,status,resp,prazo,descricao,_,anexo]=inputs;
     const responsaveis=[...div.querySelectorAll("select[multiple] option:checked")].map(o=>o.value);
-    return {
-      nome:nome.value.trim(),
-      status:status.value,
-      responsavel:responsaveis.join(","),
-      prazo:prazo.value,
-      descricao:descricao.value,
-      anexo:anexo.value
-    };
+    return {nome:nome.value.trim(),status:status.value,responsavel:responsaveis.join(","),prazo:prazo.value,descricao:descricao.value,anexo:anexo.value};
   });
   const {error}=await supabase.from("projetos").update({etapas}).eq("id",projetoAtual);
   if(error) showStatus("Erro ao salvar etapas","erro");
