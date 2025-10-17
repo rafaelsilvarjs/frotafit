@@ -6,81 +6,95 @@
 <title>LogFit – Inclusão e Edição de Projetos</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
-:root{
-  --laranja:#ff5a1f;
-  --laranja2:#ff7a3e;
-  --azul:#0f172a;
-  --cinza:#f8fafc;
-  --cinza2:#e2e8f0;
-  --texto:#1e293b;
-}
-body{font-family:"Segoe UI",sans-serif;background:var(--cinza);color:var(--texto);margin:0;}
-header{
-  background:linear-gradient(90deg,var(--laranja),var(--laranja2));
-  color:#fff;display:flex;justify-content:space-between;align-items:center;
-  padding:16px 32px;box-shadow:0 3px 10px rgba(0,0,0,.2);
-}
+body{font-family:"Segoe UI",sans-serif;background:#f8fafc;margin:0;color:#0f172a;}
+header{background:linear-gradient(90deg,#ff5a1f,#ff7a3e);color:white;display:flex;justify-content:space-between;align-items:center;padding:16px 30px;box-shadow:0 3px 8px rgba(0,0,0,.2);}
 header h2{font-weight:700;font-size:20px;margin:0}
-header button{
-  background:#fff;color:var(--laranja);border:none;
-  padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;
-}
+header div{display:flex;gap:10px;}
+header button{background:white;color:#ff5a1f;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
 header button:hover{background:#ffe4d2}
-main{max-width:1300px;margin:30px auto;padding:0 20px;}
+main{max-width:1300px;margin:30px auto;padding:0 20px}
 h1{text-align:center;margin-bottom:25px;font-size:26px;font-weight:700;}
-
-/* ===== FILTROS ===== */
-.filtros{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-bottom:25px;}
-.dropdown{position:relative;}
-.dropdown-button{
-  background:#fff;border:1px solid var(--cinza2);border-radius:6px;
-  padding:8px 12px;cursor:pointer;font-size:14px;font-weight:500;
-  display:flex;align-items:center;justify-content:space-between;min-width:180px;
-}
-.dropdown-content{
-  display:none;position:absolute;top:110%;left:0;background:#fff;
-  border:1px solid var(--cinza2);border-radius:8px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);z-index:1000;
-  padding:10px 14px;max-height:200px;overflow-y:auto;
-}
-.dropdown-content label{display:flex;align-items:center;gap:6px;font-size:14px;margin-bottom:5px;color:#334155;}
-.dropdown.open .dropdown-content{display:block;}
-.limpar{
-  background:var(--azul);color:#fff;border:none;border-radius:6px;
-  padding:8px 14px;font-weight:600;cursor:pointer;height:38px;display:flex;align-items:center;gap:6px;
-}
-.limpar:hover{background:#1e293b;}
-
-/* ===== TABELA ===== */
-table{width:100%;border-collapse:collapse;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.1);border-radius:12px;overflow:hidden;}
-th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--cinza2);font-size:14px;}
-th{background:#f1f5f9;color:var(--azul);font-weight:700;}
+table{width:100%;border-collapse:collapse;background:white;box-shadow:0 3px 10px rgba(0,0,0,.1);border-radius:12px;overflow:hidden;}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid #e2e8f0;font-size:14px;}
+th{background:#e2e8f0;color:#0f172a;font-weight:700;}
 input,select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:6px;font-size:13px;}
-input[type="file"]{display:none;}
-.upload-label{display:inline-block;background:#e2e8f0;color:#0f172a;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:13px;}
-.upload-label:hover{background:#cbd5e1;}
+select[multiple]{height:85px;}
+input:focus,select:focus,textarea:focus{outline:2px solid #ff7a3e;}
 button.adicionar{margin-top:20px;background:#0284c7;color:white;border:none;border-radius:8px;padding:12px 22px;font-weight:600;cursor:pointer;box-shadow:0 3px 8px rgba(2,132,199,0.4);transition:.3s;}
 button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
 .excluir{color:#ef4444;cursor:pointer;font-weight:bold;}
-.status-msg{margin:15px 0;padding:10px;border-radius:8px;display:none;text-align:center;}
-.status-ok{background:#dcfce7;color:#166534;}
-.status-erro{background:#fee2e2;color:#991b1b;}
-
-/* ===== MODAL ===== */
+.upload-label{display:inline-block;background:#e2e8f0;color:#0f172a;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:13px;}
+.upload-label:hover{background:#cbd5e1;}
+.gerenciar-etapas{background:#f59e0b;color:#fff;border:none;border-radius:6px;padding:6px 10px;font-weight:600;cursor:pointer;}
 .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);display:none;justify-content:center;align-items:center;z-index:1000;}
 .modal-content{background:white;padding:25px;border-radius:12px;width:600px;box-shadow:0 5px 20px rgba(0,0,0,0.4);animation:fadeIn .3s ease;max-height:90vh;overflow:auto;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);} }
 .modal h3{margin:0 0 15px;font-weight:700;}
 .etapa-linha{border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:10px;background:#f8fafc;}
 .etapa-linha span{color:#ef4444;font-size:16px;cursor:pointer;float:right;}
+.status-msg{margin:15px 0;padding:10px;border-radius:8px;display:none;text-align:center;}
+.status-ok{background:#dcfce7;color:#166534;}
+.status-erro{background:#fee2e2;color:#991b1b;}
+
+/* ===== FILTRO RESPONSÁVEL ===== */
+.filtros{
+  display:flex;
+  justify-content:center;
+  margin-bottom:20px;
+  gap:12px;
+}
+.dropdown{
+  position:relative;
+}
+.dropdown-button{
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:6px;
+  padding:8px 12px;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:500;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-width:200px;
+}
+.dropdown-button:hover{background:#f1f5f9;}
+.dropdown-content{
+  display:none;
+  position:absolute;
+  top:110%;
+  left:0;
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:8px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  z-index:1000;
+  padding:10px 14px;
+  max-height:200px;
+  overflow-y:auto;
+}
+.dropdown-content label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:14px;
+  margin-bottom:5px;
+  color:#334155;
+}
+.dropdown.open .dropdown-content{display:block;}
+.limpar{
+  background:#0f172a;color:#fff;border:none;border-radius:6px;
+  padding:8px 14px;font-weight:600;cursor:pointer;height:38px;
+}
+.limpar:hover{background:#1e293b;}
 </style>
 </head>
 <body>
-
 <header>
   <h2>⚙️ LogFit – Inclusão e Edição de Projetos</h2>
   <div>
-    <button onclick="location.href='home.html'">← Voltar</button>
+    <button onclick="location.href='home.html'">← Voltar ao Painel</button>
     <button onclick="location.href='etapas.html'">📆 SPRINT</button>
   </div>
 </header>
@@ -98,6 +112,7 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
   </div>
 
   <div id="status" class="status-msg"></div>
+
   <table id="tabelaProjetos">
     <thead>
       <tr>
@@ -114,6 +129,7 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
     </thead>
     <tbody></tbody>
   </table>
+
   <button class="adicionar" onclick="adicionarProjeto()">+ Adicionar Projeto</button>
 </main>
 
@@ -132,17 +148,22 @@ button.adicionar:hover{background:#0369a1;transform:translateY(-1px)}
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-const SUPABASE_URL='https://cczuqesooeguvqimeoks.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg';
-const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
-const RESPONSAVEIS_FIXOS=["RAFAEL","DIEGO","JOÃO","ANTONIO","LUCAS","CARLOS","IVAN","LUIZ","EQUIPE"];
-let projetosGlobal=[];let projetoAtual=null;
+
+const SUPABASE_URL = 'https://cczuqesooeguvqimeoks.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg';
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const RESPONSAVEIS_FIXOS = ["RAFAEL","DIEGO","JOÃO","ANTONIO","LUCAS","CARLOS","IVAN","LUIZ","EQUIPE"];
+let projetoAtual=null, projetosGlobal=[];
 
 // LOGIN
-const {data:{session}}=await supabase.auth.getSession();
-if(!session) window.location.href="login.html";
+(async ()=>{
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session){window.location.href='login.html';return;}
+  carregarTabela();
+})();
 
-// STATUS
+// ALERTA
 const statusDiv=document.getElementById("status");
 function showStatus(msg,tipo="ok"){
   statusDiv.textContent=msg;
@@ -151,25 +172,21 @@ function showStatus(msg,tipo="ok"){
   setTimeout(()=>statusDiv.style.display="none",3000);
 }
 
-// DROPDOWN FILTRO
+// FILTRO RESPONSÁVEL
 const respDiv=document.getElementById("responsavelChecks");
 RESPONSAVEIS_FIXOS.forEach(r=>{
   const label=document.createElement("label");
   label.innerHTML=`<input type="checkbox" value="${r}">${r}`;
   respDiv.appendChild(label);
 });
-document.querySelectorAll('.dropdown-button').forEach(btn=>{
-  btn.addEventListener('click',()=>btn.parentElement.classList.toggle('open'));
-});
+document.querySelectorAll('.dropdown-button').forEach(btn=>btn.addEventListener('click',()=>btn.parentElement.classList.toggle('open')));
 document.addEventListener('click',e=>{
-  document.querySelectorAll('.dropdown').forEach(dd=>{
-    if(!dd.contains(e.target)) dd.classList.remove('open');
-  });
+  document.querySelectorAll('.dropdown').forEach(dd=>{if(!dd.contains(e.target)) dd.classList.remove('open');});
 });
 document.querySelectorAll('#responsavelDropdown input').forEach(i=>i.addEventListener('change',filtrarTabela));
 function filtrarTabela(){
   const selecionados=[...document.querySelectorAll('#responsavelDropdown input:checked')].map(i=>i.value);
-  const filtrados=selecionados.length===0?projetosGlobal:projetosGlobal.filter(p=>selecionados.some(s=>p.responsavel?.includes(s)));
+  const filtrados=selecionados.length?projetosGlobal.filter(p=>selecionados.some(s=>p.responsavel?.includes(s))):projetosGlobal;
   renderTabela(filtrados);
 }
 window.limparFiltros=function(){
@@ -177,27 +194,25 @@ window.limparFiltros=function(){
   renderTabela(projetosGlobal);
 }
 
-// CARREGAR
+// ======= TABELA =======
 async function carregarTabela(){
   const { data, error } = await supabase.from("projetos").select("*").order("id",{ascending:true});
   if(error){showStatus("Erro ao carregar","erro");return;}
-  projetosGlobal=data||[];renderTabela(projetosGlobal);
+  projetosGlobal=data||[];
+  renderTabela(projetosGlobal);
 }
 
 function renderTabela(lista){
   const tbody=document.querySelector("#tabelaProjetos tbody");
   tbody.innerHTML="";
-  if(!lista.length){
-    tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:#64748b;">Nenhum projeto.</td></tr>`;return;
-  }
+  if(!lista.length){tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:#64748b;">Nenhum projeto cadastrado.</td></tr>`;return;}
   lista.forEach(p=>{
     const responsaveis=p.responsavel?p.responsavel.split(","):[];
     const tr=document.createElement("tr");
     tr.innerHTML=`
       <td contenteditable onblur="editar(${p.id},'nome',this.innerText)">${p.nome||"Novo Projeto"}</td>
       <td><select onchange="editar(${p.id},'area',this.value)">
-        ${["Planejamento","Programação","Transportadores","Logística","Corporativo","Outros"]
-          .map(a=>`<option ${a===p.area?"selected":""}>${a}</option>`).join("")}
+        ${["Planejamento","Programação","Transportadores","Logística","Corporativo","Outros"].map(a=>`<option ${a===p.area?"selected":""}>${a}</option>`).join("")}
       </select></td>
       <td><select onchange="editar(${p.id},'prioridade',this.value)">
         ${["Alta","Média","Baixa"].map(a=>`<option ${a===p.prioridade?"selected":""}>${a}</option>`).join("")}
@@ -211,33 +226,34 @@ function renderTabela(lista){
       <td><input type="date" value="${p.prazo||""}" onchange="editar(${p.id},'prazo',this.value)"></td>
       <td>
         <label for="file_${p.id}" class="upload-label">📎 Anexar</label>
-        <input type="file" id="file_${p.id}" onchange="uploadArquivo(${p.id},this)">
+        <input type="file" id="file_${p.id}" style="display:none" onchange="uploadArquivo(${p.id},this)">
         ${p.doc?`<br><a href="${p.doc}" target="_blank">Abrir</a>`:""}
       </td>
-      <td><button class="upload-label" style="background:#f59e0b;color:white;" onclick="abrirModal(${p.id})">⚙️ Etapas</button></td>
+      <td><button class="gerenciar-etapas" onclick="abrirModal(${p.id})">⚙️ Etapas</button></td>
       <td><span class="excluir" onclick="excluir(${p.id})">🗑️</span></td>`;
     tbody.appendChild(tr);
   });
 }
 
-// UPLOAD PARA STORAGE
+// UPLOAD CORRIGIDO
 window.uploadArquivo=async(id,input)=>{
   const file=input.files[0];if(!file)return;
   const path=`projetos/${Date.now()}_${file.name}`;
-  const { error }=await supabase.storage.from("uploads").upload(path,file);
-  if(error){showStatus("Erro upload","erro");return;}
-  const { data }=supabase.storage.from("uploads").getPublicUrl(path);
-  await editar(id,"doc",data.publicUrl);
-  showStatus("Arquivo anexado!");carregarTabela();
+  const { error:uploadError }=await supabase.storage.from("uploads").upload(path,file);
+  if(uploadError){showStatus("Erro no upload","erro");return;}
+  const { data:urlData }=supabase.storage.from("uploads").getPublicUrl(path);
+  await supabase.from("projetos").update({doc:urlData.publicUrl}).eq("id",id);
+  showStatus("Arquivo anexado com sucesso!");
+  carregarTabela();
 }
 
 // CRUD
-window.adicionarProjeto=async()=>{const {error}=await supabase.from("projetos").insert([{nome:"Novo Projeto"}]);if(error)showStatus("Erro","erro");else{showStatus("Criado!");carregarTabela();}}
-window.editar=async(id,campo,valor)=>{const {error}=await supabase.from("projetos").update({[campo]:valor}).eq("id",id);if(error)showStatus("Erro","erro");}
+window.adicionarProjeto=async()=>{const {error}=await supabase.from("projetos").insert([{nome:"Novo Projeto"}]);if(error)showStatus("Erro","erro");else{showStatus("Projeto criado!");carregarTabela();}}
+window.editar=async(id,campo,valor)=>{await supabase.from("projetos").update({[campo]:valor}).eq("id",id);}
 window.salvarResponsaveis=(id,select)=>{const valores=[...select.selectedOptions].map(o=>o.value).join(",");editar(id,"responsavel",valores);}
-window.excluir=async(id)=>{if(confirm("Excluir?")){const {error}=await supabase.from("projetos").delete().eq("id",id);if(error)showStatus("Erro","erro");else{showStatus("Excluído!");carregarTabela();}}}
+window.excluir=async(id)=>{if(confirm("Excluir este projeto?")){await supabase.from("projetos").delete().eq("id",id);showStatus("Excluído!");carregarTabela();}}
 
-// MODAL ETAPAS
+// ======= ETAPAS =======
 const modal=document.getElementById("modalEtapas");
 const lista=document.getElementById("listaEtapas");
 window.abrirModal=async(id)=>{
@@ -248,14 +264,16 @@ window.abrirModal=async(id)=>{
   modal.style.display="flex";
 }
 window.fecharModal=()=>{modal.style.display="none";projetoAtual=null;}
-function criarLinhaEtapa(et={}){const div=document.createElement("div");div.classList.add("etapa-linha");
-div.innerHTML=`<span onclick="this.parentElement.remove()">🗑️</span>
-<label>Nome:</label><input type="text" value="${et.nome||""}">
-<label>Status:</label><select>${["Pendente","Desenvolvendo","Concluído"].map(s=>`<option ${s===et.status?"selected":""}>${s}</option>`).join("")}</select>
-<label>Responsável:</label><select multiple>${RESPONSAVEIS_FIXOS.map(r=>`<option ${et.responsavel?.includes(r)?"selected":""}>${r}</option>`).join("")}</select>
-<label>Prazo:</label><input type="date" value="${et.prazo||""}">
-<label>Descrição:</label><textarea>${et.descricao||""}</textarea>
-<label>Anexo:</label><input type="text" placeholder="Cole o link" value="${et.anexo||""}">`;
+function criarLinhaEtapa(et={}){const div=document.createElement("div");
+div.classList.add("etapa-linha");
+div.innerHTML=`
+  <span onclick="this.parentElement.remove()">🗑️</span>
+  <label>Nome:</label><input type="text" value="${et.nome||""}">
+  <label>Status:</label><select>${["Pendente","Desenvolvendo","Concluído"].map(s=>`<option ${s===et.status?"selected":""}>${s}</option>`).join("")}</select>
+  <label>Responsável:</label><select multiple>${RESPONSAVEIS_FIXOS.map(r=>`<option ${et.responsavel?.includes(r)?"selected":""}>${r}</option>`).join("")}</select>
+  <label>Prazo:</label><input type="date" value="${et.prazo||""}">
+  <label>Descrição:</label><textarea>${et.descricao||""}</textarea>
+  <label>Anexo:</label><input type="text" placeholder="ou cole o link..." value="${et.anexo||""}">`;
 lista.appendChild(div);}
 window.adicionarEtapaLinha=()=>criarLinhaEtapa();
 window.salvarEtapas=async()=>{
@@ -266,11 +284,4 @@ window.salvarEtapas=async()=>{
     const prazo=inputs[3].value,descricao=inputs[4].value,anexo=inputs[5].value;
     return{nome,status,responsavel:responsaveis,prazo,descricao,anexo};
   });
-  const {error}=await supabase.from("projetos").update({etapas}).eq("id",projetoAtual);
-  if(error)showStatus("Erro ao salvar","erro");else{showStatus("Etapas salvas!");fecharModal();}
-}
-
-carregarTabela();
-</script>
-</body>
-</html>
+  await supabase.from("projetos").update({etapas}).eq("
