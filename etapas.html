@@ -1,229 +1,437 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprint – Entregas por Projeto</title>
-<link rel="icon" type="image/x-icon" href="favicon.ico">
-
-<!-- 📅 Vis.js -->
-<link href="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.0/styles/vis-timeline-graph2d.min.css" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.0/standalone/umd/vis-timeline-graph2d.min.js"></script>
-
-<!-- 📸 Exportar PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<style>
-body {
-  font-family:"Segoe UI",sans-serif;
-  background:#f8fafc;
-  color:#0f172a;
-  margin:0;
-}
-header {
-  background:linear-gradient(90deg,#ff5a1f,#ff7a3e);
-  color:white;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px 30px;
-  box-shadow:0 3px 8px rgba(0,0,0,.2);
-}
-header h2 { font-size:20px;margin:0;font-weight:700; }
-.botoes { display:flex;gap:10px; }
-button {
-  border:none;
-  border-radius:8px;
-  font-weight:600;
-  cursor:pointer;
-  transition:0.3s;
-  padding:8px 14px;
-}
-button.voltar { background:white;color:#ff5a1f; }
-button.voltar:hover { background:#ffe4d2; }
-button.exportar { background:#0284c7;color:white; }
-button.exportar:hover { background:#0369a1; }
-
-main { max-width:1250px;margin:25px auto;padding:0 20px; }
-.legenda { display:flex;gap:15px;align-items:center;margin:15px 0;font-size:13px;color:#475569; }
-.legenda span { width:14px;height:14px;border-radius:3px;display:inline-block; }
-
-#timeline {
-  height:520px;
-  background:white;
-  border-radius:10px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.1);
-}
-footer {
-  text-align:center;
-  font-size:13px;
-  color:#64748b;
-  padding:15px;
-  margin-top:25px;
-}
-.tooltip {
-  position:absolute;
-  background:white;
-  border:1px solid #cbd5e1;
-  border-radius:8px;
-  box-shadow:0 4px 15px rgba(0,0,0,.15);
-  padding:10px 12px;
-  font-size:13px;
-  max-width:280px;
-  display:none;
-  z-index:2000;
-}
-.tooltip strong { color:#0f172a; }
-.tooltip small { color:#64748b; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogFit – Inclusão e Edição de Projetos</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f8fafc;
+      margin: 0;
+      color: #0f172a;
+    }
+    header {
+      background: linear-gradient(90deg, #ff5a1f, #ff7a3e);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 30px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, .2);
+    }
+    header h2 {
+      font-weight: 700;
+      font-size: 20px;
+      margin: 0;
+    }
+    header div {
+      display: flex;
+      gap: 10px;
+    }
+    header button {
+      background: white;
+      color: #ff5a1f;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .3s;
+    }
+    header button:hover {
+      background: #ffe4d2;
+    }
+    main {
+      max-width: 1300px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 26px;
+      font-weight: 700;
+    }
+    .filtros {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .dropdown {
+      position: relative;
+    }
+    .dropdown-button {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-width: 200px;
+    }
+    .dropdown-button:hover {
+      background: #f1f5f9;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      padding: 10px 14px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .dropdown-content label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: #334155;
+    }
+    .dropdown.open .dropdown-content {
+      display: block;
+    }
+    .limpar {
+      background: #0f172a;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .limpar:hover {
+      background: #1e293b;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, .1);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 14px;
+    }
+    th {
+      background: #e2e8f0;
+      color: #0f172a;
+      font-weight: 700;
+    }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 6px;
+      font-size: 13px;
+    }
+    select[multiple] {
+      height: 85px;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #ff7a3e;
+    }
+    button.adicionar {
+      margin-top: 20px;
+      background: #0284c7;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 22px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(2, 132, 199, 0.4);
+      transition: .3s;
+    }
+    button.adicionar:hover {
+      background: #0369a1;
+      transform: translateY(-1px);
+    }
+    .excluir {
+      color: #ef4444;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .upload-label {
+      display: inline-block;
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .upload-label:hover {
+      background: #cbd5e1;
+    }
+    .gerenciar-etapas {
+      background: #f59e0b;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.55);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 600px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+      animation: fadeIn .3s ease;
+      max-height: 90vh;
+      overflow: auto;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .etapa-linha {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #f8fafc;
+    }
+    .etapa-linha span {
+      color: #ef4444;
+      font-size: 16px;
+      cursor: pointer;
+      float: right;
+    }
+    .status-msg {
+      margin: 15px 0;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+      text-align: center;
+    }
+    .status-ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .status-erro {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+  </style>
 </head>
-
 <body>
+  <header>
+    <h2>⚙️ LogFit – Inclusão e Edição de Projetos</h2>
+    <div>
+      <button onclick="location.href='home.html'">← Voltar ao Painel</button>
+      <button onclick="location.href='etapas.html'">📆 SPRINT</button>
+    </div>
+  </header>
 
-<header>
-  <h2>📅 Entregas por Projeto – LogFit</h2>
-  <div class="botoes">
-    <button class="exportar" onclick="exportarPDF()">📄 Exportar PDF</button>
-    <button class="voltar" onclick="location.href='index.html'">← Voltar</button>
+  <main>
+    <h1>📋 Cadastro e Atualização de Projetos</h1>
+
+    <div class="filtros">
+      <div class="dropdown" id="responsavelDropdown">
+        <div class="dropdown-button">Filtrar por Responsável ▾</div>
+        <div class="dropdown-content" id="responsavelChecks"></div>
+      </div>
+      <button class="limpar" onclick="limparFiltros()">🧹 Limpar</button>
+    </div>
+
+    <div id="status" class="status-msg"></div>
+
+    <table id="tabelaProjetos">
+      <thead>
+        <tr>
+          <th>Projeto</th>
+          <th>Área</th>
+          <th>Prioridade</th>
+          <th>Status</th>
+          <th>Responsável</th>
+          <th>Prazo</th>
+          <th>Documentação</th>
+          <th>Etapas</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <button class="adicionar" onclick="adicionarProjeto()">+ Adicionar Projeto</button>
+  </main>
+
+  <!-- MODAL ETAPAS -->
+  <div class="modal" id="modalEtapas">
+    <div class="modal-content">
+      <h3>📑 Gerenciar Etapas</h3>
+      <div id="listaEtapas"></div>
+      <button onclick="adicionarEtapaLinha()">+ Nova Etapa</button>
+      <div style="margin-top:15px;text-align:right;">
+        <button onclick="salvarEtapas()" style="background:#16a34a;color:white;border:none;padding:8px 14px;border-radius:6px;font-weight:600;">💾 Salvar</button>
+        <button onclick="fecharModal()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:6px;font-weight:600;margin-left:8px;">Cancelar</button>
+      </div>
+    </div>
   </div>
-</header>
 
-<main>
-  <div class="legenda">
-    <div><span style="background:#ef4444;"></span> Pendente</div>
-    <div><span style="background:#f59e0b;"></span> Desenvolvendo</div>
-    <div><span style="background:#22c55e;"></span> Concluído</div>
-  </div>
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+    const supabase = createClient(
+      'https://cczuqesooeguvqimeoks.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg'
+    );
 
-  <div id="timeline"></div>
-</main>
+    const RESPONSAVEIS_FIXOS = ["RAFAEL","DIEGO","JOÃO","ANTONIO","LUCAS","CARLOS","IVAN","LUIZ","EQUIPE"];
+    let projetosGlobal = [];
 
-<footer>© LogFit Logística • Refit • 2025</footer>
+    const { data:{ session } } = await supabase.auth.getSession();
+    if(!session) window.location.href = "login.html";
 
-<div id="tooltip" class="tooltip"></div>
+    carregarTabela();
 
-<script type="module">
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+    const dropdown = document.getElementById("responsavelDropdown");
+    const checksDiv = document.getElementById("responsavelChecks");
+    dropdown.querySelector(".dropdown-button").addEventListener("click",()=>dropdown.classList.toggle("open"));
+    document.addEventListener("click",e=>{if(!dropdown.contains(e.target)) dropdown.classList.remove("open");});
+    RESPONSAVEIS_FIXOS.forEach(r=>{
+      const label=document.createElement("label");
+      label.innerHTML=`<input type="checkbox" value="${r}">${r}`;
+      checksDiv.appendChild(label);
+    });
+    document.querySelectorAll("#responsavelChecks input").forEach(chk=>chk.addEventListener("change",filtrarProjetos));
+    window.limparFiltros=()=>{
+      document.querySelectorAll("#responsavelChecks input").forEach(i=>i.checked=false);
+      renderTabela(projetosGlobal);
+    };
 
-// 🔗 Conexão Supabase
-const supabase = createClient(
-  'https://cczuqesooeguvqimeoks.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg'
-)
+    const statusDiv=document.getElementById("status");
+    function showStatus(msg,tipo="ok"){
+      statusDiv.textContent=msg;
+      statusDiv.className=`status-msg ${tipo==="ok"?"status-ok":"status-erro"}`;
+      statusDiv.style.display="block";
+      setTimeout(()=>statusDiv.style.display="none",3000);
+    }
 
-window.addEventListener('DOMContentLoaded', carregarSprint)
+    async function carregarTabela(){
+      const {data:projetos,error}=await supabase.from("projetos").select("*").order("id",{ascending:true});
+      if(error){showStatus("Erro ao carregar projetos","erro");return;}
+      projetosGlobal=projetos;
+      renderTabela(projetos);
+    }
 
-async function carregarSprint() {
-  const container = document.getElementById("timeline")
-  container.innerHTML = "<p style='padding:20px;color:#64748b;'>⏳ Carregando entregas...</p>"
+    function filtrarProjetos(){
+      const selecionados=[...document.querySelectorAll("#responsavelChecks input:checked")].map(i=>i.value);
+      if(selecionados.length===0){renderTabela(projetosGlobal);return;}
+      const filtrados=projetosGlobal.filter(p=>selecionados.some(r=>p.responsavel?.includes(r)));
+      renderTabela(filtrados);
+    }
 
-  const { data: projetos, error } = await supabase.from("projetos").select("*")
-  if (error) {
-    console.error("Erro ao buscar projetos:", error)
-    container.innerHTML = "❌ Erro ao carregar etapas."
-    return
-  }
+    function renderTabela(projetos){
+      const tbody=document.querySelector("#tabelaProjetos tbody");
+      tbody.innerHTML="";
+      if(!projetos.length){
+        tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:#64748b;">Nenhum projeto encontrado.</td></tr>`;
+        return;
+      }
+      projetos.forEach(p=>{
+        const responsaveis=p.responsavel?p.responsavel.split(","):[];
+        const tr=document.createElement("tr");
+        tr.innerHTML=`
+          <td contenteditable onblur="editar(${p.id},'nome',this.innerText)">${p.nome||"Novo Projeto"}</td>
+          <td><select onchange="editar(${p.id},'area',this.value)">
+            ${["Planejamento","Programação","Transportadores","Logística","Corporativo","Outros"].map(a=>`<option ${a===p.area?"selected":""}>${a}</option>`).join("")}
+          </select></td>
+          <td><select onchange="editar(${p.id},'prioridade',this.value)">
+            ${["Alta","Média","Baixa"].map(a=>`<option ${a===p.prioridade?"selected":""}>${a}</option>`).join("")}
+          </select></td>
+          <td><select onchange="editar(${p.id},'status',this.value)">
+            ${["Backlog","Desenvolvendo","Concluído"].map(a=>`<option ${a===p.status?"selected":""}>${a}</option>`).join("")}
+          </select></td>
+          <td><select multiple onchange="salvarResponsaveis(${p.id},this)">
+            ${RESPONSAVEIS_FIXOS.map(r=>`<option ${responsaveis.includes(r)?"selected":""}>${r}</option>`).join("")}
+          </select></td>
+          <td><input type="date" value="${p.prazo||""}" onchange="editar(${p.id},'prazo',this.value)"></td>
+          <td>
+            <input type="file" id="file_${p.id}" style="display:none" onchange="uploadArquivo(${p.id},this)">
+            <label for="file_${p.id}" class="upload-label">📎 Anexar</label><br>
+            <input type="text" placeholder="ou cole o link..." value="${p.doc||""}" onblur="editar(${p.id},'doc',this.value)">
+          </td>
+          <td><button class="gerenciar-etapas" onclick="abrirModal(${p.id})">⚙️ Etapas</button></td>
+          <td><span class="excluir" onclick="excluir(${p.id})">🗑️</span></td>`;
+        tbody.appendChild(tr);
+      });
+    }
 
-  const etapas = []
+    window.adicionarProjeto=async()=>{
+      const {error}=await supabase.from("projetos").insert([{nome:"Novo Projeto"}]);
+      if(error) showStatus("Erro ao adicionar","erro");
+      else {showStatus("Projeto criado!");carregarTabela();}
+    }
 
-  projetos.forEach(p => {
-    let listaEtapas = []
+    window.editar=async(id,campo,valor)=>{
+      const {error}=await supabase.from("projetos").update({[campo]:valor}).eq("id",id);
+      if(error) showStatus("Erro ao atualizar","erro");
+    }
 
-    // Detecta automaticamente o tipo (array ou texto JSON)
-    if (Array.isArray(p.etapas)) {
-      listaEtapas = p.etapas
-    } else if (typeof p.etapas === "string" && p.etapas.trim() !== "") {
-      try {
-        listaEtapas = JSON.parse(p.etapas)
-      } catch (err) {
-        console.warn("Erro ao converter etapas de", p.nome, err)
+    window.salvarResponsaveis=(id,select)=>{
+      const valores=[...select.selectedOptions].map(o=>o.value).join(",");
+      editar(id,"responsavel",valores);
+    }
+
+    window.excluir=async(id)=>{
+      if(confirm("Excluir este projeto?")){
+        const {error}=await supabase.from("projetos").delete().eq("id",id);
+        if(error) showStatus("Erro ao excluir","erro");
+        else {showStatus("Excluído com sucesso!");carregarTabela();}
       }
     }
 
-    if (!listaEtapas || listaEtapas.length === 0) return
+    const modal=document.getElementById("modalEtapas");
+    const lista=document.getElementById("listaEtapas");
+    let projetoAtual=null;
 
-    listaEtapas.forEach(e => {
-      if (!e.prazo) return
-      etapas.push({
-        id: `${p.id}-${e.nome || Math.random()}`,
-        content: `<b>${e.nome || "Etapa sem nome"}</b>`,
-        start: e.prazo,
-        group: p.nome,
-        style: `background:${corStatus(e.status)};color:white;border:none;border-radius:6px;padding:4px;`,
-        info: e,
-        projeto: p.nome
-      })
-    })
-  })
-
-  if (etapas.length === 0) {
-    container.innerHTML = "<p style='padding:20px;color:#64748b;'>Nenhuma etapa com data de entrega encontrada.</p>"
-    return
-  }
-
-  const grupos = [...new Set(etapas.map(e => e.group))].map(nome => ({
-    id: nome,
-    content: `<b>${nome}</b>`
-  }))
-
-  container.innerHTML = ""
-  const items = new vis.DataSet(etapas)
-  const groups = new vis.DataSet(grupos)
-
-  const options = {
-    stack:false,
-    horizontalScroll:true,
-    zoomable:true,
-    zoomKey:"ctrlKey",
-    orientation:{axis:"top"},
-    timeAxis:{scale:"day",step:1},
-    locale:"pt"
-  }
-
-  const timeline = new vis.Timeline(container, items, groups, options)
-
-  // 🧾 Tooltip
-  const tooltip = document.getElementById("tooltip")
-  container.addEventListener("mousemove", e => {
-    tooltip.style.left = e.pageX + 15 + "px"
-    tooltip.style.top = e.pageY + 15 + "px"
-  })
-
-  timeline.on("itemover", props => {
-    const etapa = etapas.find(et => et.id === props.item)
-    if (etapa) {
-      tooltip.innerHTML = `
-        <strong>${etapa.info.nome || "Etapa sem nome"}</strong><br>
-        <small><b>Projeto:</b> ${etapa.projeto}</small><br>
-        <small><b>Status:</b> ${etapa.info.status || "—"}</small><br>
-        <small><b>Responsável:</b> ${etapa.info.responsavel || "—"}</small><br>
-        <small><b>Prazo:</b> ${etapa.info.prazo || "—"}</small><br>
-        <small><b>Descrição:</b> ${etapa.info.descricao || "—"}</small><br>
-        ${etapa.info.anexo ? `<small><a href="${etapa.info.anexo}" target="_blank">📎 Abrir Anexo</a></small>` : ""}
-      `
-      tooltip.style.display = "block"
+    window.abrirModal=async(id)=>{
+      projetoAtual=id;
+      lista.innerHTML="";
+      const {data:projeto}=await supabase.from("projetos").select("etapas").eq("id",id).single();
+      const etapas=projeto.etapas||[];
+      etapas.forEach(e=>criarLinhaEtapa(e));
+      modal.style.display="flex";
     }
-  })
-  timeline.on("itemout", () => tooltip.style.display = "none")
-}
 
-function corStatus(status) {
-  if (status === "Concluído") return "#22c55e"
-  if (status === "Desenvolvendo") return "#f59e0b"
-  return "#ef4444"
-}
+    window.fecharModal=()=>{modal.style.display="none";projetoAtual=null;}
 
-window.exportarPDF = async function() {
-  const container = document.getElementById("timeline")
-  const { jsPDF } = window.jspdf
-  const canvas = await html2canvas(container, { scale:2 })
-  const pdf = new jsPDF('l','pt',[canvas.width,canvas.height])
-  const imgData = canvas.toDataURL('image/png')
-  pdf.addImage(imgData,'PNG',0,0,canvas.width,canvas.height)
-  pdf.save('Sprint_LogFit.pdf')
-}
-</script>
-
-</body>
-</html>
+    function criarLinhaEtapa(et={}){
+      const div=document.createElement("div");
+      div.classList.add("etapa-linha");
+      div.innerHTML=`
+        <span onclick="this.parentElement.remove()">🗑️</span>
+        <label>Nome:</label><input type="text" value="${et.nome||""}">
+        <label>Status:</label><select>${["Pendente","Desenvolvendo","Concluído"].map(s=>`<option ${s===et.status?"selected":""}>${s}</option>`).join("")}</select>
