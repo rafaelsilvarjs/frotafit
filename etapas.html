@@ -118,7 +118,6 @@ async function carregarSprint() {
   const container = document.getElementById("timeline")
   container.innerHTML = "<p style='padding:20px;color:#64748b;'>⏳ Carregando entregas...</p>"
 
-  // 📦 Busca todos os projetos
   const { data: projetos, error } = await supabase.from("projetos").select("*")
   if (error) {
     console.error("Erro ao buscar projetos:", error)
@@ -130,17 +129,22 @@ async function carregarSprint() {
 
   projetos.forEach(p => {
     let listaEtapas = []
+
+    // Detecta automaticamente o tipo (array ou texto JSON)
     if (Array.isArray(p.etapas)) {
       listaEtapas = p.etapas
     } else if (typeof p.etapas === "string" && p.etapas.trim() !== "") {
-      try { listaEtapas = JSON.parse(p.etapas) } 
-      catch { console.warn("Erro JSON no projeto:", p.nome) }
+      try {
+        listaEtapas = JSON.parse(p.etapas)
+      } catch (err) {
+        console.warn("Erro ao converter etapas de", p.nome, err)
+      }
     }
 
     if (!listaEtapas || listaEtapas.length === 0) return
 
     listaEtapas.forEach(e => {
-      if (!e.prazo) return // só mostra se tiver data definida
+      if (!e.prazo) return
       etapas.push({
         id: `${p.id}-${e.nome || Math.random()}`,
         content: `<b>${e.nome || "Etapa sem nome"}</b>`,
@@ -159,7 +163,8 @@ async function carregarSprint() {
   }
 
   const grupos = [...new Set(etapas.map(e => e.group))].map(nome => ({
-    id: nome, content: `<b>${nome}</b>`
+    id: nome,
+    content: `<b>${nome}</b>`
   }))
 
   container.innerHTML = ""
@@ -203,14 +208,12 @@ async function carregarSprint() {
   timeline.on("itemout", () => tooltip.style.display = "none")
 }
 
-// 🎨 Cor do status
 function corStatus(status) {
   if (status === "Concluído") return "#22c55e"
   if (status === "Desenvolvendo") return "#f59e0b"
   return "#ef4444"
 }
 
-// 📤 Exportar PDF
 window.exportarPDF = async function() {
   const container = document.getElementById("timeline")
   const { jsPDF } = window.jspdf
