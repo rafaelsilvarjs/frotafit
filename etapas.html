@@ -10,7 +10,7 @@
 <link href="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.0/styles/vis-timeline-graph2d.min.css" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.0/standalone/umd/vis-timeline-graph2d.min.js"></script>
 
-<!-- 📸 Exportação para PDF/Imagem -->
+<!-- 📸 Exportação PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -31,10 +31,7 @@ header {
   box-shadow:0 3px 8px rgba(0,0,0,.2);
 }
 header h2 { font-weight:700;font-size:20px;margin:0; }
-.botoes {
-  display:flex;
-  gap:10px;
-}
+.botoes { display:flex;gap:10px; }
 button {
   border:none;
   padding:8px 16px;
@@ -76,17 +73,8 @@ button.filtrar:hover { background:#ff7a3e; }
   font-size:13px;
   color:#475569;
 }
-.legenda div {
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.legenda span {
-  width:15px;
-  height:15px;
-  border-radius:4px;
-  display:inline-block;
-}
+.legenda div { display:flex;align-items:center;gap:6px; }
+.legenda span { width:15px;height:15px;border-radius:4px;display:inline-block; }
 
 #timeline {
   height:520px;
@@ -94,7 +82,6 @@ button.filtrar:hover { background:#ff7a3e; }
   border-radius:10px;
   box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
-
 footer {
   text-align:center;
   font-size:13px;
@@ -129,7 +116,6 @@ footer {
 </header>
 
 <main>
-  <!-- FILTROS -->
   <div class="filtros">
     <label>De: <input type="date" id="dataInicio"></label>
     <label>Até: <input type="date" id="dataFim"></label>
@@ -148,71 +134,87 @@ footer {
     <button class="filtrar" onclick="filtrar()">🔍 Filtrar</button>
   </div>
 
-  <!-- LEGENDA -->
   <div class="legenda">
     <div><span style="background:#ef4444;"></span> Pendente</div>
     <div><span style="background:#f59e0b;"></span> Desenvolvendo</div>
     <div><span style="background:#22c55e;"></span> Concluído</div>
   </div>
 
-  <!-- TIMELINE -->
   <div id="timeline"></div>
 </main>
 
 <footer>© LogFit Logística • Refit • 2025</footer>
 
-<!-- TOOLTIP -->
 <div id="tooltip" class="tooltip"></div>
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-const SUPABASE_URL = 'https://cczuqesooeguvqimeoks.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg'
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+const supabase = createClient(
+  'https://cczuqesooeguvqimeoks.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg'
+)
 
 let timeline = null
 
-// ======= FUNÇÃO FILTRAR =======
+window.addEventListener('DOMContentLoaded', filtrar)
+
 window.filtrar = async function() {
   const inicio = document.getElementById("dataInicio").value
   const fim = document.getElementById("dataFim").value
   const resp = document.getElementById("responsavel").value
   const status = document.getElementById("status").value
-
   const container = document.getElementById("timeline")
+
   container.innerHTML = "<p style='padding:20px;color:#64748b;'>⏳ Carregando etapas...</p>"
 
   const { data: projetos, error } = await supabase.from("projetos").select("*")
-  if (error) { container.innerHTML = "❌ Erro ao carregar dados."; return }
-
-  const etapas = []
-  projetos.forEach(p => {
-    if (p.etapas && Array.isArray(p.etapas)) {
-      p.etapas.forEach(e => {
-        const dentroDoPeriodo = (!inicio || !e.prazo || e.prazo >= inicio) && (!fim || !e.prazo || e.prazo <= fim)
-        const matchResp = !resp || (e.responsavel && e.responsavel.toUpperCase().includes(resp))
-        const matchStatus = !status || e.status === status
-        if (dentroDoPeriodo && matchResp && matchStatus) {
-          etapas.push({
-            id: `${p.id}-${e.nome}`,
-            content: `<b>${e.nome || "Etapa sem nome"}</b>`,
-            start: e.prazo || new Date().toISOString().split('T')[0],
-            group: p.nome,
-            style: `background:${corStatus(e.status)};color:white;border:none;border-radius:6px;padding:4px;`,
-            info: e,
-            projeto: p.nome
-          })
-        }
-      })
-    }
-  })
-
-  if (etapas.length === 0) {
-    container.innerHTML = "<p style='padding:20px;color:#64748b;'>Nenhuma etapa encontrada no período.</p>"
+  if (error) {
+    console.error(error)
+    container.innerHTML = "❌ Erro ao carregar dados."
     return
   }
 
-  const grupos = [...new Set(etapas.map(e => e.group))].map(nome => ({ id: nome, content: `<b>${nome}</b>` }))
+  const etapas = []
+
+  projetos.forEach(p => {
+    let listaEtapas = []
+    if (Array.isArray(p.etapas)) listaEtapas = p.etapas
+    else if (typeof p.etapas === "string") {
+      try { listaEtapas = JSON.parse(p.etapas) } catch {}
+    }
+
+    listaEtapas.forEach(e => {
+      const dentroDoPeriodo =
+        (!inicio || !e.prazo || e.prazo >= inicio) &&
+        (!fim || !e.prazo || e.prazo <= fim)
+      const matchResp =
+        !resp || (e.responsavel && e.responsavel.toUpperCase().includes(resp.toUpperCase()))
+      const matchStatus =
+        !status || e.status === status
+
+      if (dentroDoPeriodo && matchResp && matchStatus) {
+        etapas.push({
+          id: `${p.id}-${e.nome || Math.random()}`,
+          content: `<b>${e.nome || "Etapa sem nome"}</b>`,
+          start: e.prazo || new Date().toISOString().split('T')[0],
+          group: p.nome,
+          style: `background:${corStatus(e.status)};color:white;border:none;border-radius:6px;padding:4px;`,
+          info: e,
+          projeto: p.nome
+        })
+      }
+    })
+  })
+
+  if (etapas.length === 0) {
+    container.innerHTML = "<p style='padding:20px;color:#64748b;'>Nenhuma etapa encontrada.</p>"
+    return
+  }
+
+  const grupos = [...new Set(etapas.map(e => e.group))].map(nome => ({
+    id: nome,
+    content: `<b>${nome}</b>`
+  }))
 
   container.innerHTML = ""
   const items = new vis.DataSet(etapas)
@@ -223,7 +225,6 @@ window.filtrar = async function() {
     horizontalScroll: true,
     zoomable: true,
     zoomKey: "ctrlKey",
-    tooltip: { followMouse: true },
     orientation: { axis: "top" },
     timeAxis: { scale: "day", step: 1 },
     locale: "pt"
@@ -231,7 +232,6 @@ window.filtrar = async function() {
 
   timeline = new vis.Timeline(container, items, groups, options)
 
-  // ===== Tooltip customizada =====
   const tooltip = document.getElementById("tooltip")
   container.addEventListener("mousemove", e => {
     tooltip.style.left = e.pageX + 15 + "px"
@@ -256,19 +256,16 @@ window.filtrar = async function() {
   timeline.on("itemout", () => tooltip.style.display = "none")
 }
 
-// ====== COR DE STATUS ======
 function corStatus(status) {
   if (status === "Concluído") return "#22c55e"
   if (status === "Desenvolvendo") return "#f59e0b"
   return "#ef4444"
 }
 
-// ====== EXPORTAR PDF ======
 window.exportarPDF = async function() {
   const container = document.getElementById("timeline")
   const { jsPDF } = window.jspdf
   const canvas = await html2canvas(container, { scale: 2 })
-
   const pdf = new jsPDF('l', 'pt', [canvas.width, canvas.height])
   const imgData = canvas.toDataURL('image/png')
   pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height)
