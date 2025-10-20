@@ -149,6 +149,7 @@ footer {
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
 const supabase = createClient(
   'https://cczuqesooeguvqimeoks.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg'
@@ -156,6 +157,7 @@ const supabase = createClient(
 
 let timeline = null
 
+// 🔄 Carrega automaticamente ao abrir
 window.addEventListener('DOMContentLoaded', filtrar)
 
 window.filtrar = async function() {
@@ -169,7 +171,7 @@ window.filtrar = async function() {
 
   const { data: projetos, error } = await supabase.from("projetos").select("*")
   if (error) {
-    console.error(error)
+    console.error("Erro Supabase:", error)
     container.innerHTML = "❌ Erro ao carregar dados."
     return
   }
@@ -178,10 +180,19 @@ window.filtrar = async function() {
 
   projetos.forEach(p => {
     let listaEtapas = []
-    if (Array.isArray(p.etapas)) listaEtapas = p.etapas
-    else if (typeof p.etapas === "string") {
-      try { listaEtapas = JSON.parse(p.etapas) } catch {}
+
+    // 📦 Detecta e converte caso o campo venha como string JSON
+    if (Array.isArray(p.etapas)) {
+      listaEtapas = p.etapas
+    } else if (typeof p.etapas === "string" && p.etapas.trim() !== "") {
+      try {
+        listaEtapas = JSON.parse(p.etapas)
+      } catch (e) {
+        console.warn("Erro ao converter etapas do projeto", p.nome, e)
+      }
     }
+
+    if (!listaEtapas || listaEtapas.length === 0) return
 
     listaEtapas.forEach(e => {
       const dentroDoPeriodo =
@@ -232,12 +243,12 @@ window.filtrar = async function() {
 
   timeline = new vis.Timeline(container, items, groups, options)
 
+  // Tooltip
   const tooltip = document.getElementById("tooltip")
   container.addEventListener("mousemove", e => {
     tooltip.style.left = e.pageX + 15 + "px"
     tooltip.style.top = e.pageY + 15 + "px"
   })
-
   timeline.on("itemover", props => {
     const etapa = etapas.find(et => et.id === props.item)
     if (etapa) {
