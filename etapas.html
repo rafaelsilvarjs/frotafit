@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprint – LogFit</title>
+<title>Sprint – Entregas por Projeto</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 
 <!-- 📅 Vis.js -->
@@ -82,7 +82,7 @@ footer {
 <body>
 
 <header>
-  <h2>📅 Visão de Etapas – LogFit</h2>
+  <h2>📅 Entregas por Projeto – LogFit</h2>
   <div class="botoes">
     <button class="exportar" onclick="exportarPDF()">📄 Exportar PDF</button>
     <button class="voltar" onclick="location.href='index.html'">← Voltar</button>
@@ -116,7 +116,7 @@ window.addEventListener('DOMContentLoaded', carregarSprint)
 
 async function carregarSprint() {
   const container = document.getElementById("timeline")
-  container.innerHTML = "<p style='padding:20px;color:#64748b;'>⏳ Carregando etapas...</p>"
+  container.innerHTML = "<p style='padding:20px;color:#64748b;'>⏳ Carregando entregas...</p>"
 
   // 📦 Busca todos os projetos
   const { data: projetos, error } = await supabase.from("projetos").select("*")
@@ -128,7 +128,6 @@ async function carregarSprint() {
 
   const etapas = []
 
-  // 🔁 Itera sobre cada projeto
   projetos.forEach(p => {
     let listaEtapas = []
     if (Array.isArray(p.etapas)) {
@@ -141,10 +140,11 @@ async function carregarSprint() {
     if (!listaEtapas || listaEtapas.length === 0) return
 
     listaEtapas.forEach(e => {
+      if (!e.prazo) return // só mostra se tiver data definida
       etapas.push({
         id: `${p.id}-${e.nome || Math.random()}`,
         content: `<b>${e.nome || "Etapa sem nome"}</b>`,
-        start: e.prazo || new Date().toISOString().split("T")[0],
+        start: e.prazo,
         group: p.nome,
         style: `background:${corStatus(e.status)};color:white;border:none;border-radius:6px;padding:4px;`,
         info: e,
@@ -154,7 +154,7 @@ async function carregarSprint() {
   })
 
   if (etapas.length === 0) {
-    container.innerHTML = "<p style='padding:20px;color:#64748b;'>Nenhuma etapa encontrada.</p>"
+    container.innerHTML = "<p style='padding:20px;color:#64748b;'>Nenhuma etapa com data de entrega encontrada.</p>"
     return
   }
 
@@ -173,8 +173,7 @@ async function carregarSprint() {
     zoomKey:"ctrlKey",
     orientation:{axis:"top"},
     timeAxis:{scale:"day",step:1},
-    locale:"pt",
-    tooltip:{followMouse:true}
+    locale:"pt"
   }
 
   const timeline = new vis.Timeline(container, items, groups, options)
@@ -192,8 +191,8 @@ async function carregarSprint() {
       tooltip.innerHTML = `
         <strong>${etapa.info.nome || "Etapa sem nome"}</strong><br>
         <small><b>Projeto:</b> ${etapa.projeto}</small><br>
-        <small><b>Responsável:</b> ${etapa.info.responsavel || "—"}</small><br>
         <small><b>Status:</b> ${etapa.info.status || "—"}</small><br>
+        <small><b>Responsável:</b> ${etapa.info.responsavel || "—"}</small><br>
         <small><b>Prazo:</b> ${etapa.info.prazo || "—"}</small><br>
         <small><b>Descrição:</b> ${etapa.info.descricao || "—"}</small><br>
         ${etapa.info.anexo ? `<small><a href="${etapa.info.anexo}" target="_blank">📎 Abrir Anexo</a></small>` : ""}
