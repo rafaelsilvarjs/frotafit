@@ -6,34 +6,26 @@
   <title>Tela de Documentação – LogFit</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <style>
-    :root {
-      --laranja:#ff5a1f;
-      --laranja2:#ff7a3e;
-      --azul:#0f172a;
-      --cinza:#f8fafc;
-      --cinza2:#e2e8f0;
-      --texto:#1e293b;
-    }
     body {
       font-family: "Segoe UI", sans-serif;
-      background: var(--cinza);
-      color: var(--texto);
+      background: #f8fafc;
       margin: 0;
+      color: #0f172a;
     }
     header {
-      background: linear-gradient(90deg, var(--laranja), var(--laranja2));
+      background: linear-gradient(90deg, #ff5a1f, #ff7a3e);
       color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 16px 30px;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, .2);
+      box-shadow: 0 3px 8px rgba(0,0,0,.2);
     }
-    header h2 { margin: 0; font-weight: 700; }
+    header h2 { font-weight: 700; margin: 0; }
     header div { display: flex; gap: 10px; }
     header button {
       background: white;
-      color: var(--laranja);
+      color: #ff5a1f;
       border: none;
       padding: 8px 14px;
       border-radius: 8px;
@@ -42,37 +34,28 @@
       transition: .3s;
     }
     header button:hover { background: #ffe4d6; }
-    section {
-      margin: 40px auto;
+    main {
       max-width: 1200px;
+      margin: 40px auto;
       background: white;
-      padding: 20px;
+      padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.1);
+      box-shadow: 0 3px 8px rgba(0,0,0,.1);
     }
-    h3 { text-align: center; color: var(--laranja); }
+    h3 { text-align: center; color: #ff5a1f; }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,.05);
     }
-    th {
-      background: var(--laranja);
-      color: white;
+    th, td {
       padding: 10px;
+      border-bottom: 1px solid #ddd;
       text-align: left;
     }
-    td {
-      background: #fff;
-      padding: 10px;
-      border-bottom: 1px solid var(--cinza2);
-    }
-    tr:hover td { background: #fff5f0; }
-    input, select {
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid var(--cinza2);
+    th {
+      background: #ff5a1f;
+      color: white;
     }
     .btn {
       padding: 6px 10px;
@@ -81,26 +64,50 @@
       cursor: pointer;
       font-weight: 600;
     }
-    .btn-add {
-      background: var(--laranja);
-      color: white;
-      transition: .3s;
-    }
-    .btn-add:hover { background: var(--laranja2); }
-    .btn-edit { background: #ffc107; color: #000; }
+    .btn-add { background: #ff5a1f; color: white; }
+    .btn-add:hover { background: #ff7a3e; }
     .btn-del { background: #dc3545; color: white; }
+    .btn-edit { background: #ffc107; color: #000; }
     footer {
       text-align: center;
+      margin-top: 30px;
       color: #666;
       font-size: 14px;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
       padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 3px 8px rgba(0,0,0,.3);
+    }
+    .modal-content h4 { margin-top: 0; color: #ff5a1f; }
+    .form-group { margin-bottom: 10px; }
+    .form-group label { font-weight: 600; display: block; margin-bottom: 5px; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
   </style>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <header>
-    <h2>📘 Tela de Documentação – LogFit</h2>
+    <h2>📋 Tela de Documentação – LogFit</h2>
     <div>
       <button onclick="window.location.href='index.html'">⬅ Voltar</button>
       <button onclick="window.location.href='home.html'">🏠 Home</button>
@@ -108,139 +115,160 @@
     </div>
   </header>
 
-  <!-- ======== ATAS ======== -->
-  <section>
-    <h3>Atas</h3>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-      <input id="ata_nome" placeholder="Nome do projeto">
-      <input id="ata_area" placeholder="Área">
-      <input id="ata_resp" placeholder="Criado por">
-      <input type="date" id="ata_data">
-      <input id="ata_doc" placeholder="Link do documento">
-      <input id="ata_video" placeholder="Link do vídeo (opcional)">
-      <button class="btn btn-add" onclick="adicionarRegistro('Ata')">+ Adicionar Ata</button>
-    </div>
-    <table id="tabelaAtas">
-      <thead>
-        <tr>
-          <th>Nome do Projeto</th><th>Categoria</th><th>Área</th>
-          <th>Criado Por</th><th>Criado Em</th><th>Link</th><th>Vídeo</th><th>Ações</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
+  <main>
+    <h3>Gerenciar Documentações</h3>
+    <button class="btn btn-add" onclick="abrirModal()">+ Nova Documentação</button>
 
-  <!-- ======== REQUISITOS ======== -->
-  <section>
-    <h3>Requisitos</h3>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-      <input id="req_nome" placeholder="Nome do projeto">
-      <input id="req_area" placeholder="Área">
-      <input id="req_resp" placeholder="Criado por">
-      <input type="date" id="req_data">
-      <input id="req_doc" placeholder="Link do documento">
-      <button class="btn btn-add" onclick="adicionarRegistro('Requisito')">+ Adicionar Requisito</button>
-    </div>
-    <table id="tabelaReqs">
+    <table id="tabela">
       <thead>
         <tr>
-          <th>Nome do Projeto</th><th>Categoria</th><th>Área</th>
-          <th>Criado Por</th><th>Criado Em</th><th>Link</th><th>Ações</th>
+          <th>Nome do Projeto</th>
+          <th>Categoria</th>
+          <th>Área</th>
+          <th>Responsável</th>
+          <th>Prazo</th>
+          <th>Documento</th>
+          <th>Vídeo</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
-  </section>
+  </main>
 
   <footer>© LogFit Logística • Refit • 2025</footer>
 
+  <!-- Modal -->
+  <div class="modal" id="modalForm">
+    <div class="modal-content">
+      <h4 id="tituloModal">Adicionar Documentação</h4>
+      <div class="form-group">
+        <label>Nome do Projeto</label>
+        <input id="nome">
+      </div>
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="categoria">
+          <option>Ata</option>
+          <option>Requisito</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Área</label>
+        <input id="area">
+      </div>
+      <div class="form-group">
+        <label>Responsável</label>
+        <input id="responsavel">
+      </div>
+      <div class="form-group">
+        <label>Prazo</label>
+        <input type="date" id="prazo">
+      </div>
+      <div class="form-group">
+        <label>Link do Documento</label>
+        <input id="doc">
+      </div>
+      <div class="form-group">
+        <label>Link do Vídeo (opcional)</label>
+        <input id="video">
+      </div>
+      <div style="display:flex;gap:10px;justify-content:end;">
+        <button class="btn" onclick="fecharModal()">Cancelar</button>
+        <button class="btn btn-add" onclick="salvar()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // 🔗 Supabase
     const supabaseUrl = "https://cczuqesoozzpkvvspkic.supabase.co";
-    const supabaseKey = "sua_public_key_aqui";
+    const supabaseKey = "SUA_CHAVE_PUBLIC_AQUI"; // ⚠️ substitua pela sua chave pública anon
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // 🚀 Carregar registros existentes
-    document.addEventListener("DOMContentLoaded", carregarRegistros);
+    let editandoId = null;
 
-    async function carregarRegistros() {
+    document.addEventListener("DOMContentLoaded", carregar);
+
+    async function carregar() {
       const { data, error } = await supabase.from("projetos").select("*").order("prazo", { ascending: false });
-      if (error) return alert("Erro ao carregar registros!");
-      renderizarTabela(data);
+      if (error) return console.error(error);
+      renderTabela(data);
     }
 
-    // 🎨 Renderização das tabelas
-    function renderizarTabela(registros) {
-      const atas = registros.filter(r => r.categoria === "Ata");
-      const reqs = registros.filter(r => r.categoria === "Requisito");
-
-      const tbodyAta = document.querySelector("#tabelaAtas tbody");
-      const tbodyReq = document.querySelector("#tabelaReqs tbody");
-      tbodyAta.innerHTML = ""; tbodyReq.innerHTML = "";
-
-      atas.forEach(r => tbodyAta.innerHTML += criarLinha(r));
-      reqs.forEach(r => tbodyReq.innerHTML += criarLinha(r));
+    function renderTabela(registros) {
+      const tbody = document.querySelector("#tabela tbody");
+      tbody.innerHTML = "";
+      registros.forEach(r => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${r.nome || "-"}</td>
+            <td>${r.categoria || "-"}</td>
+            <td>${r.area || "-"}</td>
+            <td>${r.responsavel || "-"}</td>
+            <td>${r.prazo || "-"}</td>
+            <td>${r.doc ? `<a href="${r.doc}" target="_blank">Abrir</a>` : "-"}</td>
+            <td>${r.video ? `<a href="${r.video}" target="_blank">🎥</a>` : "-"}</td>
+            <td>
+              <button class="btn btn-edit" onclick="editar('${r.id}')">✏️</button>
+              <button class="btn btn-del" onclick="excluir('${r.id}')">🗑️</button>
+            </td>
+          </tr>`;
+      });
     }
 
-    // 🧱 Monta linha da tabela
-    function criarLinha(r) {
-      return `
-        <tr>
-          <td>${r.nome || "-"}</td>
-          <td>${r.categoria}</td>
-          <td>${r.area || "-"}</td>
-          <td>${r.responsavel || "-"}</td>
-          <td>${r.prazo || "-"}</td>
-          <td>${r.doc ? `<a href="${r.doc}" target="_blank">Abrir</a>` : "-"}</td>
-          ${r.categoria === "Ata" ? `<td>${r.video ? `<a href="${r.video}" target="_blank">🎥</a>` : "-"}</td>` : ""}
-          <td>
-            <button class="btn btn-edit" onclick="editarRegistro('${r.id}')">✏️</button>
-            <button class="btn btn-del" onclick="deletarRegistro('${r.id}')">🗑️</button>
-          </td>
-        </tr>`;
+    function abrirModal() {
+      document.getElementById("modalForm").style.display = "flex";
+      editandoId = null;
     }
 
-    // ➕ Adicionar registro
-    async function adicionarRegistro(tipo) {
-      try {
-        const nome = document.getElementById(tipo === "Ata" ? "ata_nome" : "req_nome").value;
-        const area = document.getElementById(tipo === "Ata" ? "ata_area" : "req_area").value;
-        const resp = document.getElementById(tipo === "Ata" ? "ata_resp" : "req_resp").value;
-        const data = document.getElementById(tipo === "Ata" ? "ata_data" : "req_data").value;
-        const doc = document.getElementById(tipo === "Ata" ? "ata_doc" : "req_doc").value;
-        const video = tipo === "Ata" ? document.getElementById("ata_video").value : null;
+    function fecharModal() {
+      document.getElementById("modalForm").style.display = "none";
+    }
 
-        const { error } = await supabase.from("projetos").insert({
-          nome, area, responsavel: resp, prazo: data, doc, video, categoria: tipo
-        });
+    async function salvar() {
+      const nome = document.getElementById("nome").value;
+      const categoria = document.getElementById("categoria").value;
+      const area = document.getElementById("area").value;
+      const responsavel = document.getElementById("responsavel").value;
+      const prazo = document.getElementById("prazo").value;
+      const doc = document.getElementById("doc").value;
+      const video = document.getElementById("video").value;
 
-        if (error) throw error;
-        alert(`${tipo} adicionada com sucesso!`);
-        carregarRegistros();
-      } catch (e) {
-        alert(`Erro ao adicionar ${tipo}`);
-        console.error(e);
+      if (!nome || !categoria) return alert("Preencha os campos obrigatórios!");
+
+      const registro = { nome, categoria, area, responsavel, prazo, doc, video };
+
+      if (editandoId) {
+        const { error } = await supabase.from("projetos").update(registro).eq("id", editandoId);
+        if (error) return alert("Erro ao atualizar!");
+      } else {
+        const { error } = await supabase.from("projetos").insert(registro);
+        if (error) return alert("Erro ao salvar!");
       }
+
+      fecharModal();
+      carregar();
     }
 
-    // ✏️ Editar
-    async function editarRegistro(id) {
-      const novoNome = prompt("Novo nome do projeto:");
-      if (!novoNome) return;
-      const { error } = await supabase.from("projetos").update({ nome: novoNome }).eq("id", id);
-      if (error) return alert("Erro ao editar registro!");
-      alert("Atualizado com sucesso!");
-      carregarRegistros();
+    async function editar(id) {
+      const { data } = await supabase.from("projetos").select("*").eq("id", id).single();
+      if (!data) return;
+      document.getElementById("nome").value = data.nome || "";
+      document.getElementById("categoria").value = data.categoria || "";
+      document.getElementById("area").value = data.area || "";
+      document.getElementById("responsavel").value = data.responsavel || "";
+      document.getElementById("prazo").value = data.prazo || "";
+      document.getElementById("doc").value = data.doc || "";
+      document.getElementById("video").value = data.video || "";
+      editandoId = id;
+      abrirModal();
     }
 
-    // 🗑️ Deletar
-    async function deletarRegistro(id) {
-      if (!confirm("Tem certeza que deseja excluir este registro?")) return;
+    async function excluir(id) {
+      if (!confirm("Deseja realmente excluir este registro?")) return;
       const { error } = await supabase.from("projetos").delete().eq("id", id);
       if (error) return alert("Erro ao excluir!");
-      alert("Registro removido com sucesso!");
-      carregarRegistros();
+      carregar();
     }
   </script>
 </body>
