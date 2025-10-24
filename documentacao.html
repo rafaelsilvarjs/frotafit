@@ -7,73 +7,104 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
 body {
-  font-family: "Segoe UI", sans-serif;
-  background: #f8fafc;
-  margin: 0;
-  color: #0f172a;
+  font-family:"Segoe UI",sans-serif;
+  background:#f8fafc;
+  margin:0;
+  color:#0f172a;
 }
 
-/* ===== HEADER ===== */
+/* HEADER */
 header {
-  background: linear-gradient(90deg, #ff5a1f, #ff7a3e);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 30px;
-  box-shadow: 0 3px 8px rgba(0,0,0,.2);
-}
-header h2 { margin:0;font-size:20px;font-weight:700; }
-header .botoes { display:flex; gap:10px; }
-header button {
-  background:white;color:#ff5a1f;border:none;
-  padding:8px 16px;border-radius:8px;font-weight:600;cursor:pointer;
-  transition:0.3s;
-}
-header button:hover { background:#ffe4d2; }
-
-/* ===== FORMULÁRIOS ===== */
-.formulario {
-  width:90%;
-  margin:20px auto;
-  background:white;
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 3px 8px rgba(0,0,0,0.1);
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  align-items:center;
-}
-.formulario input {
-  padding:8px 10px;
-  border:1px solid #e2e8f0;
-  border-radius:6px;
-  flex:1;
-  min-width:140px;
-  font-size:14px;
-}
-.formulario button {
   background:linear-gradient(90deg,#ff5a1f,#ff7a3e);
   color:white;
-  border:none;
-  border-radius:8px;
-  padding:10px 18px;
-  font-weight:600;
-  cursor:pointer;
-  transition:0.3s;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 30px;
+  box-shadow:0 3px 8px rgba(0,0,0,.2);
 }
-.formulario button:hover { background:#ff6f3a; }
+header h2{margin:0;font-size:20px;font-weight:700;}
+header .botoes{display:flex;gap:10px;}
+header button{
+  background:white;color:#ff5a1f;border:none;
+  padding:8px 16px;border-radius:8px;font-weight:600;
+  cursor:pointer;transition:.3s;
+}
+header button:hover{background:#ffe4d2;}
 
-/* ===== TÍTULOS ===== */
-h1 {
+/* TITULOS */
+h1{
   text-align:center;
   color:#ff5a1f;
   margin:40px 0 20px;
 }
 
-/* ===== TABELAS ===== */
-table {
+/* FILTROS */
+.filtros{
+  width:90%;
+  margin:0 auto 20px auto;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.filtros input{
+  flex:1;
+  min-width:150px;
+  padding:8px 10px;
+  border:1px solid #e2e8f0;
+  border-radius:6px;
+}
+.filtros button{
+  background:linear-gradient(90deg,#ff5a1f,#ff7a3e);
+  color:white;border:none;border-radius:8px;
+  padding:8px 14px;font-weight:600;cursor:pointer;
+}
+.filtros button:hover{background:#ff6f3a;}
+
+/* FORMULÁRIO OCULTO */
+.formulario{
+  width:90%;
+  margin:0 auto 20px auto;
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.1);
+  display:none;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.formulario input{
+  flex:1;
+  min-width:140px;
+  padding:8px 10px;
+  border:1px solid #e2e8f0;
+  border-radius:6px;
+}
+.formulario button{
+  background:linear-gradient(90deg,#ff5a1f,#ff7a3e);
+  color:white;border:none;border-radius:8px;
+  padding:10px 18px;font-weight:600;
+  cursor:pointer;transition:.3s;
+}
+.formulario button:hover{background:#ff6f3a;}
+
+/* BOTÃO MOSTRAR FORM */
+.add-btn{
+  display:block;
+  margin:10px auto;
+  background:#fff;
+  border:2px solid #ff5a1f;
+  color:#ff5a1f;
+  padding:8px 16px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
+.add-btn:hover{background:#ff5a1f;color:white;}
+
+/* TABELAS */
+table{
   width:90%;
   margin:20px auto;
   border-collapse:collapse;
@@ -82,25 +113,12 @@ table {
   box-shadow:0 3px 8px rgba(0,0,0,0.1);
   overflow:hidden;
 }
-thead { background:#ff5a1f;color:white; }
-th,td {
-  padding:12px 14px;
-  text-align:left;
-  border-bottom:1px solid #e2e8f0;
-}
-th:first-child,td:first-child { width:40px;text-align:center; }
-tr:hover td { background:#f9fafb; }
-.etapas-row td { background:#f8fafc; }
+thead{background:#ff5a1f;color:white;}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid #e2e8f0;}
+tr:hover td{background:#f9fafb;}
 
-/* ===== STATUS BADGES ===== */
-.status-badge {
-  padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600;color:white;
-}
-.status-Pendente {background:#ef4444;}
-.status-Desenvolvendo {background:#f59e0b;}
-.status-Concluído {background:#22c55e;}
-
-footer {
+/* FOOTER */
+footer{
   text-align:center;
   padding:14px;
   color:#64748b;
@@ -121,47 +139,69 @@ footer {
   </div>
 </header>
 
-<!-- ====== FORMULÁRIO DE ATAS ====== -->
+<!-- ========== ATAS ========== -->
 <h1>Atas</h1>
+
+<div class="filtros">
+  <input type="text" id="filtroProjetoAtas" placeholder="Filtrar por projeto">
+  <input type="date" id="filtroDataAtas">
+  <input type="text" id="filtroRespAtas" placeholder="Filtrar por responsável">
+  <button onclick="filtrarTabela('atas')">Filtrar</button>
+  <button onclick="resetarFiltro('atas')">Limpar</button>
+</div>
+
+<button class="add-btn" onclick="toggleForm('formAta')">➕ Adicionar Ata</button>
+
 <form id="formAta" class="formulario">
   <input type="text" id="nomeAta" placeholder="Nome do projeto" required>
   <input type="text" id="areaAta" placeholder="Área" required>
   <input type="text" id="responsavelAta" placeholder="Criado por" required>
   <input type="date" id="dataAta" required>
-  <input type="url" id="linkAta" placeholder="Link do documento (opcional)">
-  <button type="submit">➕ Adicionar Ata</button>
+  <input type="url" id="linkAta" placeholder="Link do documento">
+  <input type="url" id="videoAta" placeholder="Link do vídeo (opcional)">
+  <button type="submit">Salvar Ata</button>
 </form>
 
 <table>
   <thead>
     <tr>
-      <th></th>
       <th>Nome do Projeto</th>
       <th>Categoria</th>
       <th>Área</th>
       <th>Criado Por</th>
       <th>Criado Em</th>
       <th>Link</th>
+      <th>Vídeo</th>
     </tr>
   </thead>
   <tbody id="tabelaAtas"></tbody>
 </table>
 
-<!-- ====== FORMULÁRIO DE REQUISITOS ====== -->
+<!-- ========== REQUISITOS ========== -->
 <h1>Requisitos</h1>
-<form id="formRequisito" class="formulario">
+
+<div class="filtros">
+  <input type="text" id="filtroProjetoReq" placeholder="Filtrar por projeto">
+  <input type="date" id="filtroDataReq">
+  <input type="text" id="filtroRespReq" placeholder="Filtrar por responsável">
+  <button onclick="filtrarTabela('req')">Filtrar</button>
+  <button onclick="resetarFiltro('req')">Limpar</button>
+</div>
+
+<button class="add-btn" onclick="toggleForm('formReq')">➕ Adicionar Requisito</button>
+
+<form id="formReq" class="formulario">
   <input type="text" id="nomeReq" placeholder="Nome do projeto" required>
   <input type="text" id="areaReq" placeholder="Área" required>
   <input type="text" id="responsavelReq" placeholder="Criado por" required>
   <input type="date" id="dataReq" required>
-  <input type="url" id="linkReq" placeholder="Link do documento (opcional)">
-  <button type="submit">➕ Adicionar Requisito</button>
+  <input type="url" id="linkReq" placeholder="Link do documento">
+  <button type="submit">Salvar Requisito</button>
 </form>
 
 <table>
   <thead>
     <tr>
-      <th></th>
       <th>Nome do Projeto</th>
       <th>Categoria</th>
       <th>Área</th>
@@ -170,116 +210,117 @@ footer {
       <th>Link</th>
     </tr>
   </thead>
-  <tbody id="tabelaRequisitos"></tbody>
+  <tbody id="tabelaReq"></tbody>
 </table>
 
 <footer>© LogFit Logística • Refit • 2025</footer>
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-const SUPABASE_URL='https://cczuqesooeguvqimeoks.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg';
-const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
+const supabase = createClient(
+  'https://cczuqesooeguvqimeoks.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg'
+);
 
-/* ====== CARREGAR ====== */
-async function carregarDocumentos() {
-  const { data, error } = await supabase.from("projetos").select("*");
-  if (error) return console.error(error);
+/* === Mostrar/ocultar formulários === */
+window.toggleForm = id => {
+  const form = document.getElementById(id);
+  form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
+};
 
-  const atas = data.filter(p => (p.categoria || "").toLowerCase().includes("ata"));
-  const requisitos = data.filter(p => (p.categoria || "").toLowerCase().includes("requisito"));
+/* === Inserir ATA === */
+document.getElementById("formAta").addEventListener("submit", async e=>{
+  e.preventDefault();
+  const nome=document.getElementById("nomeAta").value;
+  const area=document.getElementById("areaAta").value;
+  const responsavel=document.getElementById("responsavelAta").value;
+  const prazo=document.getElementById("dataAta").value;
+  const doc=document.getElementById("linkAta").value;
+  const video=document.getElementById("videoAta").value;
 
-  preencherTabela(document.getElementById("tabelaAtas"), atas);
-  preencherTabela(document.getElementById("tabelaRequisitos"), requisitos);
-}
-
-/* ====== INSERIR ====== */
-async function adicionarDocumento(tipo) {
-  const isAta = tipo === "Ata";
-
-  const nome = document.getElementById(isAta ? "nomeAta" : "nomeReq").value;
-  const area = document.getElementById(isAta ? "areaAta" : "areaReq").value;
-  const responsavel = document.getElementById(isAta ? "responsavelAta" : "responsavelReq").value;
-  const prazo = document.getElementById(isAta ? "dataAta" : "dataReq").value;
-  const doc = document.getElementById(isAta ? "linkAta" : "linkReq").value;
-
-  const { error } = await supabase.from("projetos").insert([
-    { nome, area, responsavel, prazo, doc, categoria: tipo }
+  const { data, error } = await supabase.from("projetos").insert([
+    { nome, area, responsavel, prazo, doc, video, categoria:"Ata" }
   ]);
-  if (error) {
-    alert("Erro ao adicionar " + tipo);
-    console.error(error);
-  } else {
-    alert(tipo + " adicionada com sucesso!");
-    carregarDocumentos();
+
+  if(error){alert("Erro ao adicionar Ata");console.error(error);}
+  else{
+    adicionarNaTabela("tabelaAtas",{nome,area,responsavel,prazo,doc,video,categoria:"Ata"});
+    e.target.reset();
+    toggleForm('formAta');
   }
+});
+
+/* === Inserir Requisito === */
+document.getElementById("formReq").addEventListener("submit", async e=>{
+  e.preventDefault();
+  const nome=document.getElementById("nomeReq").value;
+  const area=document.getElementById("areaReq").value;
+  const responsavel=document.getElementById("responsavelReq").value;
+  const prazo=document.getElementById("dataReq").value;
+  const doc=document.getElementById("linkReq").value;
+
+  const { data, error } = await supabase.from("projetos").insert([
+    { nome, area, responsavel, prazo, doc, categoria:"Requisito" }
+  ]);
+
+  if(error){alert("Erro ao adicionar Requisito");console.error(error);}
+  else{
+    adicionarNaTabela("tabelaReq",{nome,area,responsavel,prazo,doc,categoria:"Requisito"});
+    e.target.reset();
+    toggleForm('formReq');
+  }
+});
+
+/* === Preencher Tabelas === */
+function adicionarNaTabela(id, p){
+  const tabela=document.getElementById(id);
+  const tr=document.createElement("tr");
+  tr.innerHTML=`
+    <td>${p.nome}</td>
+    <td>${p.categoria}</td>
+    <td>${p.area}</td>
+    <td>${p.responsavel}</td>
+    <td>${p.prazo}</td>
+    <td>${p.doc ? `<a href="${p.doc}" target="_blank">Documento</a>`:"—"}</td>
+    ${p.video ? `<td><a href="${p.video}" target="_blank">Vídeo</a></td>` : (id==="tabelaAtas"?"<td>—</td>":"")}
+  `;
+  tabela.appendChild(tr);
 }
 
-/* ====== EVENTOS DOS FORMULÁRIOS ====== */
-document.getElementById("formAta").addEventListener("submit", e => {
-  e.preventDefault();
-  adicionarDocumento("Ata");
-  e.target.reset();
-});
-document.getElementById("formRequisito").addEventListener("submit", e => {
-  e.preventDefault();
-  adicionarDocumento("Requisito");
-  e.target.reset();
-});
+/* === Carregar registros existentes === */
+async function carregar(){
+  const { data, error } = await supabase.from("projetos").select("*");
+  if(error) return console.error(error);
+  const atas=data.filter(p=>(p.categoria||"").toLowerCase().includes("ata"));
+  const reqs=data.filter(p=>(p.categoria||"").toLowerCase().includes("requisito"));
+  atas.forEach(p=>adicionarNaTabela("tabelaAtas",p));
+  reqs.forEach(p=>adicionarNaTabela("tabelaReq",p));
+}
+carregar();
 
-/* ====== TABELA ====== */
-function preencherTabela(tabela, lista) {
-  tabela.innerHTML = "";
-  if (!lista.length) {
-    tabela.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#94a3b8;">Nenhum registro encontrado</td></tr>`;
-    return;
-  }
-
-  lista.forEach(p => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td class="toggle">▶</td>
-      <td>${p.nome || "—"}</td>
-      <td>${p.categoria || "—"}</td>
-      <td>${p.area || "—"}</td>
-      <td>${p.responsavel || "—"}</td>
-      <td>${p.prazo || "—"}</td>
-      <td>${p.doc ? `<a href="${p.doc}" target="_blank" style="color:#0284c7;font-weight:600;">Abrir</a>` : "—"}</td>
-    `;
-    tabela.appendChild(tr);
-
-    const trEtapas = document.createElement("tr");
-    trEtapas.classList.add("etapas-row");
-    trEtapas.style.display = "none";
-
-    let etapasHTML = "";
-    if (p.etapas && Array.isArray(p.etapas) && p.etapas.length > 0) {
-      p.etapas.forEach(e => {
-        etapasHTML += `
-          <div style="border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:8px;">
-            <strong>${e.nome || "Etapa sem nome"}</strong><br>
-            <span class="status-badge status-${e.status}">${e.status || "Sem status"}</span><br>
-            <small>Responsável: ${e.responsavel || "—"} | Prazo: ${e.prazo || "—"}</small><br>
-            <small>Descrição: ${e.descricao || "—"}</small><br>
-            <small>Anexo: ${e.anexo ? `<a href="${e.anexo}" target="_blank">Abrir</a>` : "—"}</small>
-          </div>`;
-      });
-    } else {
-      etapasHTML = `<em style="color:#94a3b8;">Nenhuma etapa cadastrada</em>`;
-    }
-
-    trEtapas.innerHTML = `<td colspan="7">${etapasHTML}</td>`;
-    tabela.appendChild(trEtapas);
-
-    tr.querySelector(".toggle").addEventListener("click", e => {
-      const aberto = trEtapas.style.display === "table-row";
-      trEtapas.style.display = aberto ? "none" : "table-row";
-      e.target.textContent = aberto ? "▶" : "▼";
-    });
+/* === Filtros === */
+window.filtrarTabela=(tipo)=>{
+  const prefix=tipo==="atas"?"Atas":"Req";
+  const nome=document.getElementById(`filtroProjeto${prefix}`).value.toLowerCase();
+  const data=document.getElementById(`filtroData${prefix}`).value;
+  const resp=document.getElementById(`filtroResp${prefix}`).value.toLowerCase();
+  const tabela=document.getElementById(`tabela${prefix}`);
+  [...tabela.rows].forEach(row=>{
+    const [n, , , r, d]=row.cells;
+    const matchNome=!nome||n.textContent.toLowerCase().includes(nome);
+    const matchResp=!resp||r.textContent.toLowerCase().includes(resp);
+    const matchData=!data||d.textContent.includes(data);
+    row.style.display=matchNome&&matchResp&&matchData?"":"none";
   });
-}
+};
 
-carregarDocumentos();
+window.resetarFiltro=(tipo)=>{
+  const prefix=tipo==="atas"?"Atas":"Req";
+  document.getElementById(`filtroProjeto${prefix}`).value="";
+  document.getElementById(`filtroData${prefix}`).value="";
+  document.getElementById(`filtroResp${prefix}`).value="";
+  filtrarTabela(tipo);
+};
 </script>
 </body>
 </html>
