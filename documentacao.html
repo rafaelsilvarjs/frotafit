@@ -13,7 +13,7 @@ body {
   color:#0f172a;
 }
 
-/* HEADER */
+/* ===== HEADER ===== */
 header {
   background:linear-gradient(90deg,#ff5a1f,#ff7a3e);
   color:white;
@@ -23,23 +23,28 @@ header {
   padding:16px 30px;
   box-shadow:0 3px 8px rgba(0,0,0,.2);
 }
-header h2{margin:0;font-size:20px;font-weight:700;}
+header h2 {margin:0;font-size:20px;font-weight:700;}
 header .botoes{display:flex;gap:10px;}
 header button{
-  background:white;color:#ff5a1f;border:none;
-  padding:8px 16px;border-radius:8px;font-weight:600;
-  cursor:pointer;transition:.3s;
+  background:white;
+  color:#ff5a1f;
+  border:none;
+  padding:8px 16px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
 }
 header button:hover{background:#ffe4d2;}
 
-/* TITULOS */
-h1{
+/* ===== TÍTULOS ===== */
+h1 {
   text-align:center;
   color:#ff5a1f;
   margin:40px 0 20px;
 }
 
-/* FILTROS */
+/* ===== FILTROS ===== */
 .filtros{
   width:90%;
   margin:0 auto 20px auto;
@@ -61,7 +66,7 @@ h1{
 }
 .filtros button:hover{background:#ff6f3a;}
 
-/* FORMULÁRIO OCULTO */
+/* ===== FORMULÁRIOS ===== */
 .formulario{
   width:90%;
   margin:0 auto 20px auto;
@@ -88,7 +93,7 @@ h1{
 }
 .formulario button:hover{background:#ff6f3a;}
 
-/* BOTÃO MOSTRAR FORM */
+/* ===== BOTÕES ADD ===== */
 .add-btn{
   display:block;
   margin:10px auto;
@@ -103,7 +108,7 @@ h1{
 }
 .add-btn:hover{background:#ff5a1f;color:white;}
 
-/* TABELAS */
+/* ===== TABELAS ===== */
 table{
   width:90%;
   margin:20px auto;
@@ -117,7 +122,7 @@ thead{background:#ff5a1f;color:white;}
 th,td{padding:12px 14px;text-align:left;border-bottom:1px solid #e2e8f0;}
 tr:hover td{background:#f9fafb;}
 
-/* FOOTER */
+/* ===== FOOTER ===== */
 footer{
   text-align:center;
   padding:14px;
@@ -231,20 +236,21 @@ window.toggleForm = id => {
 /* === Inserir ATA === */
 document.getElementById("formAta").addEventListener("submit", async e=>{
   e.preventDefault();
-  const nome=document.getElementById("nomeAta").value;
-  const area=document.getElementById("areaAta").value;
-  const responsavel=document.getElementById("responsavelAta").value;
-  const prazo=document.getElementById("dataAta").value;
-  const doc=document.getElementById("linkAta").value;
-  const video=document.getElementById("videoAta").value;
+  const registro = {
+    nome: document.getElementById("nomeAta").value,
+    area: document.getElementById("areaAta").value,
+    responsavel: document.getElementById("responsavelAta").value,
+    prazo: document.getElementById("dataAta").value,
+    doc: document.getElementById("linkAta").value,
+    video: document.getElementById("videoAta").value,
+    categoria: "Ata",
+    status: "Backlog"
+  };
 
-  const { data, error } = await supabase.from("projetos").insert([
-    { nome, area, responsavel, prazo, doc, video, categoria:"Ata" }
-  ]);
-
+  const { error } = await supabase.from("projetos").insert([registro]);
   if(error){alert("Erro ao adicionar Ata");console.error(error);}
   else{
-    adicionarNaTabela("tabelaAtas",{nome,area,responsavel,prazo,doc,video,categoria:"Ata"});
+    adicionarNaTabela("tabelaAtas",registro);
     e.target.reset();
     toggleForm('formAta');
   }
@@ -253,25 +259,26 @@ document.getElementById("formAta").addEventListener("submit", async e=>{
 /* === Inserir Requisito === */
 document.getElementById("formReq").addEventListener("submit", async e=>{
   e.preventDefault();
-  const nome=document.getElementById("nomeReq").value;
-  const area=document.getElementById("areaReq").value;
-  const responsavel=document.getElementById("responsavelReq").value;
-  const prazo=document.getElementById("dataReq").value;
-  const doc=document.getElementById("linkReq").value;
+  const registro = {
+    nome: document.getElementById("nomeReq").value,
+    area: document.getElementById("areaReq").value,
+    responsavel: document.getElementById("responsavelReq").value,
+    prazo: document.getElementById("dataReq").value,
+    doc: document.getElementById("linkReq").value,
+    categoria: "Requisito",
+    status: "Backlog"
+  };
 
-  const { data, error } = await supabase.from("projetos").insert([
-    { nome, area, responsavel, prazo, doc, categoria:"Requisito" }
-  ]);
-
+  const { error } = await supabase.from("projetos").insert([registro]);
   if(error){alert("Erro ao adicionar Requisito");console.error(error);}
   else{
-    adicionarNaTabela("tabelaReq",{nome,area,responsavel,prazo,doc,categoria:"Requisito"});
+    adicionarNaTabela("tabelaReq",registro);
     e.target.reset();
     toggleForm('formReq');
   }
 });
 
-/* === Preencher Tabelas === */
+/* === Adiciona registro à tabela === */
 function adicionarNaTabela(id, p){
   const tabela=document.getElementById(id);
   const tr=document.createElement("tr");
@@ -282,17 +289,17 @@ function adicionarNaTabela(id, p){
     <td>${p.responsavel}</td>
     <td>${p.prazo}</td>
     <td>${p.doc ? `<a href="${p.doc}" target="_blank">Documento</a>`:"—"}</td>
-    ${p.video ? `<td><a href="${p.video}" target="_blank">Vídeo</a></td>` : (id==="tabelaAtas"?"<td>—</td>":"")}
+    ${id==="tabelaAtas" ? `<td>${p.video ? `<a href="${p.video}" target="_blank">Vídeo</a>`:"—"}</td>` : ""}
   `;
   tabela.appendChild(tr);
 }
 
-/* === Carregar registros existentes === */
+/* === Carrega registros === */
 async function carregar(){
   const { data, error } = await supabase.from("projetos").select("*");
   if(error) return console.error(error);
-  const atas=data.filter(p=>(p.categoria||"").toLowerCase().includes("ata"));
-  const reqs=data.filter(p=>(p.categoria||"").toLowerCase().includes("requisito"));
+  const atas=data.filter(p=>(p.categoria||"").toLowerCase()==="ata");
+  const reqs=data.filter(p=>(p.categoria||"").toLowerCase()==="requisito");
   atas.forEach(p=>adicionarNaTabela("tabelaAtas",p));
   reqs.forEach(p=>adicionarNaTabela("tabelaReq",p));
 }
