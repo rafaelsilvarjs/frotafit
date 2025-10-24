@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Documentação – LogFit</title>
+<title>Tela de Documentação – LogFit</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
 body {
@@ -12,6 +12,8 @@ body {
   margin: 0;
   color: #0f172a;
 }
+
+/* ===== HEADER ===== */
 header {
   background: linear-gradient(90deg, #ff5a1f, #ff7a3e);
   color: white;
@@ -21,49 +23,86 @@ header {
   padding: 16px 30px;
   box-shadow: 0 3px 8px rgba(0,0,0,.2);
 }
-header h2 {margin:0;font-size:20px;}
+header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+header .botoes {
+  display: flex;
+  gap: 10px;
+}
 header button {
-  background:white;color:#ff5a1f;border:none;
-  padding:8px 16px;border-radius:8px;font-weight:600;cursor:pointer;
+  background: white;
+  color: #ff5a1f;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
 }
-header button:hover {background:#ffe4d2;}
+header button:hover {
+  background: #ffe4d2;
+}
 
+/* ===== TITULOS ===== */
 h1 {
-  text-align:center;
-  color:#ff5a1f;
-  margin:40px 0 30px;
+  text-align: center;
+  color: #ff5a1f;
+  margin: 40px 0 20px;
 }
 
+/* ====== TABELAS ====== */
 table {
-  width:90%;
-  margin:20px auto;
-  border-collapse:collapse;
-  background:white;
-  border-radius:12px;
-  box-shadow:0 3px 8px rgba(0,0,0,0.1);
+  width: 90%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
 }
 thead {
-  background:#ff5a1f;
-  color:white;
+  background: #ff5a1f;
+  color: white;
 }
-th,td {
-  padding:12px 14px;
-  text-align:left;
-  border-bottom:1px solid #e2e8f0;
+th, td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
 }
 th:first-child, td:first-child {
-  width:40px;
+  width: 40px;
+  text-align: center;
 }
 tr:hover td {
-  background:#f9fafb;
+  background: #f9fafb;
 }
+.etapas-row td {
+  background: #f8fafc;
+}
+
+/* ====== STATUS BADGES ====== */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+.status-Pendente {background: #ef4444;}
+.status-Desenvolvendo {background: #f59e0b;}
+.status-Concluído {background: #22c55e;}
+
+/* ===== FOOTER ===== */
 footer {
-  text-align:center;
-  padding:14px;
-  color:#64748b;
-  background:#f8fafc;
-  border-top:1px solid #e2e8f0;
-  margin-top:60px;
+  text-align: center;
+  padding: 14px;
+  color: #64748b;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 60px;
 }
 </style>
 </head>
@@ -71,7 +110,11 @@ footer {
 
 <header>
   <h2>📘 Tela de Documentação – LogFit</h2>
-  <button onclick="location.href='painel-central.html'">⬅ Voltar</button>
+  <div class="botoes">
+    <button onclick="location.href='painel-central.html'">⬅ Voltar</button>
+    <button onclick="location.href='home.html'">🏠 Home</button>
+    <button onclick="location.href='etapas.html'">📆 Sprint / Etapas</button>
+  </div>
 </header>
 
 <h1>Atas</h1>
@@ -125,24 +168,57 @@ async function carregarDocumentos() {
   preencherTabela(document.getElementById("tabelaRequisitos"), requisitos);
 }
 
-function preencherTabela(elemento, lista) {
-  elemento.innerHTML = "";
+function preencherTabela(tabela, lista) {
+  tabela.innerHTML = "";
   if (!lista.length) {
-    elemento.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#94a3b8;">Nenhum registro encontrado</td></tr>`;
+    tabela.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#94a3b8;">Nenhum registro encontrado</td></tr>`;
     return;
   }
 
   lista.forEach(p => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>▶</td>
+      <td class="toggle">▶</td>
       <td>${p.nome || "—"}</td>
       <td>${p.categoria || "—"}</td>
       <td>${p.area || "—"}</td>
       <td>${p.responsavel || "—"}</td>
       <td>${p.prazo || "—"}</td>
-      <td>${p.doc ? `<a href="${p.doc}" target="_blank" style="color:#0284c7;font-weight:600;">Abrir</a>` : "—"}</td>`;
-    elemento.appendChild(tr);
+      <td>${p.doc ? `<a href="${p.doc}" target="_blank" style="color:#0284c7;font-weight:600;">Abrir</a>` : "—"}</td>
+    `;
+    tabela.appendChild(tr);
+
+    // ===== Etapas expandíveis =====
+    const trEtapas = document.createElement("tr");
+    trEtapas.classList.add("etapas-row");
+    trEtapas.style.display = "none";
+
+    let etapasHTML = "";
+    if (p.etapas && Array.isArray(p.etapas) && p.etapas.length > 0) {
+      p.etapas.forEach(e => {
+        etapasHTML += `
+          <div style="border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:8px;">
+            <strong>${e.nome || "Etapa sem nome"}</strong><br>
+            <span class="status-badge status-${e.status}">${e.status || "Sem status"}</span><br>
+            <small>Responsável: ${e.responsavel || "—"} | Prazo: ${e.prazo || "—"}</small><br>
+            <small>Descrição: ${e.descricao || "—"}</small><br>
+            <small>Anexo: ${e.anexo ? `<a href="${e.anexo}" target="_blank">Abrir</a>` : "—"}</small>
+          </div>
+        `;
+      });
+    } else {
+      etapasHTML = `<em style="color:#94a3b8;">Nenhuma etapa cadastrada</em>`;
+    }
+
+    trEtapas.innerHTML = `<td colspan="7">${etapasHTML}</td>`;
+    tabela.appendChild(trEtapas);
+
+    // Clique para expandir etapas
+    tr.querySelector(".toggle").addEventListener("click", e => {
+      const aberto = trEtapas.style.display === "table-row";
+      trEtapas.style.display = aberto ? "none" : "table-row";
+      e.target.textContent = aberto ? "▶" : "▼";
+    });
   });
 }
 
