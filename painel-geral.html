@@ -59,10 +59,7 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
   box-shadow:0 3px 8px rgba(0,0,0,.1);
   text-align:center;
   border-top:4px solid var(--laranja2);
-  cursor:pointer;
-  transition:.3s;
 }
-.card:hover {transform:translateY(-3px);box-shadow:0 5px 12px rgba(0,0,0,.15);}
 .card h3 {margin:0;font-size:16px;color:#475569;}
 .card span {display:block;font-size:28px;font-weight:700;color:var(--azul);margin-top:5px;}
 
@@ -193,11 +190,6 @@ footer {
     <div class="card"><h3>📁 Backlog</h3><span id="backlog">0</span></div>
     <div class="card"><h3>⚙️ Desenvolvendo</h3><span id="desenvolvendo">0</span></div>
     <div class="card"><h3>✅ Concluídos</h3><span id="concluidos">0</span></div>
-    <!-- NOVO CARD -->
-    <div class="card" onclick="abrirDocumentacao()">
-      <h3>🗂️ Tela de Documentação</h3>
-      <span>Ver Documentos</span>
-    </div>
   </section>
 
   <!-- FILTROS -->
@@ -241,7 +233,7 @@ footer {
     <button class="limpar" onclick="limparFiltros()">🧹 Limpar</button>
   </div>
 
-  <!-- TABELA PRINCIPAL -->
+  <!-- TABELA -->
   <table id="tabelaProjetos">
     <thead>
       <tr>
@@ -257,45 +249,6 @@ footer {
     </thead>
     <tbody></tbody>
   </table>
-
-  <!-- 📘 TELA DE DOCUMENTAÇÃO -->
-  <section id="telaDocumentacao" style="display:none;margin-top:40px;">
-    <h2 style="background:#ff5a1f;color:white;padding:12px 20px;border-radius:8px 8px 0 0;margin:0;text-align:center;">
-      📘 Documentação
-    </h2>
-
-    <!-- 🔸 TABELA DE ATAS -->
-    <table style="width:100%;border-collapse:collapse;background:white;border-radius:8px;overflow:hidden;margin-top:20px;box-shadow:0 3px 8px rgba(0,0,0,0.1);">
-      <thead style="background:#ff5a1f;color:white;">
-        <tr>
-          <th style="width:40px;"></th>
-          <th>Nome do Projeto</th>
-          <th>Categoria</th>
-          <th>Área</th>
-          <th>Criado Por</th>
-          <th>Criado Em</th>
-          <th>Link</th>
-        </tr>
-      </thead>
-      <tbody id="tabelaAtas"></tbody>
-    </table>
-
-    <!-- 🔸 TABELA DE REQUISITOS -->
-    <table style="width:100%;border-collapse:collapse;background:white;border-radius:8px;overflow:hidden;margin-top:35px;box-shadow:0 3px 8px rgba(0,0,0,0.1);">
-      <thead style="background:#ff5a1f;color:white;">
-        <tr>
-          <th style="width:40px;"></th>
-          <th>Nome do Projeto</th>
-          <th>Categoria</th>
-          <th>Área</th>
-          <th>Criado Por</th>
-          <th>Criado Em</th>
-          <th>Link</th>
-        </tr>
-      </thead>
-      <tbody id="tabelaRequisitos"></tbody>
-    </table>
-  </section>
 </main>
 
 <footer>© LogFit Logística • Refit • 2025</footer>
@@ -306,20 +259,21 @@ const SUPABASE_URL='https://cczuqesooeguvqimeoks.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg';
 const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
 
-// LOGIN
+// 🔒 LOGIN
 const {data:{session}}=await supabase.auth.getSession();
 if(!session) window.location.href="login.html";
 
-// CARREGA PROJETOS
+// 📦 CARREGAR PROJETOS
 const {data:projetos,error}=await supabase.from('projetos').select('*').order('id',{ascending:true});
 if(error) console.error(error);
 
+// Atualiza contadores
 document.getElementById("total").textContent=projetos.length;
 document.getElementById("backlog").textContent=projetos.filter(p=>p.status==="Backlog").length;
 document.getElementById("desenvolvendo").textContent=projetos.filter(p=>p.status==="Desenvolvendo").length;
 document.getElementById("concluidos").textContent=projetos.filter(p=>p.status==="Concluído").length;
 
-// POPULA RESPONSAVEIS
+// Popula responsáveis
 const respDiv=document.getElementById("responsavelChecks");
 [...new Set(projetos.map(p=>p.responsavel).filter(Boolean))].forEach(r=>{
   const label=document.createElement("label");
@@ -330,6 +284,7 @@ const respDiv=document.getElementById("responsavelChecks");
 const tbody=document.querySelector("#tabelaProjetos tbody");
 renderTabela(projetos);
 
+// Renderização
 function renderTabela(lista){
   tbody.innerHTML="";
   lista.forEach(p=>{
@@ -347,6 +302,31 @@ function renderTabela(lista){
       <td>${p.prazo||"—"}</td>
       <td>${p.doc?`<a href="${p.doc}" target="_blank">Abrir</a>`:"—"}</td>`;
     tbody.appendChild(tr);
+
+    const trSprints=document.createElement("tr");
+    trSprints.classList.add("etapas-row");
+    trSprints.style.display="none";
+    let sprintsHTML="";
+    if(p.etapas&&Array.isArray(p.etapas)&&p.etapas.length>0){
+      p.etapas.forEach(e=>{
+        sprintsHTML+=`
+          <div style="border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:8px;">
+            <strong>${e.nome||"Sprint sem nome"}</strong><br>
+            <span class="status-badge status-${e.status}">${e.status}</span><br>
+            <small>Responsável: ${e.responsavel||"—"} | Prazo: ${e.prazo||"—"}</small><br>
+            <small>Descrição: ${e.descricao||"—"}</small><br>
+            <small>Anexo: ${e.anexo?`<a href="${e.anexo}" target="_blank">Abrir</a>`:"—"}</small>
+          </div>`;
+      });
+    } else sprintsHTML=`<em style="color:#64748b;">Nenhuma sprint cadastrada</em>`;
+    trSprints.innerHTML=`<td colspan="8">${sprintsHTML}</td>`;
+    tbody.appendChild(trSprints);
+
+    tr.querySelector(".toggle-btn").addEventListener("click",e=>{
+      const open=trSprints.style.display==="table-row";
+      trSprints.style.display=open?"none":"table-row";
+      e.target.textContent=open?"⯈":"⯆";
+    });
   });
 }
 
@@ -369,7 +349,7 @@ function filtrarTabela(){
 }
 document.querySelectorAll('.dropdown input, #filtroProjeto').forEach(el=>el.addEventListener('input',filtrarTabela));
 
-// Dropdowns
+// Dropdown abrir/fechar
 document.querySelectorAll('.dropdown-button').forEach(btn=>{
   btn.addEventListener('click',()=>btn.parentElement.classList.toggle('open'));
 });
@@ -379,6 +359,7 @@ document.addEventListener('click',e=>{
   });
 });
 
+// LIMPAR
 window.limparFiltros=function(){
   document.querySelectorAll('.dropdown input, #filtroProjeto').forEach(el=>{
     if(el.type==="text") el.value="";
@@ -392,51 +373,6 @@ window.logout=async function(){
   await supabase.auth.signOut();
   window.location.href="login.html";
 };
-
-// ====================== 🗂️ DOCUMENTAÇÃO ======================
-window.abrirDocumentacao = async function() {
-  const secao = document.getElementById("telaDocumentacao");
-  secao.style.display = "block";
-
-  const tabelaAtas = document.getElementById("tabelaAtas");
-  const tabelaRequisitos = document.getElementById("tabelaRequisitos");
-
-  tabelaAtas.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#64748b;">⏳ Carregando Atas...</td></tr>`;
-  tabelaRequisitos.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#64748b;">⏳ Carregando Requisitos...</td></tr>`;
-
-  const { data: projetosDocs, error } = await supabase.from("projetos").select("*").order("id", { ascending: true });
-  if (error) {
-    tabelaAtas.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#ef4444;">Erro ao carregar dados.</td></tr>`;
-    tabelaRequisitos.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#ef4444;">Erro ao carregar dados.</td></tr>`;
-    return;
-  }
-
-  const atas = projetosDocs.filter(p => (p.categoria || "").toLowerCase().includes("ata"));
-  const requisitos =…projetosDocs.filter(p => (p.categoria || "").toLowerCase().includes("requisito"));
-
-  preencherTabela(tabelaAtas, atas);
-  preencherTabela(tabelaRequisitos, requisitos);
-};
-
-function preencherTabela(tabela, lista) {
-  tabela.innerHTML = "";
-  if (!lista.length) {
-    tabela.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#94a3b8;">Nenhum registro encontrado.</td></tr>`;
-    return;
-  }
-  lista.forEach(p => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>▶</td>
-      <td>${p.nome || "—"}</td>
-      <td>${p.categoria || "—"}</td>
-      <td>${p.area || "—"}</td>
-      <td>${p.responsavel || "—"}</td>
-      <td>${p.prazo || "—"}</td>
-      <td>${p.doc ? `<a href="${p.doc}" target="_blank" style="color:#0284c7;font-weight:600;">Abrir</a>` : "—"}</td>`;
-    tabela.appendChild(tr);
-  });
-}
 </script>
 </body>
 </html>
