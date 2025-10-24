@@ -1,333 +1,247 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tela de Documentação – LogFit</title>
-<link rel="icon" type="image/x-icon" href="favicon.ico">
-<style>
-body {
-  font-family:"Segoe UI",sans-serif;
-  background:#f8fafc;
-  margin:0;
-  color:#0f172a;
-}
-
-/* ===== HEADER ===== */
-header {
-  background:linear-gradient(90deg,#ff5a1f,#ff7a3e);
-  color:white;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px 30px;
-  box-shadow:0 3px 8px rgba(0,0,0,.2);
-}
-header h2 {margin:0;font-size:20px;font-weight:700;}
-header .botoes{display:flex;gap:10px;}
-header button{
-  background:white;
-  color:#ff5a1f;
-  border:none;
-  padding:8px 16px;
-  border-radius:8px;
-  font-weight:600;
-  cursor:pointer;
-  transition:.3s;
-}
-header button:hover{background:#ffe4d2;}
-
-/* ===== TÍTULOS ===== */
-h1 {
-  text-align:center;
-  color:#ff5a1f;
-  margin:40px 0 20px;
-}
-
-/* ===== FILTROS ===== */
-.filtros{
-  width:90%;
-  margin:0 auto 20px auto;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.filtros input{
-  flex:1;
-  min-width:150px;
-  padding:8px 10px;
-  border:1px solid #e2e8f0;
-  border-radius:6px;
-}
-.filtros button{
-  background:linear-gradient(90deg,#ff5a1f,#ff7a3e);
-  color:white;border:none;border-radius:8px;
-  padding:8px 14px;font-weight:600;cursor:pointer;
-}
-.filtros button:hover{background:#ff6f3a;}
-
-/* ===== FORMULÁRIOS ===== */
-.formulario{
-  width:90%;
-  margin:0 auto 20px auto;
-  background:white;
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 3px 8px rgba(0,0,0,0.1);
-  display:none;
-  flex-wrap:wrap;
-  gap:10px;
-}
-.formulario input{
-  flex:1;
-  min-width:140px;
-  padding:8px 10px;
-  border:1px solid #e2e8f0;
-  border-radius:6px;
-}
-.formulario button{
-  background:linear-gradient(90deg,#ff5a1f,#ff7a3e);
-  color:white;border:none;border-radius:8px;
-  padding:10px 18px;font-weight:600;
-  cursor:pointer;transition:.3s;
-}
-.formulario button:hover{background:#ff6f3a;}
-
-/* ===== BOTÕES ADD ===== */
-.add-btn{
-  display:block;
-  margin:10px auto;
-  background:#fff;
-  border:2px solid #ff5a1f;
-  color:#ff5a1f;
-  padding:8px 16px;
-  border-radius:8px;
-  font-weight:600;
-  cursor:pointer;
-  transition:.3s;
-}
-.add-btn:hover{background:#ff5a1f;color:white;}
-
-/* ===== TABELAS ===== */
-table{
-  width:90%;
-  margin:20px auto;
-  border-collapse:collapse;
-  background:white;
-  border-radius:12px;
-  box-shadow:0 3px 8px rgba(0,0,0,0.1);
-  overflow:hidden;
-}
-thead{background:#ff5a1f;color:white;}
-th,td{padding:12px 14px;text-align:left;border-bottom:1px solid #e2e8f0;}
-tr:hover td{background:#f9fafb;}
-
-/* ===== FOOTER ===== */
-footer{
-  text-align:center;
-  padding:14px;
-  color:#64748b;
-  background:#f8fafc;
-  border-top:1px solid #e2e8f0;
-  margin-top:60px;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tela de Documentação – LogFit</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    :root {
+      --laranja:#ff5a1f;
+      --laranja2:#ff7a3e;
+      --azul:#0f172a;
+      --cinza:#f8fafc;
+      --cinza2:#e2e8f0;
+      --texto:#1e293b;
+    }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: var(--cinza);
+      color: var(--texto);
+      margin: 0;
+    }
+    header {
+      background: linear-gradient(90deg, var(--laranja), var(--laranja2));
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 30px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, .2);
+    }
+    header h2 { margin: 0; font-weight: 700; }
+    header div { display: flex; gap: 10px; }
+    header button {
+      background: white;
+      color: var(--laranja);
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .3s;
+    }
+    header button:hover { background: #ffe4d6; }
+    section {
+      margin: 40px auto;
+      max-width: 1200px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    }
+    h3 { text-align: center; color: var(--laranja); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,.05);
+    }
+    th {
+      background: var(--laranja);
+      color: white;
+      padding: 10px;
+      text-align: left;
+    }
+    td {
+      background: #fff;
+      padding: 10px;
+      border-bottom: 1px solid var(--cinza2);
+    }
+    tr:hover td { background: #fff5f0; }
+    input, select {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--cinza2);
+    }
+    .btn {
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-add {
+      background: var(--laranja);
+      color: white;
+      transition: .3s;
+    }
+    .btn-add:hover { background: var(--laranja2); }
+    .btn-edit { background: #ffc107; color: #000; }
+    .btn-del { background: #dc3545; color: white; }
+    footer {
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      padding: 20px;
+    }
+  </style>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
+  <header>
+    <h2>📘 Tela de Documentação – LogFit</h2>
+    <div>
+      <button onclick="window.location.href='index.html'">⬅ Voltar</button>
+      <button onclick="window.location.href='home.html'">🏠 Home</button>
+      <button onclick="window.location.href='sprint.html'">📅 Sprint / Etapas</button>
+    </div>
+  </header>
 
-<header>
-  <h2>📘 Tela de Documentação – LogFit</h2>
-  <div class="botoes">
-    <button onclick="location.href='painel-central.html'">⬅ Voltar</button>
-    <button onclick="location.href='home.html'">🏠 Home</button>
-    <button onclick="location.href='etapas.html'">📆 Sprint / Etapas</button>
-  </div>
-</header>
+  <!-- ======== ATAS ======== -->
+  <section>
+    <h3>Atas</h3>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="ata_nome" placeholder="Nome do projeto">
+      <input id="ata_area" placeholder="Área">
+      <input id="ata_resp" placeholder="Criado por">
+      <input type="date" id="ata_data">
+      <input id="ata_doc" placeholder="Link do documento">
+      <input id="ata_video" placeholder="Link do vídeo (opcional)">
+      <button class="btn btn-add" onclick="adicionarRegistro('Ata')">+ Adicionar Ata</button>
+    </div>
+    <table id="tabelaAtas">
+      <thead>
+        <tr>
+          <th>Nome do Projeto</th><th>Categoria</th><th>Área</th>
+          <th>Criado Por</th><th>Criado Em</th><th>Link</th><th>Vídeo</th><th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
 
-<!-- ========== ATAS ========== -->
-<h1>Atas</h1>
+  <!-- ======== REQUISITOS ======== -->
+  <section>
+    <h3>Requisitos</h3>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <input id="req_nome" placeholder="Nome do projeto">
+      <input id="req_area" placeholder="Área">
+      <input id="req_resp" placeholder="Criado por">
+      <input type="date" id="req_data">
+      <input id="req_doc" placeholder="Link do documento">
+      <button class="btn btn-add" onclick="adicionarRegistro('Requisito')">+ Adicionar Requisito</button>
+    </div>
+    <table id="tabelaReqs">
+      <thead>
+        <tr>
+          <th>Nome do Projeto</th><th>Categoria</th><th>Área</th>
+          <th>Criado Por</th><th>Criado Em</th><th>Link</th><th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
 
-<div class="filtros">
-  <input type="text" id="filtroProjetoAtas" placeholder="Filtrar por projeto">
-  <input type="date" id="filtroDataAtas">
-  <input type="text" id="filtroRespAtas" placeholder="Filtrar por responsável">
-  <button onclick="filtrarTabela('atas')">Filtrar</button>
-  <button onclick="resetarFiltro('atas')">Limpar</button>
-</div>
+  <footer>© LogFit Logística • Refit • 2025</footer>
 
-<button class="add-btn" onclick="toggleForm('formAta')">➕ Adicionar Ata</button>
+  <script>
+    // 🔗 Supabase
+    const supabaseUrl = "https://cczuqesoozzpkvvspkic.supabase.co";
+    const supabaseKey = "sua_public_key_aqui";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-<form id="formAta" class="formulario">
-  <input type="text" id="nomeAta" placeholder="Nome do projeto" required>
-  <input type="text" id="areaAta" placeholder="Área" required>
-  <input type="text" id="responsavelAta" placeholder="Criado por" required>
-  <input type="date" id="dataAta" required>
-  <input type="url" id="linkAta" placeholder="Link do documento">
-  <input type="url" id="videoAta" placeholder="Link do vídeo (opcional)">
-  <button type="submit">Salvar Ata</button>
-</form>
+    // 🚀 Carregar registros existentes
+    document.addEventListener("DOMContentLoaded", carregarRegistros);
 
-<table>
-  <thead>
-    <tr>
-      <th>Nome do Projeto</th>
-      <th>Categoria</th>
-      <th>Área</th>
-      <th>Criado Por</th>
-      <th>Criado Em</th>
-      <th>Link</th>
-      <th>Vídeo</th>
-    </tr>
-  </thead>
-  <tbody id="tabelaAtas"></tbody>
-</table>
+    async function carregarRegistros() {
+      const { data, error } = await supabase.from("projetos").select("*").order("prazo", { ascending: false });
+      if (error) return alert("Erro ao carregar registros!");
+      renderizarTabela(data);
+    }
 
-<!-- ========== REQUISITOS ========== -->
-<h1>Requisitos</h1>
+    // 🎨 Renderização das tabelas
+    function renderizarTabela(registros) {
+      const atas = registros.filter(r => r.categoria === "Ata");
+      const reqs = registros.filter(r => r.categoria === "Requisito");
 
-<div class="filtros">
-  <input type="text" id="filtroProjetoReq" placeholder="Filtrar por projeto">
-  <input type="date" id="filtroDataReq">
-  <input type="text" id="filtroRespReq" placeholder="Filtrar por responsável">
-  <button onclick="filtrarTabela('req')">Filtrar</button>
-  <button onclick="resetarFiltro('req')">Limpar</button>
-</div>
+      const tbodyAta = document.querySelector("#tabelaAtas tbody");
+      const tbodyReq = document.querySelector("#tabelaReqs tbody");
+      tbodyAta.innerHTML = ""; tbodyReq.innerHTML = "";
 
-<button class="add-btn" onclick="toggleForm('formReq')">➕ Adicionar Requisito</button>
+      atas.forEach(r => tbodyAta.innerHTML += criarLinha(r));
+      reqs.forEach(r => tbodyReq.innerHTML += criarLinha(r));
+    }
 
-<form id="formReq" class="formulario">
-  <input type="text" id="nomeReq" placeholder="Nome do projeto" required>
-  <input type="text" id="areaReq" placeholder="Área" required>
-  <input type="text" id="responsavelReq" placeholder="Criado por" required>
-  <input type="date" id="dataReq" required>
-  <input type="url" id="linkReq" placeholder="Link do documento">
-  <button type="submit">Salvar Requisito</button>
-</form>
+    // 🧱 Monta linha da tabela
+    function criarLinha(r) {
+      return `
+        <tr>
+          <td>${r.nome || "-"}</td>
+          <td>${r.categoria}</td>
+          <td>${r.area || "-"}</td>
+          <td>${r.responsavel || "-"}</td>
+          <td>${r.prazo || "-"}</td>
+          <td>${r.doc ? `<a href="${r.doc}" target="_blank">Abrir</a>` : "-"}</td>
+          ${r.categoria === "Ata" ? `<td>${r.video ? `<a href="${r.video}" target="_blank">🎥</a>` : "-"}</td>` : ""}
+          <td>
+            <button class="btn btn-edit" onclick="editarRegistro('${r.id}')">✏️</button>
+            <button class="btn btn-del" onclick="deletarRegistro('${r.id}')">🗑️</button>
+          </td>
+        </tr>`;
+    }
 
-<table>
-  <thead>
-    <tr>
-      <th>Nome do Projeto</th>
-      <th>Categoria</th>
-      <th>Área</th>
-      <th>Criado Por</th>
-      <th>Criado Em</th>
-      <th>Link</th>
-    </tr>
-  </thead>
-  <tbody id="tabelaReq"></tbody>
-</table>
+    // ➕ Adicionar registro
+    async function adicionarRegistro(tipo) {
+      try {
+        const nome = document.getElementById(tipo === "Ata" ? "ata_nome" : "req_nome").value;
+        const area = document.getElementById(tipo === "Ata" ? "ata_area" : "req_area").value;
+        const resp = document.getElementById(tipo === "Ata" ? "ata_resp" : "req_resp").value;
+        const data = document.getElementById(tipo === "Ata" ? "ata_data" : "req_data").value;
+        const doc = document.getElementById(tipo === "Ata" ? "ata_doc" : "req_doc").value;
+        const video = tipo === "Ata" ? document.getElementById("ata_video").value : null;
 
-<footer>© LogFit Logística • Refit • 2025</footer>
+        const { error } = await supabase.from("projetos").insert({
+          nome, area, responsavel: resp, prazo: data, doc, video, categoria: tipo
+        });
 
-<script type="module">
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-const supabase = createClient(
-  'https://cczuqesooeguvqimeoks.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg'
-);
+        if (error) throw error;
+        alert(`${tipo} adicionada com sucesso!`);
+        carregarRegistros();
+      } catch (e) {
+        alert(`Erro ao adicionar ${tipo}`);
+        console.error(e);
+      }
+    }
 
-/* === Mostrar/ocultar formulários === */
-window.toggleForm = id => {
-  const form = document.getElementById(id);
-  form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
-};
+    // ✏️ Editar
+    async function editarRegistro(id) {
+      const novoNome = prompt("Novo nome do projeto:");
+      if (!novoNome) return;
+      const { error } = await supabase.from("projetos").update({ nome: novoNome }).eq("id", id);
+      if (error) return alert("Erro ao editar registro!");
+      alert("Atualizado com sucesso!");
+      carregarRegistros();
+    }
 
-/* === Inserir ATA === */
-document.getElementById("formAta").addEventListener("submit", async e=>{
-  e.preventDefault();
-  const registro = {
-    nome: document.getElementById("nomeAta").value,
-    area: document.getElementById("areaAta").value,
-    responsavel: document.getElementById("responsavelAta").value,
-    prazo: document.getElementById("dataAta").value,
-    doc: document.getElementById("linkAta").value,
-    video: document.getElementById("videoAta").value,
-    categoria: "Ata",
-    status: "Backlog"
-  };
-
-  const { error } = await supabase.from("projetos").insert([registro]);
-  if(error){alert("Erro ao adicionar Ata");console.error(error);}
-  else{
-    adicionarNaTabela("tabelaAtas",registro);
-    e.target.reset();
-    toggleForm('formAta');
-  }
-});
-
-/* === Inserir Requisito === */
-document.getElementById("formReq").addEventListener("submit", async e=>{
-  e.preventDefault();
-  const registro = {
-    nome: document.getElementById("nomeReq").value,
-    area: document.getElementById("areaReq").value,
-    responsavel: document.getElementById("responsavelReq").value,
-    prazo: document.getElementById("dataReq").value,
-    doc: document.getElementById("linkReq").value,
-    categoria: "Requisito",
-    status: "Backlog"
-  };
-
-  const { error } = await supabase.from("projetos").insert([registro]);
-  if(error){alert("Erro ao adicionar Requisito");console.error(error);}
-  else{
-    adicionarNaTabela("tabelaReq",registro);
-    e.target.reset();
-    toggleForm('formReq');
-  }
-});
-
-/* === Adiciona registro à tabela === */
-function adicionarNaTabela(id, p){
-  const tabela=document.getElementById(id);
-  const tr=document.createElement("tr");
-  tr.innerHTML=`
-    <td>${p.nome}</td>
-    <td>${p.categoria}</td>
-    <td>${p.area}</td>
-    <td>${p.responsavel}</td>
-    <td>${p.prazo}</td>
-    <td>${p.doc ? `<a href="${p.doc}" target="_blank">Documento</a>`:"—"}</td>
-    ${id==="tabelaAtas" ? `<td>${p.video ? `<a href="${p.video}" target="_blank">Vídeo</a>`:"—"}</td>` : ""}
-  `;
-  tabela.appendChild(tr);
-}
-
-/* === Carrega registros === */
-async function carregar(){
-  const { data, error } = await supabase.from("projetos").select("*");
-  if(error) return console.error(error);
-  const atas=data.filter(p=>(p.categoria||"").toLowerCase()==="ata");
-  const reqs=data.filter(p=>(p.categoria||"").toLowerCase()==="requisito");
-  atas.forEach(p=>adicionarNaTabela("tabelaAtas",p));
-  reqs.forEach(p=>adicionarNaTabela("tabelaReq",p));
-}
-carregar();
-
-/* === Filtros === */
-window.filtrarTabela=(tipo)=>{
-  const prefix=tipo==="atas"?"Atas":"Req";
-  const nome=document.getElementById(`filtroProjeto${prefix}`).value.toLowerCase();
-  const data=document.getElementById(`filtroData${prefix}`).value;
-  const resp=document.getElementById(`filtroResp${prefix}`).value.toLowerCase();
-  const tabela=document.getElementById(`tabela${prefix}`);
-  [...tabela.rows].forEach(row=>{
-    const [n, , , r, d]=row.cells;
-    const matchNome=!nome||n.textContent.toLowerCase().includes(nome);
-    const matchResp=!resp||r.textContent.toLowerCase().includes(resp);
-    const matchData=!data||d.textContent.includes(data);
-    row.style.display=matchNome&&matchResp&&matchData?"":"none";
-  });
-};
-
-window.resetarFiltro=(tipo)=>{
-  const prefix=tipo==="atas"?"Atas":"Req";
-  document.getElementById(`filtroProjeto${prefix}`).value="";
-  document.getElementById(`filtroData${prefix}`).value="";
-  document.getElementById(`filtroResp${prefix}`).value="";
-  filtrarTabela(tipo);
-};
-</script>
+    // 🗑️ Deletar
+    async function deletarRegistro(id) {
+      if (!confirm("Tem certeza que deseja excluir este registro?")) return;
+      const { error } = await supabase.from("projetos").delete().eq("id", id);
+      if (error) return alert("Erro ao excluir!");
+      alert("Registro removido com sucesso!");
+      carregarRegistros();
+    }
+  </script>
 </body>
 </html>
