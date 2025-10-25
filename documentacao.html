@@ -272,7 +272,7 @@ window.fecharModal = () => {
   document.getElementById("modalForm").style.display = "none";
 };
 
-// 🔹 Salvar (criar/editar)
+// 🔹 Salvar
 document.getElementById("btnSalvar").addEventListener("click", async () => {
   const nome = document.getElementById("nomeProjeto").value.trim();
   const status = document.getElementById("status").value.trim();
@@ -284,6 +284,8 @@ document.getElementById("btnSalvar").addEventListener("click", async () => {
   if (!nome) return alert("⚠️ Informe o nome do projeto!");
 
   const dados = { nome, status, area, responsavel, prazo, doc };
+
+  // 🔧 Ajuste o nome das tabelas conforme o Supabase
   const tabela = tipoRegistro === "ata" ? "documentacao_atas" : "documentacao_requisitos";
 
   let result;
@@ -301,7 +303,7 @@ document.getElementById("btnSalvar").addEventListener("click", async () => {
   }
 });
 
-// 🔹 Renderizar linhas
+// 🔹 Renderizar
 function adicionarNaTabela(p) {
   const tbody = p.tipo === "ata"
     ? document.querySelector("#tabelaAtas tbody")
