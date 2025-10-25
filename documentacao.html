@@ -21,15 +21,8 @@
     padding: 16px 30px;
     box-shadow: 0 3px 8px rgba(0,0,0,.2);
   }
-  header h2 {
-    font-weight: 700;
-    font-size: 20px;
-    margin: 0;
-  }
-  header div {
-    display: flex;
-    gap: 10px;
-  }
+  header h2 {font-weight: 700;font-size: 20px;margin: 0;}
+  header div {display: flex;gap: 10px;}
   header button {
     background: white;
     color: #ff5a1f;
@@ -38,11 +31,9 @@
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.3s;
+    transition: .3s;
   }
-  header button:hover {
-    background: #ffe4d6;
-  }
+  header button:hover {background: #ffe4d6;}
 
   main {
     max-width: 1000px;
@@ -53,10 +44,7 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
 
-  h3 {
-    color: #ff5a1f;
-    margin-top: 30px;
-  }
+  h3 {color: #ff5a1f;margin-top: 30px;}
 
   .btn-novo {
     background: #ff5a1f;
@@ -66,34 +54,26 @@
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.3s;
+    transition: .3s;
     margin-bottom: 10px;
   }
-  .btn-novo:hover {
-    background: #ff7a3e;
-  }
+  .btn-novo:hover {background: #ff7a3e;}
 
   table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 12px;
   }
-  th, td {
-    text-align: left;
-    padding: 10px;
-  }
-  th {
-    background: #ff7a3e;
-    color: white;
-  }
-  tr:nth-child(even) {
-    background: #f2f2f2;
-  }
+  th, td {text-align: left;padding: 10px;}
+  th {background: #ff7a3e;color: white;}
+  tr:nth-child(even) {background: #f2f2f2;}
 
+  /* Modal */
   .modal {
     display: none;
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background: rgba(0,0,0,0.5);
     justify-content: center;
     align-items: center;
@@ -104,7 +84,7 @@
     border-radius: 10px;
     width: 400px;
   }
-  input, textarea {
+  input {
     width: 100%;
     padding: 8px;
     margin-top: 6px;
@@ -120,9 +100,7 @@
     cursor: pointer;
     margin-top: 10px;
   }
-  .btn-salvar:hover {
-    background: #ff7a3e;
-  }
+  .btn-salvar:hover {background: #ff7a3e;}
   .btn-cancelar {
     background: #475569;
     color: white;
@@ -146,22 +124,18 @@
 <main>
   <section>
     <h3>Atas</h3>
-    <button class="btn-novo" onclick="abrirModal('ata')">+ Nova Ata</button>
+    <button class="btn-novo" id="btnAta">+ Nova Ata</button>
     <table id="tabelaAtas">
-      <thead>
-        <tr><th>Projeto</th><th>Status</th><th>Prazo</th><th>Anexo</th></tr>
-      </thead>
+      <thead><tr><th>Projeto</th><th>Status</th><th>Prazo</th><th>Anexo</th></tr></thead>
       <tbody></tbody>
     </table>
   </section>
 
   <section>
     <h3>Requisitos</h3>
-    <button class="btn-novo" onclick="abrirModal('requisito')">+ Novo Requisito</button>
+    <button class="btn-novo" id="btnRequisito">+ Novo Requisito</button>
     <table id="tabelaRequisitos">
-      <thead>
-        <tr><th>Projeto</th><th>Status</th><th>Prazo</th><th>Anexo</th></tr>
-      </thead>
+      <thead><tr><th>Projeto</th><th>Status</th><th>Prazo</th><th>Anexo</th></tr></thead>
       <tbody></tbody>
     </table>
   </section>
@@ -178,22 +152,35 @@
     <input id="prazo" type="date">
     <input id="linkDoc" placeholder="Link do Documento (Anexo)">
     <input id="linkVideo" placeholder="Link do Vídeo (opcional)">
-    <button class="btn-salvar" onclick="salvar()">Salvar</button>
-    <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+    <button class="btn-salvar" id="btnSalvar">Salvar</button>
+    <button class="btn-cancelar" id="btnCancelar">Cancelar</button>
   </div>
 </div>
 
+<!-- Script principal -->
 <script type="module">
-  // ================================
-  // 🔗 Conexão com Supabase
-  // ================================
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
   const SUPABASE_URL = "https://gsjbdysadnkyeqbbdkit.supabase.co";
-  const SUPABASE_KEY = "YOUR_PUBLIC_ANON_KEY"; // 🔁 Substitua pela sua chave pública
+  const SUPABASE_KEY = "YOUR_PUBLIC_ANON_KEY"; // substitua pela sua chave pública
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   let tipoRegistro = "";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("modalForm");
+    const btnAta = document.getElementById("btnAta");
+    const btnRequisito = document.getElementById("btnRequisito");
+    const btnSalvar = document.getElementById("btnSalvar");
+    const btnCancelar = document.getElementById("btnCancelar");
+
+    btnAta.addEventListener("click", () => abrirModal("ata"));
+    btnRequisito.addEventListener("click", () => abrirModal("requisito"));
+    btnSalvar.addEventListener("click", salvar);
+    btnCancelar.addEventListener("click", fecharModal);
+
+    carregarTabelas();
+  });
 
   function abrirModal(tipo) {
     tipoRegistro = tipo;
@@ -206,17 +193,14 @@
     document.getElementById("modalForm").style.display = "none";
   }
 
-  // ================================
-  // 💾 Função de Salvamento
-  // ================================
   async function salvar() {
-    const nome = document.getElementById("nomeProjeto").value;
-    const area = document.getElementById("area").value;
-    const responsavel = document.getElementById("responsavel").value;
-    const status = document.getElementById("status").value || "Backlog";
+    const nome = document.getElementById("nomeProjeto").value.trim();
+    const area = document.getElementById("area").value.trim() || (tipoRegistro === "ata" ? "Ata" : "Requisito");
+    const responsavel = document.getElementById("responsavel").value.trim();
+    const status = document.getElementById("status").value.trim() || "Backlog";
     const prazo = document.getElementById("prazo").value;
-    const doc = document.getElementById("linkDoc").value;
-    const video = document.getElementById("linkVideo").value || doc; // ✅ usa o mesmo link do doc se vídeo estiver vazio
+    const doc = document.getElementById("linkDoc").value.trim();
+    const video = document.getElementById("linkVideo").value.trim() || doc;
 
     const { error } = await supabase.from("projetos").insert([
       { nome, area, responsavel, status, prazo, doc, video }
@@ -232,11 +216,8 @@
     }
   }
 
-  // ================================
-  // 📋 Carrega as listas (Atas / Requisitos)
-  // ================================
   async function carregarTabelas() {
-    const { data, error } = await supabase.from("projetos").select("*");
+    const { data, error } = await supabase.from("projetos").select("*").order("prazo", { ascending: true });
     if (error) {
       console.error(error);
       return;
@@ -247,20 +228,19 @@
     tbodyAtas.innerHTML = "";
     tbodyRequisitos.innerHTML = "";
 
-    data.forEach((p) => {
-      const linha = `<tr>
-        <td>${p.nome}</td>
-        <td>${p.status}</td>
-        <td>${p.prazo || "-"}</td>
-        <td><a href="${p.doc}" target="_blank">📎 Abrir</a></td>
-      </tr>`;
-
+    data.forEach(p => {
+      const linha = `
+        <tr>
+          <td>${p.nome}</td>
+          <td>${p.status}</td>
+          <td>${p.prazo || "-"}</td>
+          <td><a href="${p.doc}" target="_blank">📎 Abrir</a></td>
+        </tr>
+      `;
       if (p.area.toLowerCase().includes("ata")) tbodyAtas.innerHTML += linha;
       else tbodyRequisitos.innerHTML += linha;
     });
   }
-
-  carregarTabelas();
 </script>
 </body>
 </html>
