@@ -3,125 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tela de Documentação – LogFit</title>
+<title>📘 LogFit – Documentação de Projetos</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
-  body {
-    font-family: "Segoe UI", sans-serif;
-    background: #f8fafc;
-    margin: 0;
-    color: #0f172a;
-  }
-  header {
-    background: linear-gradient(90deg, #ff5a1f, #ff7a3e);
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 30px;
-    box-shadow: 0 3px 8px rgba(0,0,0,.2);
-  }
-  header h2 {font-weight: 700;font-size: 20px;margin: 0;}
-  header div {display: flex;gap: 10px;}
-  header button {
-    background: white;
-    color: #ff5a1f;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: .3s;
-  }
-  header button:hover {background: #ffe4d6;}
+body{font-family:"Segoe UI",sans-serif;background:#f8fafc;margin:0;color:#0f172a;}
+header{background:linear-gradient(90deg,#ff5a1f,#ff7a3e);color:white;display:flex;justify-content:space-between;align-items:center;padding:16px 30px;box-shadow:0 3px 8px rgba(0,0,0,.2);}
+header h2{font-weight:700;font-size:20px;margin:0}
+header div{display:flex;gap:10px;}
+header button{background:white;color:#ff5a1f;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
+header button:hover{background:#ffe4d2}
 
-  main {
-    max-width: 1000px;
-    margin: 40px auto;
-    background: white;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
+main{max-width:1100px;margin:30px auto;background:white;padding:30px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+h1{text-align:center;margin-bottom:25px;color:#ff5a1f;font-size:24px;font-weight:700;}
+section{margin-top:40px;}
+h3{color:#ff5a1f;margin-bottom:8px;}
+.btn-novo{background:#ff5a1f;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
+.btn-novo:hover{background:#ff7a3e;}
+table{width:100%;border-collapse:collapse;margin-top:12px;border-radius:8px;overflow:hidden;}
+th,td{padding:10px;text-align:left;font-size:14px;border-bottom:1px solid #e2e8f0;}
+th{background:#ff7a3e;color:white;}
+tr:nth-child(even){background:#f8fafc;}
+a{color:#0284c7;text-decoration:none;font-weight:600;}
+a:hover{text-decoration:underline;}
 
-  h3 {color: #ff5a1f;margin-top: 30px;}
-
-  .btn-novo {
-    background: #ff5a1f;
-    color: white;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: .3s;
-    margin-bottom: 10px;
-  }
-  .btn-novo:hover {background: #ff7a3e;}
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 12px;
-  }
-  th, td {text-align: left;padding: 10px;}
-  th {background: #ff7a3e;color: white;}
-  tr:nth-child(even) {background: #f2f2f2;}
-
-  /* Modal */
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    justify-content: center;
-    align-items: center;
-  }
-  .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 400px;
-  }
-  input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 6px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-  .btn-salvar {
-    background: #ff5a1f;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  .btn-salvar:hover {background: #ff7a3e;}
-  .btn-cancelar {
-    background: #475569;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
+/* MODAL */
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;}
+.modal-content{background:white;padding:20px;border-radius:10px;width:400px;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.modal-content h3{margin-top:0;color:#ff5a1f;}
+input{width:100%;padding:8px;margin-top:6px;border:1px solid #cbd5e1;border-radius:6px;}
+.btn-salvar{background:#ff5a1f;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:10px;}
+.btn-salvar:hover{background:#ff7a3e;}
+.btn-cancelar{background:#475569;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:10px;margin-left:8px;}
 </style>
 </head>
 <body>
 <header>
   <h2>📘 Tela de Documentação – LogFit</h2>
   <div>
-    <button onclick="window.location.href='index.html'">🏠 Home</button>
-    <button onclick="window.location.href='sprint.html'">📅 Sprint / Etapas</button>
+    <button onclick="location.href='home.html'">🏠 Home</button>
+    <button onclick="location.href='etapas.html'">📅 Sprint / Etapas</button>
   </div>
 </header>
 
 <main>
+  <h1>📄 Cadastro de Atas e Requisitos</h1>
+
+  <!-- SEÇÃO ATAS -->
   <section>
     <h3>Atas</h3>
     <button class="btn-novo" id="btnAta">+ Nova Ata</button>
@@ -131,6 +58,7 @@
     </table>
   </section>
 
+  <!-- SEÇÃO REQUISITOS -->
   <section>
     <h3>Requisitos</h3>
     <button class="btn-novo" id="btnRequisito">+ Novo Requisito</button>
@@ -141,10 +69,10 @@
   </section>
 </main>
 
-<!-- Modal -->
+<!-- MODAL -->
 <div class="modal" id="modalForm">
   <div class="modal-content">
-    <h3 id="tituloModal">Novo Registro</h3>
+    <h3 id="tituloModal">Nova Ata</h3>
     <input id="nomeProjeto" placeholder="Nome do Projeto">
     <input id="area" placeholder="Área">
     <input id="responsavel" placeholder="Responsável">
@@ -157,90 +85,93 @@
   </div>
 </div>
 
-<!-- Script principal -->
 <script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-  const SUPABASE_URL = "https://gsjbdysadnkyeqbbdkit.supabase.co";
-  const SUPABASE_KEY = "YOUR_PUBLIC_ANON_KEY"; // substitua pela sua chave pública
-  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+// 🔗 Conexão Supabase
+const supabase = createClient(
+  'https://cczuqesooeguvqimeoks.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg'
+);
 
-  let tipoRegistro = "";
+let tipoRegistro = "";
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const modal = document.getElementById("modalForm");
-    const btnAta = document.getElementById("btnAta");
-    const btnRequisito = document.getElementById("btnRequisito");
-    const btnSalvar = document.getElementById("btnSalvar");
-    const btnCancelar = document.getElementById("btnCancelar");
+// Inicializa eventos quando o DOM estiver pronto
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("btnAta").addEventListener("click", () => abrirModal("ata"));
+  document.getElementById("btnRequisito").addEventListener("click", () => abrirModal("requisito"));
+  document.getElementById("btnSalvar").addEventListener("click", salvar);
+  document.getElementById("btnCancelar").addEventListener("click", fecharModal);
+  carregarTabelas();
+});
 
-    btnAta.addEventListener("click", () => abrirModal("ata"));
-    btnRequisito.addEventListener("click", () => abrirModal("requisito"));
-    btnSalvar.addEventListener("click", salvar);
-    btnCancelar.addEventListener("click", fecharModal);
+// Abre modal
+function abrirModal(tipo) {
+  tipoRegistro = tipo;
+  document.getElementById("modalForm").style.display = "flex";
+  document.getElementById("tituloModal").innerText = tipo === "ata" ? "Nova Ata" : "Novo Requisito";
+}
 
+// Fecha modal
+function fecharModal() {
+  document.getElementById("modalForm").style.display = "none";
+}
+
+// Salvar registro
+async function salvar() {
+  const nome = document.getElementById("nomeProjeto").value.trim();
+  const area = document.getElementById("area").value.trim() || (tipoRegistro === "ata" ? "Ata" : "Requisito");
+  const responsavel = document.getElementById("responsavel").value.trim();
+  const status = document.getElementById("status").value.trim() || "Backlog";
+  const prazo = document.getElementById("prazo").value;
+  const doc = document.getElementById("linkDoc").value.trim();
+  const video = document.getElementById("linkVideo").value.trim() || doc;
+
+  if (!nome || !area) {
+    alert("Preencha ao menos o nome e a área.");
+    return;
+  }
+
+  const { error } = await supabase.from("projetos").insert([
+    { nome, area, responsavel, status, prazo, doc, video }
+  ]);
+
+  if (error) {
+    alert("Erro ao salvar: " + error.message);
+    console.error(error);
+  } else {
+    alert("✅ Registro salvo com sucesso!");
+    fecharModal();
     carregarTabelas();
+  }
+}
+
+// Carregar tabelas
+async function carregarTabelas() {
+  const { data, error } = await supabase.from("projetos").select("*").order("prazo", { ascending: true });
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const tbodyAtas = document.querySelector("#tabelaAtas tbody");
+  const tbodyRequisitos = document.querySelector("#tabelaRequisitos tbody");
+  tbodyAtas.innerHTML = "";
+  tbodyRequisitos.innerHTML = "";
+
+  data.forEach(p => {
+    const linha = `
+      <tr>
+        <td>${p.nome}</td>
+        <td>${p.status}</td>
+        <td>${p.prazo || "-"}</td>
+        <td><a href="${p.doc}" target="_blank">📎 Abrir</a></td>
+      </tr>
+    `;
+    if (p.area?.toLowerCase().includes("ata")) tbodyAtas.innerHTML += linha;
+    else tbodyRequisitos.innerHTML += linha;
   });
-
-  function abrirModal(tipo) {
-    tipoRegistro = tipo;
-    document.getElementById("modalForm").style.display = "flex";
-    document.getElementById("tituloModal").innerText =
-      tipo === "ata" ? "Nova Ata" : "Novo Requisito";
-  }
-
-  function fecharModal() {
-    document.getElementById("modalForm").style.display = "none";
-  }
-
-  async function salvar() {
-    const nome = document.getElementById("nomeProjeto").value.trim();
-    const area = document.getElementById("area").value.trim() || (tipoRegistro === "ata" ? "Ata" : "Requisito");
-    const responsavel = document.getElementById("responsavel").value.trim();
-    const status = document.getElementById("status").value.trim() || "Backlog";
-    const prazo = document.getElementById("prazo").value;
-    const doc = document.getElementById("linkDoc").value.trim();
-    const video = document.getElementById("linkVideo").value.trim() || doc;
-
-    const { error } = await supabase.from("projetos").insert([
-      { nome, area, responsavel, status, prazo, doc, video }
-    ]);
-
-    if (error) {
-      alert("Erro ao salvar: " + error.message);
-      console.error(error);
-    } else {
-      alert("✅ Registro salvo com sucesso!");
-      fecharModal();
-      carregarTabelas();
-    }
-  }
-
-  async function carregarTabelas() {
-    const { data, error } = await supabase.from("projetos").select("*").order("prazo", { ascending: true });
-    if (error) {
-      console.error(error);
-      return;
-    }
-
-    const tbodyAtas = document.querySelector("#tabelaAtas tbody");
-    const tbodyRequisitos = document.querySelector("#tabelaRequisitos tbody");
-    tbodyAtas.innerHTML = "";
-    tbodyRequisitos.innerHTML = "";
-
-    data.forEach(p => {
-      const linha = `
-        <tr>
-          <td>${p.nome}</td>
-          <td>${p.status}</td>
-          <td>${p.prazo || "-"}</td>
-          <td><a href="${p.doc}" target="_blank">📎 Abrir</a></td>
-        </tr>
-      `;
-      if (p.area.toLowerCase().includes("ata")) tbodyAtas.innerHTML += linha;
-      else tbodyRequisitos.innerHTML += linha;
-    });
-  }
+}
 </script>
 </body>
 </html>
