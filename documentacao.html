@@ -6,34 +6,148 @@
 <title>📘 LogFit – Documentação de Projetos</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
-body{font-family:"Segoe UI",sans-serif;background:#f8fafc;margin:0;color:#0f172a;}
-header{background:linear-gradient(90deg,#ff5a1f,#ff7a3e);color:white;display:flex;justify-content:space-between;align-items:center;padding:16px 30px;box-shadow:0 3px 8px rgba(0,0,0,.2);}
+body {
+  font-family:"Segoe UI",sans-serif;
+  background:#f8fafc;
+  margin:0;
+  color:#0f172a;
+}
+
+header {
+  background:linear-gradient(90deg,#ff5a1f,#ff7a3e);
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 30px;
+  box-shadow:0 3px 8px rgba(0,0,0,.2);
+}
 header h2{font-weight:700;font-size:20px;margin:0}
 header div{display:flex;gap:10px;}
-header button{background:white;color:#ff5a1f;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
+header button{
+  background:white;
+  color:#ff5a1f;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
 header button:hover{background:#ffe4d2}
 
-main{max-width:1100px;margin:30px auto;background:white;padding:30px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,0.1);}
-h1{text-align:center;margin-bottom:25px;color:#ff5a1f;font-size:24px;font-weight:700;}
-section{margin-top:40px;}
-h3{color:#ff5a1f;margin-bottom:8px;}
-.btn-novo{background:#ff5a1f;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
+main {
+  max-width:1200px;
+  margin:40px auto;
+  background:white;
+  padding:35px;
+  border-radius:12px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align:center;
+  margin-bottom:25px;
+  color:#ff5a1f;
+  font-size:26px;
+  font-weight:700;
+}
+
+section {margin-top:40px;}
+h3 {color:#ff5a1f;margin-bottom:10px;}
+.btn-novo {
+  background:#ff5a1f;
+  color:white;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
 .btn-novo:hover{background:#ff7a3e;}
-table{width:100%;border-collapse:collapse;margin-top:12px;border-radius:8px;overflow:hidden;}
-th,td{padding:10px;text-align:left;font-size:14px;border-bottom:1px solid #e2e8f0;}
-th{background:#ff7a3e;color:white;}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+  border-radius:10px;
+  overflow:hidden;
+}
+th,td {
+  padding:12px;
+  text-align:left;
+  font-size:14px;
+  border-bottom:1px solid #e2e8f0;
+}
+th {
+  background:#ff7a3e;
+  color:white;
+}
 tr:nth-child(even){background:#f8fafc;}
-a{color:#0284c7;text-decoration:none;font-weight:600;}
+a {color:#0284c7;text-decoration:none;font-weight:600;}
 a:hover{text-decoration:underline;}
+.action-btn {
+  border:none;
+  border-radius:6px;
+  padding:5px 10px;
+  cursor:pointer;
+  font-weight:600;
+  color:white;
+}
+.edit {background:#0284c7;}
+.delete {background:#ef4444;}
+.edit:hover{background:#0369a1;}
+.delete:hover{background:#b91c1c;}
 
 /* MODAL */
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;}
-.modal-content{background:white;padding:20px;border-radius:10px;width:400px;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
-.modal-content h3{margin-top:0;color:#ff5a1f;}
-input{width:100%;padding:8px;margin-top:6px;border:1px solid #cbd5e1;border-radius:6px;}
-.btn-salvar{background:#ff5a1f;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:10px;}
-.btn-salvar:hover{background:#ff7a3e;}
-.btn-cancelar{background:#475569;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:10px;margin-left:8px;}
+.modal {
+  display:none;
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.55);
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+}
+.modal-content {
+  background:white;
+  padding:25px;
+  border-radius:10px;
+  width:420px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.3);
+  animation:fadeIn .3s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+.modal-content h3{color:#ff5a1f;margin-top:0;text-align:center;}
+input,select {
+  width:100%;
+  padding:8px;
+  margin-top:6px;
+  border:1px solid #cbd5e1;
+  border-radius:6px;
+}
+.btn-salvar {
+  background:#16a34a;
+  color:white;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  margin-top:10px;
+}
+.btn-salvar:hover{background:#15803d;}
+.btn-cancelar {
+  background:#475569;
+  color:white;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  margin-left:8px;
+}
 </style>
 </head>
 <body>
@@ -48,22 +162,44 @@ input{width:100%;padding:8px;margin-top:6px;border:1px solid #cbd5e1;border-radi
 <main>
   <h1>📄 Cadastro de Atas e Requisitos</h1>
 
-  <!-- SEÇÃO ATAS -->
+  <!-- ATAS -->
   <section>
     <h3>Atas</h3>
-    <button class="btn-novo" id="btnAta">+ Nova Ata</button>
+    <button class="btn-novo" onclick="abrirModal('ata')">+ Nova Ata</button>
     <table id="tabelaAtas">
-      <thead><tr><th>Projeto</th><th>Status</th><th>Prazo</th><th>Anexo</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Projeto</th>
+          <th>Categoria</th>
+          <th>Área</th>
+          <th>Responsável</th>
+          <th>Status</th>
+          <th>Prazo</th>
+          <th>Anexo</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
       <tbody></tbody>
     </table>
   </section>
 
-  <!-- SEÇÃO REQUISITOS -->
+  <!-- REQUISITOS -->
   <section>
     <h3>Requisitos</h3>
-    <button class="btn-novo" id="btnRequisito">+ Novo Requisito</button>
+    <button class="btn-novo" onclick="abrirModal('requisito')">+ Novo Requisito</button>
     <table id="tabelaRequisitos">
-      <thead><tr><th>Projeto</th><th>Status</th><th>Prazo</th><th>Anexo</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Projeto</th>
+          <th>Categoria</th>
+          <th>Área</th>
+          <th>Responsável</th>
+          <th>Status</th>
+          <th>Prazo</th>
+          <th>Anexo</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
       <tbody></tbody>
     </table>
   </section>
@@ -74,13 +210,16 @@ input{width:100%;padding:8px;margin-top:6px;border:1px solid #cbd5e1;border-radi
   <div class="modal-content">
     <h3 id="tituloModal">Nova Ata</h3>
     <input id="nomeProjeto" placeholder="Nome do Projeto">
+    <input id="categoria" placeholder="Categoria">
     <input id="area" placeholder="Área">
     <input id="responsavel" placeholder="Responsável">
     <input id="status" placeholder="Status (ex: Backlog)">
     <input id="prazo" type="date">
     <input id="linkDoc" placeholder="Link do Documento (Anexo)">
-    <button class="btn-salvar" id="btnSalvar">Salvar</button>
-    <button class="btn-cancelar" id="btnCancelar">Cancelar</button>
+    <div style="text-align:right;">
+      <button class="btn-salvar" id="btnSalvar">Salvar</button>
+      <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+    </div>
   </div>
 </div>
 
@@ -94,82 +233,98 @@ const supabase = createClient(
 );
 
 let tipoRegistro = "";
+let idEditando = null;
 
-// Inicializa eventos quando o DOM estiver pronto
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("btnAta").addEventListener("click", () => abrirModal("ata"));
-  document.getElementById("btnRequisito").addEventListener("click", () => abrirModal("requisito"));
-  document.getElementById("btnSalvar").addEventListener("click", salvar);
-  document.getElementById("btnCancelar").addEventListener("click", fecharModal);
-  carregarTabelas();
+// Abrir modal
+window.abrirModal = (tipo, item=null) => {
+  tipoRegistro = tipo;
+  idEditando = item ? item.id : null;
+  document.getElementById("tituloModal").innerText = idEditando ? "Editar Registro" : (tipo==="ata" ? "Nova Ata" : "Novo Requisito");
+  document.getElementById("modalForm").style.display = "flex";
+
+  // Se for edição, preencher campos
+  if(item){
+    document.getElementById("nomeProjeto").value = item.nome || "";
+    document.getElementById("categoria").value = item.categoria || "";
+    document.getElementById("area").value = item.area || "";
+    document.getElementById("responsavel").value = item.responsavel || "";
+    document.getElementById("status").value = item.status || "";
+    document.getElementById("prazo").value = item.prazo || "";
+    document.getElementById("linkDoc").value = item.doc || "";
+  } else {
+    document.querySelectorAll("#modalForm input").forEach(i=>i.value="");
+  }
+};
+
+window.fecharModal = ()=>document.getElementById("modalForm").style.display="none";
+
+// Salvar (criar ou editar)
+document.getElementById("btnSalvar").addEventListener("click", async()=>{
+  const nome=document.getElementById("nomeProjeto").value.trim();
+  const categoria=document.getElementById("categoria").value.trim();
+  const area=document.getElementById("area").value.trim();
+  const responsavel=document.getElementById("responsavel").value.trim();
+  const status=document.getElementById("status").value.trim()||"Backlog";
+  const prazo=document.getElementById("prazo").value||null;
+  const doc=document.getElementById("linkDoc").value.trim();
+
+  if(!nome){alert("Informe o nome do projeto!");return;}
+
+  const dados={nome,categoria,area,responsavel,status,prazo,doc};
+  if(tipoRegistro==="ata") dados.area="Ata";
+
+  let result;
+  if(idEditando){
+    result=await supabase.from("projetos").update(dados).eq("id",idEditando);
+  }else{
+    result=await supabase.from("projetos").insert([dados]);
+  }
+
+  if(result.error){alert("Erro: "+result.error.message);console.error(result.error);}
+  else{alert("✅ Registro salvo com sucesso!");fecharModal();carregar();}
 });
 
-// Abre modal
-function abrirModal(tipo) {
-  tipoRegistro = tipo;
-  document.getElementById("modalForm").style.display = "flex";
-  document.getElementById("tituloModal").innerText = tipo === "ata" ? "Nova Ata" : "Novo Requisito";
-}
-
-// Fecha modal
-function fecharModal() {
-  document.getElementById("modalForm").style.display = "none";
-}
-
-// Salvar registro (sem campo "video")
-async function salvar() {
-  const nome = document.getElementById("nomeProjeto").value.trim();
-  const area = document.getElementById("area").value.trim() || (tipoRegistro === "ata" ? "Ata" : "Requisito");
-  const responsavel = document.getElementById("responsavel").value.trim();
-  const status = document.getElementById("status").value.trim() || "Backlog";
-  const prazo = document.getElementById("prazo").value;
-  const doc = document.getElementById("linkDoc").value.trim();
-
-  if (!nome || !area) {
-    alert("Preencha ao menos o nome e a área.");
-    return;
-  }
-
-  const { error } = await supabase.from("projetos").insert([
-    { nome, area, responsavel, status, prazo, doc }
-  ]);
-
-  if (error) {
-    alert("Erro ao salvar: " + error.message);
-    console.error(error);
-  } else {
-    alert("✅ Registro salvo com sucesso!");
-    fecharModal();
-    carregarTabelas();
+// Excluir
+window.excluir = async(id)=>{
+  if(confirm("Excluir este registro?")){
+    const {error}=await supabase.from("projetos").delete().eq("id",id);
+    if(error){alert("Erro ao excluir");console.error(error);}
+    else{alert("Excluído!");carregar();}
   }
 }
 
-// Carregar tabelas
-async function carregarTabelas() {
-  const { data, error } = await supabase.from("projetos").select("*").order("prazo", { ascending: true });
-  if (error) {
-    console.error(error);
-    return;
-  }
+// Carregar dados
+async function carregar(){
+  const {data,error}=await supabase.from("projetos").select("*").order("id",{ascending:true});
+  if(error){console.error(error);return;}
+  render(data);
+}
 
-  const tbodyAtas = document.querySelector("#tabelaAtas tbody");
-  const tbodyRequisitos = document.querySelector("#tabelaRequisitos tbody");
-  tbodyAtas.innerHTML = "";
-  tbodyRequisitos.innerHTML = "";
-
-  data.forEach(p => {
-    const linha = `
-      <tr>
-        <td>${p.nome}</td>
-        <td>${p.status}</td>
-        <td>${p.prazo || "-"}</td>
-        <td>${p.doc ? `<a href="${p.doc}" target="_blank">📎 Abrir</a>` : "-"}</td>
-      </tr>
+function render(lista){
+  const atas=document.querySelector("#tabelaAtas tbody");
+  const reqs=document.querySelector("#tabelaRequisitos tbody");
+  atas.innerHTML=""; reqs.innerHTML="";
+  lista.forEach(p=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${p.nome||""}</td>
+      <td>${p.categoria||"-"}</td>
+      <td>${p.area||"-"}</td>
+      <td>${p.responsavel||"-"}</td>
+      <td>${p.status||"-"}</td>
+      <td>${p.prazo||"-"}</td>
+      <td>${p.doc?`<a href="${p.doc}" target="_blank">📎 Abrir</a>`:"-"}</td>
+      <td>
+        <button class="action-btn edit" onclick='abrirModal("${p.area?.includes("Ata")?"ata":"requisito"}", ${JSON.stringify(p)})'>✏️</button>
+        <button class="action-btn delete" onclick="excluir('${p.id}')">🗑️</button>
+      </td>
     `;
-    if (p.area?.toLowerCase().includes("ata")) tbodyAtas.innerHTML += linha;
-    else tbodyRequisitos.innerHTML += linha;
+    if(p.area?.toLowerCase().includes("ata")) atas.appendChild(tr);
+    else reqs.appendChild(tr);
   });
 }
+
+carregar();
 </script>
 </body>
 </html>
