@@ -1,348 +1,360 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tela de Documentação – LogFit</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-
-  <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: #f8fafc;
-      margin: 0;
-      color: #0f172a;
-    }
-
-    header {
-      background: linear-gradient(90deg, #ff5a1f, #ff7a3e);
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 30px;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    header h2 {
-      font-weight: 700;
-      font-size: 20px;
-      margin: 0;
-    }
-
-    header div {
-      display: flex;
-      gap: 10px;
-    }
-
-    header button {
-      background: white;
-      color: #ff5a1f;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    header button:hover {
-      background: #ffe4d6;
-    }
-
-    main {
-      padding: 30px;
-    }
-
-    h3 {
-      color: #ff5a1f;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .btn {
-      background: #ff5a1f;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: 0.3s;
-    }
-
-    .btn:hover {
-      background: #ff7a3e;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    th, td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #e2e8f0;
-    }
-
-    th {
-      background: #ff5a1f;
-      color: white;
-    }
-
-    tr:hover {
-      background: #f1f5f9;
-    }
-
-    /* MODAL */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-
-    .modal-content {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      width: 400px;
-      max-width: 90%;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { transform: scale(0.95); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    .modal-content h4 {
-      color: #ff5a1f;
-      margin-top: 0;
-    }
-
-    label {
-      font-weight: 600;
-      color: #334155;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
-      font-family: "Segoe UI", sans-serif;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: #64748b;
-      font-size: 14px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentações – LogFit</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<style>
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f8fafc;
+  margin: 0;
+  color: #0f172a;
+}
+header {
+  background: linear-gradient(90deg, #ff5a1f, #ff7a3e);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 30px;
+  box-shadow: 0 3px 8px rgba(0,0,0,.2);
+}
+header h2 {
+  font-weight: 700;
+  font-size: 20px;
+  margin: 0;
+}
+header div {
+  display: flex;
+  gap: 10px;
+}
+header button {
+  background: white;
+  color: #ff5a1f;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .3s;
+}
+header button:hover { background: #ffe4d6; }
+main {
+  padding: 30px;
+  max-width: 1100px;
+  margin: auto;
+}
+h3 {
+  color: #ff5a1f;
+  text-align: center;
+  margin: 35px 0 10px;
+}
+.section {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+.section-header {
+  background: #ff5a1f;
+  color: white;
+  font-weight: 700;
+  font-size: 18px;
+  padding: 10px 15px;
+}
+button.add-btn {
+  background: #ff5a1f;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 15px;
+  transition: 0.3s;
+}
+button.add-btn:hover { background: #ff7a3e; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+}
+th {
+  background: #ff5a1f;
+  color: white;
+}
+tr:hover { background: #f1f5f9; }
+.details {
+  display: none;
+  background: #fff7f4;
+  padding: 12px 20px;
+  border-top: 1px solid #ffd7c2;
+}
+.expand-btn {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 16px;
+}
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #64748b;
+  font-size: 14px;
+}
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.modal-content h4 {
+  color: #ff5a1f;
+  margin-top: 0;
+}
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+.btn {
+  background: #ff5a1f;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn:hover { background: #ff7a3e; }
+</style>
 </head>
 <body>
-  <header>
-    <h2>📘 Tela de Documentação – LogFit</h2>
-    <div>
-      <button onclick="window.location.href='index.html'">🏠 Home</button>
-      <button onclick="window.location.href='sprint.html'">📅 Sprint / Etapas</button>
-    </div>
-  </header>
 
-  <main>
-    <h3>Documentações</h3>
-    <button class="btn" id="novaDoc">+ Nova Documentação</button>
+<header>
+  <h2>📘 Tela de Documentação – LogFit</h2>
+  <div>
+    <button onclick="window.location.href='index.html'">🏠 Home</button>
+    <button onclick="window.location.href='sprint.html'">📅 Sprint / Etapas</button>
+  </div>
+</header>
 
-    <table id="tabela">
+<main>
+  <!-- ATAS -->
+  <div class="section">
+    <div class="section-header">Atas</div>
+    <button class="add-btn" onclick="abrirModal('Ata')">+ Nova Ata</button>
+    <table id="tabela-atas">
       <thead>
         <tr>
-          <th>Nome do Projeto</th>
+          <th></th>
+          <th>Projeto</th>
           <th>Categoria</th>
           <th>Área</th>
           <th>Responsável</th>
           <th>Prazo</th>
-          <th>Link</th>
-          <th>Vídeo</th>
-          <th>Ações</th>
+          <th>Anexo</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
-  </main>
-
-  <footer>© LogFit Logística • Refit • 2025</footer>
-
-  <!-- MODAL -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h4>Adicionar Documentação</h4>
-
-      <label>Nome do Projeto</label>
-      <input id="nome" type="text" />
-
-      <label>Categoria</label>
-      <select id="categoria">
-        <option value="">Selecione</option>
-        <option value="Ata">Ata</option>
-        <option value="Requisito">Requisito</option>
-        <option value="Relatório">Relatório</option>
-      </select>
-
-      <label>Área</label>
-      <input id="area" type="text" />
-
-      <label>Responsável</label>
-      <input id="responsavel" type="text" />
-
-      <label>Prazo</label>
-      <input id="prazo" type="date" />
-
-      <label>Link do Documento</label>
-      <input id="doc" type="text" />
-
-      <label>Link do Vídeo (opcional)</label>
-      <input id="video" type="text" />
-
-      <div style="text-align: right; margin-top: 15px;">
-        <button class="btn" onclick="salvar()">Salvar</button>
-        <button class="btn" style="background:#64748b" onclick="fecharModal()">Cancelar</button>
-      </div>
-    </div>
   </div>
 
-  <!-- Supabase -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script>
-    const supabaseUrl = "https://<SEU-PROJETO>.supabase.co"; // 🔧 Substitua pelo seu
-    const supabaseKey = "public-anon-key"; // 🔧 Substitua pela sua chave pública
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+  <!-- REQUISITOS -->
+  <div class="section">
+    <div class="section-header">Requisitos</div>
+    <button class="add-btn" onclick="abrirModal('Requisito')">+ Novo Requisito</button>
+    <table id="tabela-requisitos">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Projeto</th>
+          <th>Categoria</th>
+          <th>Área</th>
+          <th>Responsável</th>
+          <th>Prazo</th>
+          <th>Anexo</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</main>
 
-    const modal = document.getElementById("modal");
-    const novaDocBtn = document.getElementById("novaDoc");
-    let editandoId = null;
+<footer>© LogFit Logística • Refit • 2025</footer>
 
-    // 🔹 Garante que o botão realmente abre o modal
-    novaDocBtn.addEventListener("click", () => {
-      modal.style.display = "flex";
-      editandoId = null;
-      limparCampos();
-    });
+<!-- MODAL -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <h4 id="tituloModal">Adicionar Registro</h4>
+    <input type="hidden" id="categoria">
+    <label>Nome do Projeto</label>
+    <input id="nome" type="text">
+    <label>Área</label>
+    <input id="area" type="text">
+    <label>Responsável</label>
+    <input id="responsavel" type="text">
+    <label>Prazo</label>
+    <input id="prazo" type="date">
+    <label>Link do Documento (Anexo)</label>
+    <input id="doc" type="text" placeholder="https://...">
+    <label>Link do Vídeo (opcional)</label>
+    <input id="video" type="text" placeholder="https://...">
+    <div style="text-align:right;">
+      <button class="btn" onclick="salvar()">Salvar</button>
+      <button class="btn" style="background:#64748b" onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
 
-    function fecharModal() {
-      modal.style.display = "none";
-    }
+<!-- SUPABASE -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+const supabaseUrl = "https://cczuqesooeguvqimeoks.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg";
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    window.onclick = (event) => {
-      if (event.target === modal) fecharModal();
-    };
+const modal = document.getElementById("modal");
+let categoriaAtual = "";
+let editandoId = null;
 
-    function limparCampos() {
-      ["nome", "categoria", "area", "responsavel", "prazo", "doc", "video"].forEach(id => {
-        document.getElementById(id).value = "";
-      });
-    }
+function abrirModal(tipo) {
+  categoriaAtual = tipo;
+  document.getElementById("tituloModal").textContent = `Adicionar ${tipo}`;
+  document.getElementById("categoria").value = tipo;
+  modal.style.display = "flex";
+}
 
-    async function carregar() {
-      const { data, error } = await supabase.from("projetos").select("*").order("prazo", { ascending: true });
-      if (error) return alert("Erro ao carregar dados!");
+function fecharModal() {
+  modal.style.display = "none";
+  limparCampos();
+}
 
-      const tbody = document.querySelector("#tabela tbody");
-      tbody.innerHTML = "";
-      data.forEach((p) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${p.nome || ""}</td>
-          <td>${p.categoria || ""}</td>
-          <td>${p.area || ""}</td>
-          <td>${p.responsavel || ""}</td>
-          <td>${p.prazo || ""}</td>
-          <td>${p.doc ? `<a href="${p.doc}" target="_blank">Abrir</a>` : "-"}</td>
-          <td>${p.video ? `<a href="${p.video}" target="_blank">🎥</a>` : "-"}</td>
-          <td><button class="btn" onclick="editar('${p.id}')">Editar</button>
-              <button class="btn" style="background:#dc2626" onclick="excluir('${p.id}')">Excluir</button></td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
+function limparCampos() {
+  ["nome","area","responsavel","prazo","doc","video"].forEach(id=>{
+    document.getElementById(id).value="";
+  });
+}
 
-    async function salvar() {
-      const nome = document.getElementById("nome").value.trim();
-      const categoria = document.getElementById("categoria").value.trim();
-      const area = document.getElementById("area").value.trim();
-      const responsavel = document.getElementById("responsavel").value.trim();
-      const prazo = document.getElementById("prazo").value;
-      const doc = document.getElementById("doc").value.trim();
-      const video = document.getElementById("video").value.trim();
+window.onclick = e => { if(e.target === modal) fecharModal(); };
 
-      if (!nome || !categoria) return alert("Preencha os campos obrigatórios!");
+async function carregar() {
+  const { data, error } = await supabase.from("projetos").select("*").order("prazo",{ascending:true});
+  if(error){ alert("Erro ao carregar dados!"); return; }
 
-      const registro = {
-        nome,
-        categoria,
-        area,
-        responsavel,
-        prazo: prazo || null,
-        doc,
-        video,
-        status: "Backlog"
-      };
+  const atas = data.filter(p => p.categoria === "Ata");
+  const reqs = data.filter(p => p.categoria === "Requisito");
 
-      let error;
-      if (editandoId) {
-        ({ error } = await supabase.from("projetos").update(registro).eq("id", editandoId));
-      } else {
-        ({ error } = await supabase.from("projetos").insert(registro));
-      }
+  renderTabela("tabela-atas", atas);
+  renderTabela("tabela-requisitos", reqs);
+}
 
-      if (error) {
-        console.error(error);
-        alert("Erro ao salvar: " + (error.message || ""));
-        return;
-      }
+function renderTabela(id, registros){
+  const tbody = document.querySelector(`#${id} tbody`);
+  tbody.innerHTML = "";
+  registros.forEach(r=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><button class="expand-btn" onclick="toggleDetalhes('${r.id}')">▶</button></td>
+      <td>${r.nome||""}</td>
+      <td>${r.categoria||""}</td>
+      <td>${r.area||""}</td>
+      <td>${r.responsavel||""}</td>
+      <td>${r.prazo||""}</td>
+      <td>${r.doc?`<a href="${r.doc}" target="_blank">Abrir</a>`:"-"}</td>
+    `;
+    tbody.appendChild(tr);
 
-      fecharModal();
-      carregar();
-    }
+    const detalhes = document.createElement("tr");
+    detalhes.classList.add("details");
+    detalhes.id = `detalhes-${r.id}`;
+    detalhes.innerHTML = `
+      <td colspan="7">
+        <b>Responsável:</b> ${r.responsavel||"—"}<br>
+        <b>Prazo:</b> ${r.prazo||"—"}<br>
+        <b>Link Vídeo:</b> ${r.video?`<a href="${r.video}" target="_blank">🎥 Assistir</a>`:"—"}<br><br>
+        <button class="btn" onclick="editar('${r.id}')">Editar</button>
+        <button class="btn" style="background:#dc2626" onclick="excluir('${r.id}')">Excluir</button>
+      </td>
+    `;
+    tbody.appendChild(detalhes);
+  });
+}
 
-    async function editar(id) {
-      const { data, error } = await supabase.from("projetos").select("*").eq("id", id).single();
-      if (error) return alert("Erro ao carregar registro!");
+function toggleDetalhes(id){
+  const linha = document.getElementById(`detalhes-${id}`);
+  linha.style.display = linha.style.display === "table-row" ? "none" : "table-row";
+}
 
-      editandoId = id;
-      modal.style.display = "flex";
-      document.getElementById("nome").value = data.nome;
-      document.getElementById("categoria").value = data.categoria;
-      document.getElementById("area").value = data.area;
-      document.getElementById("responsavel").value = data.responsavel;
-      document.getElementById("prazo").value = data.prazo ? data.prazo.split("T")[0] : "";
-      document.getElementById("doc").value = data.doc;
-      document.getElementById("video").value = data.video;
-    }
+async function salvar(){
+  const nome = nomeInput.value.trim();
+  const area = areaInput.value.trim();
+  const responsavel = responsavelInput.value.trim();
+  const prazo = prazoInput.value;
+  const doc = docInput.value.trim();
+  const video = videoInput.value.trim();
+  const categoria = categoriaAtual;
 
-    async function excluir(id) {
-      if (!confirm("Deseja realmente excluir esta documentação?")) return;
-      const { error } = await supabase.from("projetos").delete().eq("id", id);
-      if (error) return alert("Erro ao excluir!");
-      carregar();
-    }
+  if(!nome || !categoria) return alert("Preencha os campos obrigatórios!");
 
-    carregar();
-  </script>
+  const registro = { nome, area, responsavel, prazo, doc, video, categoria, status:"Backlog" };
+  let error;
+  if(editandoId){
+    ({error} = await supabase.from("projetos").update(registro).eq("id", editandoId));
+  } else {
+    ({error} = await supabase.from("projetos").insert(registro));
+  }
+  if(error){ alert("Erro ao salvar!"); console.error(error); return; }
+
+  fecharModal();
+  carregar();
+}
+
+async function editar(id){
+  const {data,error} = await supabase.from("projetos").select("*").eq("id",id).single();
+  if(error){alert("Erro ao carregar registro!");return;}
+  editandoId = id;
+  categoriaAtual = data.categoria;
+  document.getElementById("tituloModal").textContent = `Editar ${data.categoria}`;
+  modal.style.display = "flex";
+  document.getElementById("nome").value=data.nome||"";
+  document.getElementById("area").value=data.area||"";
+  document.getElementById("responsavel").value=data.responsavel||"";
+  document.getElementById("prazo").value=data.prazo?data.prazo.split("T")[0]:"";
+  document.getElementById("doc").value=data.doc||"";
+  document.getElementById("video").value=data.video||"";
+}
+
+async function excluir(id){
+  if(!confirm("Deseja realmente excluir este registro?")) return;
+  const {error} = await supabase.from("projetos").delete().eq("id",id);
+  if(error){alert("Erro ao excluir!");return;}
+  carregar();
+}
+
+carregar();
+</script>
 </body>
 </html>
