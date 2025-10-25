@@ -244,7 +244,7 @@ let idEditando = null;
 
 // 🔹 Abrir modal
 window.abrirModal = (tipo, item=null) => {
-  tipoRegistro = tipo; // "ata" ou "requisito"
+  tipoRegistro = tipo;
   idEditando = item ? item.id : null;
   document.getElementById("tituloModal").innerText = idEditando ? "Editar Registro" : (tipo==="ata" ? "Nova Ata" : "Novo Requisito");
   document.getElementById("modalForm").style.display = "flex";
@@ -263,10 +263,10 @@ window.abrirModal = (tipo, item=null) => {
 
 window.fecharModal = ()=>document.getElementById("modalForm").style.display="none";
 
-// 🔹 Salvar (com atualização imediata)
+// 🔹 Salvar registro (ATA ou REQUISITO)
 document.getElementById("btnSalvar").addEventListener("click", async()=>{
   const nome=document.getElementById("nomeProjeto").value.trim();
-  const status=document.getElementById("status").value.trim(); // Categoria
+  const status=document.getElementById("status").value.trim();
   const area=document.getElementById("area").value.trim();
   const responsavel=document.getElementById("responsavel").value.trim();
   const prazo=document.getElementById("prazo").value||null;
@@ -276,16 +276,17 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
 
   const dados={nome,status,area,responsavel,prazo,doc};
 
+  const tabela = tipoRegistro === "ata" ? "documentacao_atas" : "documentacao_requisitos";
   let result;
+
   if(idEditando){
-    result = await supabase.from("projetos").update(dados).eq("id",idEditando);
+    result = await supabase.from(tabela).update(dados).eq("id",idEditando);
   } else {
-    result = await supabase.from("projetos").insert([dados]).select().single();
+    result = await supabase.from(tabela).insert([dados]).select().single();
   }
 
   if(result.error){
     alert("Erro: "+result.error.message);
-    console.error(result.error);
   } else {
     alert("✅ Registro salvo com sucesso!");
     fecharModal();
@@ -295,7 +296,7 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
   }
 });
 
-// 🔹 Adiciona dinamicamente
+// 🔹 Exibir nas tabelas corretas
 function adicionarNaTabela(p){
   const tbody = p.tipo === "ata"
     ? document.querySelector("#tabelaAtas tbody")
@@ -311,16 +312,17 @@ function adicionarNaTabela(p){
     <td>${p.doc?`<a href="${p.doc}" target="_blank">📎 Abrir</a>`:"-"}</td>
     <td>
       <button class="action-btn edit" onclick='abrirModal("${p.tipo}", ${JSON.stringify(p)})'>✏️</button>
-      <button class="action-btn delete" onclick="excluir('${p.id}')">🗑️</button>
+      <button class="action-btn delete" onclick="excluir('${p.tipo}','${p.id}')">🗑️</button>
     </td>
   `;
   tbody.appendChild(tr);
 }
 
-// 🔹 Excluir
-window.excluir = async(id)=>{
+// 🔹 Excluir registro
+window.excluir = async(tipo,id)=>{
+  const tabela = tipo === "ata" ? "documentacao_atas" : "documentacao_requisitos";
   if(confirm("Excluir este registro?")){
-    await supabase.from("projetos").delete().eq("id",id);
+    await supabase.from(tabela).delete().eq("id",id);
     alert("🗑️ Registro removido!");
     document.querySelectorAll("tr").forEach(r=>{
       if(r.innerHTML.includes(id)) r.remove();
@@ -328,17 +330,12 @@ window.excluir = async(id)=>{
   }
 }
 
-// 🔹 Carrega dados iniciais
+// 🔹 Carregar registros das duas tabelas
 (async function carregar(){
-  const {data,error}=await supabase.from("projetos").select("*").order("id",{ascending:true});
-  if(error){console.error(error);return;}
-  data.forEach(p=>{
-    if (p.area?.toLowerCase().includes("req") || p.status?.toLowerCase().includes("req"))
-      p.tipo = "requisito";
-    else
-      p.tipo = "ata";
-    adicionarNaTabela(p);
-  });
+  const {data:atas}=await supabase.from("documentacao_atas").select("*").order("id",{ascending:true});
+  const {data:requisitos}=await supabase.from("documentacao_requisitos").select("*").order("id",{ascending:true});
+  atas?.forEach(p=>{p.tipo="ata";adicionarNaTabela(p);});
+  requisitos?.forEach(p=>{p.tipo="requisito";adicionarNaTabela(p);});
 })();
 </script>
 </body>
