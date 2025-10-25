@@ -285,7 +285,7 @@ function renderTabela(id, registros) {
       <td>${r.area || ""}</td>
       <td>${r.responsavel || ""}</td>
       <td>${r.prazo || ""}</td>
-      <td>${r.anexo ? `<a href="${r.anexo}" target="_blank">Abrir</a>` : "-"}</td>
+      <td>${r.video ? `<a href="${r.video}" target="_blank">Abrir</a>` : "-"}</td>
     `;
     tbody.appendChild(tr);
 
@@ -296,7 +296,7 @@ function renderTabela(id, registros) {
       <td colspan="7">
         <b>Responsável:</b> ${r.responsavel || "—"}<br>
         <b>Prazo:</b> ${r.prazo || "—"}<br>
-        <b>Anexo:</b> ${r.anexo ? `<a href="${r.anexo}" target="_blank">📎 Abrir Link</a>` : "—"}<br><br>
+        <b>Link:</b> ${r.video ? `<a href="${r.video}" target="_blank">📎 Abrir Link</a>` : "—"}<br><br>
         <button class="btn" onclick="editar('${r.id}')">Editar</button>
         <button class="btn" style="background:#dc2626" onclick="excluir('${r.id}')">Excluir</button>
       </td>
@@ -315,16 +315,12 @@ async function salvar() {
   const area = document.getElementById("area").value.trim();
   const responsavel = document.getElementById("responsavel").value.trim();
   const prazo = document.getElementById("prazo").value;
-  const doc = document.getElementById("doc").value.trim();
-  const video = document.getElementById("video").value.trim();
+  const link = document.getElementById("doc").value.trim() || document.getElementById("video").value.trim();
   const status = statusAtual;
 
   if (!nome || !status) return alert("Preencha os campos obrigatórios!");
 
-  // 🔹 Usa o mesmo campo 'anexo' para doc e video
-  const anexo = video || doc;
-
-  const registro = { nome, area, responsavel, prazo, anexo, status };
+  const registro = { nome, area, responsavel, prazo, video: link, status };
 
   let error;
   if (editandoId) {
@@ -356,8 +352,8 @@ async function editar(id) {
   document.getElementById("area").value = data.area || "";
   document.getElementById("responsavel").value = data.responsavel || "";
   document.getElementById("prazo").value = data.prazo ? data.prazo.split("T")[0] : "";
-  document.getElementById("doc").value = data.anexo || "";
-  document.getElementById("video").value = data.anexo || "";
+  document.getElementById("doc").value = data.video || "";
+  document.getElementById("video").value = data.video || "";
 }
 
 async function excluir(id) {
