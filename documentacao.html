@@ -117,7 +117,7 @@ input{width:100%;padding:8px;margin-top:6px;border:1px solid #cbd5e1;border-radi
 
 <script>
 /* ======================================================
-   🔗 CONEXÃO SUPABASE (projeto correto + RLS habilitado)
+   🔗 CONEXÃO SUPABASE
    ====================================================== */
 const supabase = window.supabase.createClient(
   "https://cczuqesooeguvqimeoks.supabase.co",
@@ -151,6 +151,7 @@ window.abrirModal = (tipo, item = null) => {
     document.querySelectorAll("#modalForm input").forEach(i => i.value = "");
   }
 };
+
 window.fecharModal = () => {
   document.getElementById("modalForm").style.display = "none";
 };
@@ -171,7 +172,7 @@ document.getElementById("btnSalvar").addEventListener("click", async () => {
 
   let linkDocFinal = docManual;
 
-  // Upload opcional no Storage (buckets “atas” e “requisitos” já devem existir)
+  // Upload opcional no Storage
   if (arquivo) {
     const bucket = tipoRegistro === "ata" ? "atas" : "requisitos";
     const nomeArquivo = `${Date.now()}_${arquivo.name}`;
@@ -222,12 +223,14 @@ async function atualizarTabelas() {
   document.querySelector("#tabelaRequisitos tbody").innerHTML = "";
   await carregar();
 }
+
 async function carregar() {
   const { data: atas } = await supabase.from("documentacao_atas").select("*").order("id", { ascending: false });
   const { data: requisitos } = await supabase.from("documentacao_requisitos").select("*").order("id", { ascending: false });
   atas?.forEach(p => { p.tipo = "ata"; adicionarNaTabela(p); });
   requisitos?.forEach(p => { p.tipo = "requisito"; adicionarNaTabela(p); });
 }
+
 function adicionarNaTabela(p) {
   const tbody = p.tipo === "ata"
     ? document.querySelector("#tabelaAtas tbody")
