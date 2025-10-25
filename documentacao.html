@@ -79,7 +79,6 @@ input{width:100%;padding:8px;margin-top:6px;border:1px solid #cbd5e1;border-radi
     <input id="status" placeholder="Status (ex: Backlog)">
     <input id="prazo" type="date">
     <input id="linkDoc" placeholder="Link do Documento (Anexo)">
-    <input id="linkVideo" placeholder="Link do Vídeo (opcional)">
     <button class="btn-salvar" id="btnSalvar">Salvar</button>
     <button class="btn-cancelar" id="btnCancelar">Cancelar</button>
   </div>
@@ -117,7 +116,7 @@ function fecharModal() {
   document.getElementById("modalForm").style.display = "none";
 }
 
-// Salvar registro
+// Salvar registro (sem campo "video")
 async function salvar() {
   const nome = document.getElementById("nomeProjeto").value.trim();
   const area = document.getElementById("area").value.trim() || (tipoRegistro === "ata" ? "Ata" : "Requisito");
@@ -125,7 +124,6 @@ async function salvar() {
   const status = document.getElementById("status").value.trim() || "Backlog";
   const prazo = document.getElementById("prazo").value;
   const doc = document.getElementById("linkDoc").value.trim();
-  const video = document.getElementById("linkVideo").value.trim() || doc;
 
   if (!nome || !area) {
     alert("Preencha ao menos o nome e a área.");
@@ -133,7 +131,7 @@ async function salvar() {
   }
 
   const { error } = await supabase.from("projetos").insert([
-    { nome, area, responsavel, status, prazo, doc, video }
+    { nome, area, responsavel, status, prazo, doc }
   ]);
 
   if (error) {
@@ -165,7 +163,7 @@ async function carregarTabelas() {
         <td>${p.nome}</td>
         <td>${p.status}</td>
         <td>${p.prazo || "-"}</td>
-        <td><a href="${p.doc}" target="_blank">📎 Abrir</a></td>
+        <td>${p.doc ? `<a href="${p.doc}" target="_blank">📎 Abrir</a>` : "-"}</td>
       </tr>
     `;
     if (p.area?.toLowerCase().includes("ata")) tbodyAtas.innerHTML += linha;
