@@ -232,6 +232,7 @@ input, select {
 <!-- SUPABASE -->
 <!-- SUPABASE -->
 <!-- SUPABASE -->
+<!-- SUPABASE -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
 const supabaseUrl = "https://cczuqesooeguvqimeoks.supabase.co";
@@ -243,7 +244,7 @@ let statusAtual = "";
 let editandoId = null;
 
 function abrirModal(tipo) {
-  statusAtual = tipo; // "Ata" ou "Requisito"
+  statusAtual = tipo;
   document.getElementById("tituloModal").textContent = `Adicionar ${tipo}`;
   modal.style.display = "flex";
 }
@@ -284,7 +285,7 @@ function renderTabela(id, registros) {
       <td>${r.area || ""}</td>
       <td>${r.responsavel || ""}</td>
       <td>${r.prazo || ""}</td>
-      <td>${r.doc ? `<a href="${r.doc}" target="_blank">Abrir</a>` : "-"}</td>
+      <td>${r.anexo ? `<a href="${r.anexo}" target="_blank">Abrir</a>` : "-"}</td>
     `;
     tbody.appendChild(tr);
 
@@ -295,7 +296,7 @@ function renderTabela(id, registros) {
       <td colspan="7">
         <b>Responsável:</b> ${r.responsavel || "—"}<br>
         <b>Prazo:</b> ${r.prazo || "—"}<br>
-        <b>Link Vídeo:</b> ${r.video ? `<a href="${r.video}" target="_blank">🎥 Assistir</a>` : "—"}<br><br>
+        <b>Anexo:</b> ${r.anexo ? `<a href="${r.anexo}" target="_blank">📎 Abrir Link</a>` : "—"}<br><br>
         <button class="btn" onclick="editar('${r.id}')">Editar</button>
         <button class="btn" style="background:#dc2626" onclick="excluir('${r.id}')">Excluir</button>
       </td>
@@ -320,7 +321,10 @@ async function salvar() {
 
   if (!nome || !status) return alert("Preencha os campos obrigatórios!");
 
-  const registro = { nome, area, responsavel, prazo, doc, video, status };
+  // 🔹 Usa o mesmo campo 'anexo' para doc e video
+  const anexo = video || doc;
+
+  const registro = { nome, area, responsavel, prazo, anexo, status };
 
   let error;
   if (editandoId) {
@@ -352,8 +356,8 @@ async function editar(id) {
   document.getElementById("area").value = data.area || "";
   document.getElementById("responsavel").value = data.responsavel || "";
   document.getElementById("prazo").value = data.prazo ? data.prazo.split("T")[0] : "";
-  document.getElementById("doc").value = data.doc || "";
-  document.getElementById("video").value = data.video || "";
+  document.getElementById("doc").value = data.anexo || "";
+  document.getElementById("video").value = data.anexo || "";
 }
 
 async function excluir(id) {
