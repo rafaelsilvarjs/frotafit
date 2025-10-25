@@ -20,7 +20,6 @@ body {
   color:var(--texto);
   margin:0;
 }
-
 /* ===== HEADER ===== */
 header {
   background:linear-gradient(90deg,var(--laranja),var(--laranja2));
@@ -28,52 +27,22 @@ header {
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:14px 32px;
-  box-shadow:0 3px 10px rgba(0,0,0,.25);
-  position:sticky;
-  top:0;
-  z-index:1000;
+  padding:16px 32px;
+  box-shadow:0 3px 10px rgba(0,0,0,.2);
 }
-header h2 {
-  margin:0;
-  font-size:21px;
-  font-weight:700;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-header h2::before {
-  content:"📊";
-  font-size:22px;
-}
-header nav {
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-}
+header h2 {margin:0;font-size:20px;font-weight:700;}
 header button {
   background:#fff;
   color:var(--laranja);
   border:none;
-  padding:10px 16px;
-  border-radius:10px;
+  padding:8px 14px;
+  border-radius:8px;
   font-weight:600;
   cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  box-shadow:0 2px 4px rgba(0,0,0,0.15);
-  transition:all .25s ease-in-out;
-  font-size:14px;
+  margin-left:8px;
+  transition:.3s;
 }
-header button:hover {
-  background:var(--laranja);
-  color:white;
-  transform:translateY(-2px);
-  box-shadow:0 4px 8px rgba(0,0,0,0.25);
-}
-header button i {font-size:17px;}
-
+header button:hover {background:#ffe4d2;}
 /* ===== MAIN ===== */
 main {max-width:1300px;margin:30px auto;padding:0 20px;}
 .cards {
@@ -92,7 +61,6 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
 }
 .card h3 {margin:0;font-size:16px;color:#475569;}
 .card span {display:block;font-size:28px;font-weight:700;color:var(--azul);margin-top:5px;}
-
 /* ===== FILTROS ===== */
 .filtros {
   display:flex;
@@ -109,7 +77,9 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
   font-size:14px;
   width:240px;
 }
-.dropdown {position:relative;}
+.dropdown {
+  position:relative;
+}
 .dropdown-button {
   background:#fff;
   border:1px solid var(--cinza2);
@@ -123,7 +93,9 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
   justify-content:space-between;
   min-width:180px;
 }
-.dropdown-button:hover {background:#f1f5f9;}
+.dropdown-button:hover {
+  background:#f1f5f9;
+}
 .dropdown-content {
   display:none;
   position:absolute;
@@ -146,7 +118,9 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
   margin-bottom:5px;
   color:#334155;
 }
-.dropdown.open .dropdown-content {display:block;}
+.dropdown.open .dropdown-content {
+  display:block;
+}
 .filtros .limpar {
   background:var(--azul);
   color:#fff;
@@ -160,8 +134,9 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
   align-items:center;
   gap:6px;
 }
-.filtros .limpar:hover {background:#1e293b;}
-
+.filtros .limpar:hover {
+  background:#1e293b;
+}
 /* ===== TABELA ===== */
 table {
   width:100%;
@@ -202,20 +177,17 @@ footer {
 </style>
 </head>
 <body>
-
 <header>
-  <h2>LogFit – Gestão de Projetos</h2>
-  <nav>
-    <button onclick="location.href='index.html'"><i>➕</i> Incluir / Editar</button>
-    <button onclick="location.href='painel-geral.html'"><i>🏠</i> Home</button>
-    <button onclick="location.href='documentacao.html'"><i>📑</i> Documentação</button>
-    <button onclick="location.href='etapas.html'"><i>📆</i> Sprint</button>
-    <button onclick="logout()"><i>🚪</i> Sair</button>
-  </nav>
+  <h2>📊 LogFit – Gestão de Projetos</h2>
+  <div>
+    <button onclick="location.href='index.html'">+ Incluir / Editar Projetos</button>
+    <button onclick="location.href='painel-geral.html'">🏠 Página Inicial</button>
+    <button onclick="location.href='etapas.html'">📆 SPRINT</button>
+    <button onclick="logout()">Sair</button>
+  </div>
 </header>
 
 <main>
-  <!-- CARDS -->
   <section class="cards">
     <div class="card"><h3>Total</h3><span id="total">0</span></div>
     <div class="card"><h3>📁 Backlog</h3><span id="backlog">0</span></div>
@@ -223,10 +195,8 @@ footer {
     <div class="card"><h3>✅ Concluídos</h3><span id="concluidos">0</span></div>
   </section>
 
-  <!-- FILTROS -->
   <div class="filtros">
     <input type="text" id="filtroProjeto" placeholder="🔍 Filtrar por nome do projeto...">
-    
     <div class="dropdown" id="areaDropdown">
       <div class="dropdown-button">Filtrar por Área ▾</div>
       <div class="dropdown-content">
@@ -264,7 +234,6 @@ footer {
     <button class="limpar" onclick="limparFiltros()">🧹 Limpar</button>
   </div>
 
-  <!-- TABELA -->
   <table id="tabelaProjetos">
     <thead>
       <tr>
@@ -333,31 +302,6 @@ function renderTabela(lista){
       <td>${p.prazo||"—"}</td>
       <td>${p.doc?`<a href="${p.doc}" target="_blank">Abrir</a>`:"—"}</td>`;
     tbody.appendChild(tr);
-
-    const trSprints=document.createElement("tr");
-    trSprints.classList.add("etapas-row");
-    trSprints.style.display="none";
-    let sprintsHTML="";
-    if(p.etapas&&Array.isArray(p.etapas)&&p.etapas.length>0){
-      p.etapas.forEach(e=>{
-        sprintsHTML+=`
-          <div style="border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:8px;">
-            <strong>${e.nome||"Sprint sem nome"}</strong><br>
-            <span class="status-badge status-${e.status}">${e.status}</span><br>
-            <small>Responsável: ${e.responsavel||"—"} | Prazo: ${e.prazo||"—"}</small><br>
-            <small>Descrição: ${e.descricao||"—"}</small><br>
-            <small>Anexo: ${e.anexo?`<a href="${e.anexo}" target="_blank">Abrir</a>`:"—"}</small>
-          </div>`;
-      });
-    } else sprintsHTML=`<em style="color:#64748b;">Nenhuma sprint cadastrada</em>`;
-    trSprints.innerHTML=`<td colspan="8">${sprintsHTML}</td>`;
-    tbody.appendChild(trSprints);
-
-    tr.querySelector(".toggle-btn").addEventListener("click",e=>{
-      const open=trSprints.style.display==="table-row";
-      trSprints.style.display=open?"none":"table-row";
-      e.target.textContent=open?"⯈":"⯆";
-    });
   });
 }
 
