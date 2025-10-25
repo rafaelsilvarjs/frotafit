@@ -230,6 +230,7 @@ input, select {
 </div>
 
 <!-- SUPABASE -->
+<!-- SUPABASE -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
 const supabaseUrl = "https://cczuqesooeguvqimeoks.supabase.co";
@@ -240,6 +241,7 @@ const modal = document.getElementById("modal");
 let categoriaAtual = "";
 let editandoId = null;
 
+// 🔸 Abre o modal para nova ata/requisito
 function abrirModal(tipo) {
   categoriaAtual = tipo;
   document.getElementById("tituloModal").textContent = `Adicionar ${tipo}`;
@@ -247,22 +249,26 @@ function abrirModal(tipo) {
   modal.style.display = "flex";
 }
 
+// 🔸 Fecha modal
 function fecharModal() {
   modal.style.display = "none";
   limparCampos();
 }
 
+// 🔸 Limpa campos
 function limparCampos() {
-  ["nome","area","responsavel","prazo","doc","video"].forEach(id=>{
-    document.getElementById(id).value="";
+  ["nome", "area", "responsavel", "prazo", "doc", "video"].forEach(id => {
+    document.getElementById(id).value = "";
   });
 }
 
-window.onclick = e => { if(e.target === modal) fecharModal(); };
+// 🔸 Fecha modal ao clicar fora
+window.onclick = e => { if (e.target === modal) fecharModal(); };
 
+// 🔸 Carrega dados da tabela
 async function carregar() {
-  const { data, error } = await supabase.from("projetos").select("*").order("prazo",{ascending:true});
-  if(error){ alert("Erro ao carregar dados!"); return; }
+  const { data, error } = await supabase.from("projetos").select("*").order("prazo", { ascending: true });
+  if (error) { alert("Erro ao carregar dados!"); console.error(error); return; }
 
   const atas = data.filter(p => p.categoria === "Ata");
   const reqs = data.filter(p => p.categoria === "Requisito");
@@ -271,19 +277,20 @@ async function carregar() {
   renderTabela("tabela-requisitos", reqs);
 }
 
-function renderTabela(id, registros){
+// 🔸 Renderiza tabelas
+function renderTabela(id, registros) {
   const tbody = document.querySelector(`#${id} tbody`);
   tbody.innerHTML = "";
-  registros.forEach(r=>{
+  registros.forEach(r => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td><button class="expand-btn" onclick="toggleDetalhes('${r.id}')">▶</button></td>
-      <td>${r.nome||""}</td>
-      <td>${r.categoria||""}</td>
-      <td>${r.area||""}</td>
-      <td>${r.responsavel||""}</td>
-      <td>${r.prazo||""}</td>
-      <td>${r.doc?`<a href="${r.doc}" target="_blank">Abrir</a>`:"-"}</td>
+      <td>${r.nome || ""}</td>
+      <td>${r.categoria || ""}</td>
+      <td>${r.area || ""}</td>
+      <td>${r.responsavel || ""}</td>
+      <td>${r.prazo || ""}</td>
+      <td>${r.doc ? `<a href="${r.doc}" target="_blank">Abrir</a>` : "-"}</td>
     `;
     tbody.appendChild(tr);
 
@@ -292,9 +299,9 @@ function renderTabela(id, registros){
     detalhes.id = `detalhes-${r.id}`;
     detalhes.innerHTML = `
       <td colspan="7">
-        <b>Responsável:</b> ${r.responsavel||"—"}<br>
-        <b>Prazo:</b> ${r.prazo||"—"}<br>
-        <b>Link Vídeo:</b> ${r.video?`<a href="${r.video}" target="_blank">🎥 Assistir</a>`:"—"}<br><br>
+        <b>Responsável:</b> ${r.responsavel || "—"}<br>
+        <b>Prazo:</b> ${r.prazo || "—"}<br>
+        <b>Link Vídeo:</b> ${r.video ? `<a href="${r.video}" target="_blank">🎥 Assistir</a>` : "—"}<br><br>
         <button class="btn" onclick="editar('${r.id}')">Editar</button>
         <button class="btn" style="background:#dc2626" onclick="excluir('${r.id}')">Excluir</button>
       </td>
@@ -303,57 +310,70 @@ function renderTabela(id, registros){
   });
 }
 
-function toggleDetalhes(id){
+// 🔸 Expande / recolhe detalhes
+function toggleDetalhes(id) {
   const linha = document.getElementById(`detalhes-${id}`);
   linha.style.display = linha.style.display === "table-row" ? "none" : "table-row";
 }
 
-async function salvar(){
-  const nome = nomeInput.value.trim();
-  const area = areaInput.value.trim();
-  const responsavel = responsavelInput.value.trim();
-  const prazo = prazoInput.value;
-  const doc = docInput.value.trim();
-  const video = videoInput.value.trim();
+// 🔸 Salvar registro (corrigido)
+async function salvar() {
+  const nome = document.getElementById("nome").value.trim();
+  const area = document.getElementById("area").value.trim();
+  const responsavel = document.getElementById("responsavel").value.trim();
+  const prazo = document.getElementById("prazo").value;
+  const doc = document.getElementById("doc").value.trim();
+  const video = document.getElementById("video").value.trim();
   const categoria = categoriaAtual;
 
-  if(!nome || !categoria) return alert("Preencha os campos obrigatórios!");
+  if (!nome || !categoria) return alert("Preencha os campos obrigatórios!");
 
-  const registro = { nome, area, responsavel, prazo, doc, video, categoria, status:"Backlog" };
+  const registro = { nome, area, responsavel, prazo, doc, video, categoria, status: "Backlog" };
+
   let error;
-  if(editandoId){
-    ({error} = await supabase.from("projetos").update(registro).eq("id", editandoId));
+  if (editandoId) {
+    ({ error } = await supabase.from("projetos").update(registro).eq("id", editandoId));
   } else {
-    ({error} = await supabase.from("projetos").insert(registro));
+    ({ error } = await supabase.from("projetos").insert(registro));
   }
-  if(error){ alert("Erro ao salvar!"); console.error(error); return; }
+
+  if (error) {
+    console.error(error);
+    alert("Erro ao salvar: " + (error.message || ""));
+    return;
+  }
 
   fecharModal();
   carregar();
 }
 
-async function editar(id){
-  const {data,error} = await supabase.from("projetos").select("*").eq("id",id).single();
-  if(error){alert("Erro ao carregar registro!");return;}
+// 🔸 Editar
+async function editar(id) {
+  const { data, error } = await supabase.from("projetos").select("*").eq("id", id).single();
+  if (error) { alert("Erro ao carregar registro!"); return; }
+
   editandoId = id;
   categoriaAtual = data.categoria;
   document.getElementById("tituloModal").textContent = `Editar ${data.categoria}`;
   modal.style.display = "flex";
-  document.getElementById("nome").value=data.nome||"";
-  document.getElementById("area").value=data.area||"";
-  document.getElementById("responsavel").value=data.responsavel||"";
-  document.getElementById("prazo").value=data.prazo?data.prazo.split("T")[0]:"";
-  document.getElementById("doc").value=data.doc||"";
-  document.getElementById("video").value=data.video||"";
+
+  document.getElementById("nome").value = data.nome || "";
+  document.getElementById("area").value = data.area || "";
+  document.getElementById("responsavel").value = data.responsavel || "";
+  document.getElementById("prazo").value = data.prazo ? data.prazo.split("T")[0] : "";
+  document.getElementById("doc").value = data.doc || "";
+  document.getElementById("video").value = data.video || "";
 }
 
-async function excluir(id){
-  if(!confirm("Deseja realmente excluir este registro?")) return;
-  const {error} = await supabase.from("projetos").delete().eq("id",id);
-  if(error){alert("Erro ao excluir!");return;}
+// 🔸 Excluir
+async function excluir(id) {
+  if (!confirm("Deseja realmente excluir este registro?")) return;
+  const { error } = await supabase.from("projetos").delete().eq("id", id);
+  if (error) { alert("Erro ao excluir!"); return; }
   carregar();
 }
 
+// Carrega os dados ao abrir
 carregar();
 </script>
 </body>
