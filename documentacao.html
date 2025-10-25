@@ -231,6 +231,7 @@ input, select {
 
 <!-- SUPABASE -->
 <!-- SUPABASE -->
+<!-- SUPABASE -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
 const supabaseUrl = "https://cczuqesooeguvqimeoks.supabase.co";
@@ -238,46 +239,39 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 const modal = document.getElementById("modal");
-let categoriaAtual = "";
+let statusAtual = "";
 let editandoId = null;
 
-// 🔸 Abre o modal para nova ata/requisito
 function abrirModal(tipo) {
-  categoriaAtual = tipo;
+  statusAtual = tipo; // "Ata" ou "Requisito"
   document.getElementById("tituloModal").textContent = `Adicionar ${tipo}`;
-  document.getElementById("categoria").value = tipo;
   modal.style.display = "flex";
 }
 
-// 🔸 Fecha modal
 function fecharModal() {
   modal.style.display = "none";
   limparCampos();
 }
 
-// 🔸 Limpa campos
 function limparCampos() {
   ["nome", "area", "responsavel", "prazo", "doc", "video"].forEach(id => {
     document.getElementById(id).value = "";
   });
 }
 
-// 🔸 Fecha modal ao clicar fora
 window.onclick = e => { if (e.target === modal) fecharModal(); };
 
-// 🔸 Carrega dados da tabela
 async function carregar() {
   const { data, error } = await supabase.from("projetos").select("*").order("prazo", { ascending: true });
   if (error) { alert("Erro ao carregar dados!"); console.error(error); return; }
 
-  const atas = data.filter(p => p.categoria === "Ata");
-  const reqs = data.filter(p => p.categoria === "Requisito");
+  const atas = data.filter(p => p.status === "Ata");
+  const reqs = data.filter(p => p.status === "Requisito");
 
   renderTabela("tabela-atas", atas);
   renderTabela("tabela-requisitos", reqs);
 }
 
-// 🔸 Renderiza tabelas
 function renderTabela(id, registros) {
   const tbody = document.querySelector(`#${id} tbody`);
   tbody.innerHTML = "";
@@ -286,7 +280,7 @@ function renderTabela(id, registros) {
     tr.innerHTML = `
       <td><button class="expand-btn" onclick="toggleDetalhes('${r.id}')">▶</button></td>
       <td>${r.nome || ""}</td>
-      <td>${r.categoria || ""}</td>
+      <td>${r.status || ""}</td>
       <td>${r.area || ""}</td>
       <td>${r.responsavel || ""}</td>
       <td>${r.prazo || ""}</td>
@@ -310,13 +304,11 @@ function renderTabela(id, registros) {
   });
 }
 
-// 🔸 Expande / recolhe detalhes
 function toggleDetalhes(id) {
   const linha = document.getElementById(`detalhes-${id}`);
   linha.style.display = linha.style.display === "table-row" ? "none" : "table-row";
 }
 
-// 🔸 Salvar registro (corrigido)
 async function salvar() {
   const nome = document.getElementById("nome").value.trim();
   const area = document.getElementById("area").value.trim();
@@ -324,11 +316,11 @@ async function salvar() {
   const prazo = document.getElementById("prazo").value;
   const doc = document.getElementById("doc").value.trim();
   const video = document.getElementById("video").value.trim();
-  const categoria = categoriaAtual;
+  const status = statusAtual;
 
-  if (!nome || !categoria) return alert("Preencha os campos obrigatórios!");
+  if (!nome || !status) return alert("Preencha os campos obrigatórios!");
 
-  const registro = { nome, area, responsavel, prazo, doc, video, categoria, status: "Backlog" };
+  const registro = { nome, area, responsavel, prazo, doc, video, status };
 
   let error;
   if (editandoId) {
@@ -347,14 +339,13 @@ async function salvar() {
   carregar();
 }
 
-// 🔸 Editar
 async function editar(id) {
   const { data, error } = await supabase.from("projetos").select("*").eq("id", id).single();
   if (error) { alert("Erro ao carregar registro!"); return; }
 
   editandoId = id;
-  categoriaAtual = data.categoria;
-  document.getElementById("tituloModal").textContent = `Editar ${data.categoria}`;
+  statusAtual = data.status;
+  document.getElementById("tituloModal").textContent = `Editar ${data.status}`;
   modal.style.display = "flex";
 
   document.getElementById("nome").value = data.nome || "";
@@ -365,7 +356,6 @@ async function editar(id) {
   document.getElementById("video").value = data.video || "";
 }
 
-// 🔸 Excluir
 async function excluir(id) {
   if (!confirm("Deseja realmente excluir este registro?")) return;
   const { error } = await supabase.from("projetos").delete().eq("id", id);
@@ -373,7 +363,6 @@ async function excluir(id) {
   carregar();
 }
 
-// Carrega os dados ao abrir
 carregar();
 </script>
 </body>
