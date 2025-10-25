@@ -116,6 +116,9 @@ input{width:100%;padding:8px;margin-top:6px;border:1px solid #cbd5e1;border-radi
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
 
 <script>
+/* ======================================================
+   🔗 CONEXÃO SUPABASE (projeto correto + RLS habilitado)
+   ====================================================== */
 const supabase = window.supabase.createClient(
   "https://cczuqesooeguvqimeoks.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg"
@@ -124,7 +127,9 @@ const supabase = window.supabase.createClient(
 let tipoRegistro = "";
 let idEditando = null;
 
-// 🔹 Abrir modal
+/* ========================
+   ⚙️ ABRIR / FECHAR MODAL
+   ======================== */
 window.abrirModal = (tipo, item = null) => {
   tipoRegistro = tipo;
   idEditando = item ? item.id : null;
@@ -146,13 +151,13 @@ window.abrirModal = (tipo, item = null) => {
     document.querySelectorAll("#modalForm input").forEach(i => i.value = "");
   }
 };
-
-// 🔹 Fechar modal
 window.fecharModal = () => {
   document.getElementById("modalForm").style.display = "none";
 };
 
-// 🔹 Salvar (com upload no storage)
+/* ==============================
+   💾 SALVAR / EDITAR REGISTRO
+   ============================== */
 document.getElementById("btnSalvar").addEventListener("click", async () => {
   const nome = document.getElementById("nomeProjeto").value.trim();
   const status = document.getElementById("status").value.trim();
@@ -166,17 +171,15 @@ document.getElementById("btnSalvar").addEventListener("click", async () => {
 
   let linkDocFinal = docManual;
 
-  // 🔹 Upload de arquivo para Supabase Storage
+  // Upload opcional no Storage (buckets “atas” e “requisitos” já devem existir)
   if (arquivo) {
     const bucket = tipoRegistro === "ata" ? "atas" : "requisitos";
     const nomeArquivo = `${Date.now()}_${arquivo.name}`;
-
     const { error: uploadError } = await supabase.storage.from(bucket).upload(nomeArquivo, arquivo);
     if (uploadError) {
       alert("❌ Erro ao fazer upload: " + uploadError.message);
       return;
     }
-
     const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(nomeArquivo);
     linkDocFinal = urlData.publicUrl;
   }
@@ -190,7 +193,8 @@ document.getElementById("btnSalvar").addEventListener("click", async () => {
   else
     result = await supabase.from(tabela).insert([dados]).select().single();
 
-  if (result.error) alert("❌ Erro: " + result.error.message);
+  if (result.error)
+    alert("❌ Erro: " + result.error.message);
   else {
     alert("✅ Registro salvo com sucesso!");
     fecharModal();
@@ -198,12 +202,36 @@ document.getElementById("btnSalvar").addEventListener("click", async () => {
   }
 });
 
-// 🔹 Adicionar linhas nas tabelas
+/* ======================
+   🧾 EXCLUIR REGISTRO
+   ====================== */
+window.excluir = async (tipo, id) => {
+  const tabela = tipo === "ata" ? "documentacao_atas" : "documentacao_requisitos";
+  if (confirm("Excluir este registro?")) {
+    const { error } = await supabase.from(tabela).delete().eq("id", id);
+    if (error) alert("Erro: " + error.message);
+    else { alert("Registro removido!"); atualizarTabelas(); }
+  }
+};
+
+/* ===========================
+   🔁 ATUALIZAR E LISTAR TABELAS
+   =========================== */
+async function atualizarTabelas() {
+  document.querySelector("#tabelaAtas tbody").innerHTML = "";
+  document.querySelector("#tabelaRequisitos tbody").innerHTML = "";
+  await carregar();
+}
+async function carregar() {
+  const { data: atas } = await supabase.from("documentacao_atas").select("*").order("id", { ascending: false });
+  const { data: requisitos } = await supabase.from("documentacao_requisitos").select("*").order("id", { ascending: false });
+  atas?.forEach(p => { p.tipo = "ata"; adicionarNaTabela(p); });
+  requisitos?.forEach(p => { p.tipo = "requisito"; adicionarNaTabela(p); });
+}
 function adicionarNaTabela(p) {
   const tbody = p.tipo === "ata"
     ? document.querySelector("#tabelaAtas tbody")
     : document.querySelector("#tabelaRequisitos tbody");
-
   const tr = document.createElement("tr");
   tr.innerHTML = `
     <td>${p.nome || ""}</td>
@@ -215,40 +243,11 @@ function adicionarNaTabela(p) {
     <td>
       <button class="action-btn edit" onclick='abrirModal("${p.tipo}", ${JSON.stringify(p)})'>✏️</button>
       <button class="action-btn delete" onclick="excluir('${p.tipo}','${p.id}')">🗑️</button>
-    </td>
-  `;
+    </td>`;
   tbody.appendChild(tr);
 }
 
-// 🔹 Excluir
-window.excluir = async (tipo, id) => {
-  const tabela = tipo === "ata" ? "documentacao_atas" : "documentacao_requisitos";
-  if (confirm("Excluir este registro?")) {
-    const { error } = await supabase.from(tabela).delete().eq("id", id);
-    if (error) alert("Erro: " + error.message);
-    else {
-      alert("Registro removido!");
-      atualizarTabelas();
-    }
-  }
-};
-
-// 🔹 Atualizar
-async function atualizarTabelas() {
-  document.querySelector("#tabelaAtas tbody").innerHTML = "";
-  document.querySelector("#tabelaRequisitos tbody").innerHTML = "";
-  await carregar();
-}
-
-// 🔹 Carregar registros
-async function carregar() {
-  const { data: atas } = await supabase.from("documentacao_atas").select("*").order("id", { ascending: false });
-  const { data: requisitos } = await supabase.from("documentacao_requisitos").select("*").order("id", { ascending: false });
-
-  atas?.forEach(p => { p.tipo = "ata"; adicionarNaTabela(p); });
-  requisitos?.forEach(p => { p.tipo = "requisito"; adicionarNaTabela(p); });
-}
-
+/* Inicializa */
 carregar();
 </script>
 </body>
