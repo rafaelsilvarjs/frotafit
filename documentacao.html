@@ -5,10 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>📘 LogFit – Documentação de Projetos</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
-
 <style>
-body {font-family:"Segoe UI",sans-serif;background:#f8fafc;margin:0;color:#0f172a;}
-header {background:linear-gradient(90deg,#ff5a1f,#ff7a3e);color:white;display:flex;justify-content:space-between;align-items:center;padding:16px 30px;box-shadow:0 3px 8px rgba(0,0,0,.2);}
+body{font-family:"Segoe UI",sans-serif;background:#f8fafc;margin:0;color:#0f172a;}
+header{background:linear-gradient(90deg,#ff5a1f,#ff7a3e);color:white;display:flex;justify-content:space-between;align-items:center;padding:16px 30px;box-shadow:0 3px 8px rgba(0,0,0,.2);}
 header h2{font-weight:700;font-size:20px;margin:0;}
 header div{display:flex;gap:10px;}
 header button{background:white;color:#ff5a1f;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
@@ -53,7 +52,6 @@ textarea{resize:vertical;min-height:60px;}
 <main>
   <h1>📄 Cadastro de Atas e Requisitos</h1>
 
-  <!-- ATAS -->
   <section>
     <h3>Atas</h3>
     <button class="btn-novo" onclick="abrirModal('ata')">+ Nova Ata</button>
@@ -65,9 +63,8 @@ textarea{resize:vertical;min-height:60px;}
           <th>Área</th>
           <th>Status</th>
           <th>Responsável</th>
-          <th>Descrição da Ata</th>
+          <th>Descrição</th>
           <th>Prazo</th>
-          <th>Anexo</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -75,7 +72,6 @@ textarea{resize:vertical;min-height:60px;}
     </table>
   </section>
 
-  <!-- REQUISITOS -->
   <section>
     <h3>Requisitos</h3>
     <button class="btn-novo" onclick="abrirModal('requisito')">+ Novo Requisito</button>
@@ -87,9 +83,8 @@ textarea{resize:vertical;min-height:60px;}
           <th>Área</th>
           <th>Status</th>
           <th>Responsável</th>
-          <th>Descrição do Requisito</th>
+          <th>Descrição</th>
           <th>Prazo</th>
-          <th>Anexo</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -108,7 +103,6 @@ textarea{resize:vertical;min-height:60px;}
     <input id="responsavel" placeholder="Responsável">
     <textarea id="descricao" placeholder="Descrição detalhada..."></textarea>
     <input id="prazo" type="date">
-    <input id="linkDoc" placeholder="Link do anexo (opcional)">
     <div style="text-align:right;">
       <button class="btn-salvar" id="btnSalvar">Salvar</button>
       <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
@@ -139,9 +133,8 @@ window.abrirModal = (tipo, item=null) => {
     document.getElementById("area").value=item.area||"";
     document.getElementById("status").value=item.status||"";
     document.getElementById("responsavel").value=item.responsavel||"";
-    document.getElementById("descricao").value=tipo==="ata"?item.descricao_atas||"":item.doc||"";
+    document.getElementById("descricao").value=item.doc||""; // usa o campo doc
     document.getElementById("prazo").value=item.prazo||"";
-    document.getElementById("linkDoc").value=item.doc||"";
   }
 };
 window.fecharModal=()=>document.getElementById("modalForm").style.display="none";
@@ -153,19 +146,16 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
   const responsavel=document.getElementById("responsavel").value.trim();
   const descricao=document.getElementById("descricao").value.trim();
   const prazo=document.getElementById("prazo").value;
-  const doc=document.getElementById("linkDoc").value.trim();
 
   if(!nome) return alert("⚠️ Informe o nome do projeto!");
 
   const dados={
-    nome:nome,
-    area:area,
-    status:status,
-    responsavel:responsavel,
-    descricao_atas: tipoRegistro==="ata"?descricao:null,
-    descricao_requesito: tipoRegistro==="requisito"?descricao:null,
-    prazo:prazo,
-    doc:doc,
+    nome,
+    area,
+    status,
+    responsavel,
+    doc: descricao, // salva descrição no campo doc
+    prazo,
     id_ata: tipoRegistro==="ata"?crypto.randomUUID():null,
     id_requisito: tipoRegistro==="requisito"?crypto.randomUUID():null
   };
@@ -197,9 +187,8 @@ function preencherTabela(id,dados,tipo){
       <td>${p.area||"-"}</td>
       <td>${p.status||"-"}</td>
       <td>${p.responsavel||"-"}</td>
-      <td>${tipo==="ata"?(p.doc||"-"):(p.doc||"-")}</td>
+      <td>${p.doc||"-"}</td>
       <td>${p.prazo||"-"}</td>
-      <td>${p.doc?`<a href="${p.doc}" target="_blank">📎 Abrir</a>`:"-"}</td>
       <td>
         <button class="action-btn edit" onclick='abrirModal("${tipo}", ${JSON.stringify(p)})'>✏️</button>
         <button class="action-btn delete" onclick="excluir('${tipo}','${p.id}')">🗑️</button>
