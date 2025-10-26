@@ -7,37 +7,173 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 
 <style>
-body{font-family:"Segoe UI",sans-serif;background:#f8fafc;margin:0;color:#0f172a;}
-header{background:linear-gradient(90deg,#ff5a1f,#ff7a3e);color:white;display:flex;justify-content:space-between;align-items:center;padding:16px 30px;box-shadow:0 3px 8px rgba(0,0,0,.2);}
-header h2{font-weight:700;font-size:20px;margin:0;}
-header div{display:flex;gap:10px;}
-header button{background:white;color:#ff5a1f;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
-header button:hover{background:#ffe4d2;}
-main{max-width:1100px;margin:30px auto;background:white;padding:30px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,0.1);}
-h1{text-align:center;margin-bottom:25px;color:#ff5a1f;font-size:26px;font-weight:700;}
-section{margin-top:40px;}
-h3{color:#ff5a1f;margin-bottom:10px;}
-.btn-novo{background:#ff5a1f;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
-.btn-novo:hover{background:#ff7a3e;}
-table{width:100%;border-collapse:collapse;margin-top:12px;border-radius:8px;overflow:hidden;}
-th,td{padding:10px;text-align:left;font-size:14px;border-bottom:1px solid #e2e8f0;}
-th{background:#ff7a3e;color:white;}
-tr:nth-child(even){background:#f8fafc;}
-a{color:#0284c7;text-decoration:none;font-weight:600;}
-a:hover{text-decoration:underline;}
-.action-btn{border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-weight:600;color:white;}
-.edit{background:#0284c7;}
-.delete{background:#ef4444;}
-.edit:hover{background:#0369a1;}
-.delete:hover{background:#b91c1c;}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);justify-content:center;align-items:center;z-index:1000;}
-.modal-content{background:white;padding:20px;border-radius:10px;width:420px;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
-.modal-content h3{margin-top:0;color:#ff5a1f;text-align:center;}
-input,textarea{width:100%;padding:8px;margin-top:6px;border:1px solid #cbd5e1;border-radius:6px;font-size:14px;}
-textarea{resize:vertical;min-height:60px;}
-.btn-salvar{background:#16a34a;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:10px;}
-.btn-salvar:hover{background:#15803d;}
-.btn-cancelar{background:#475569;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-left:8px;}
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f8fafc;
+  margin: 0;
+  color: #0f172a;
+}
+header {
+  background: linear-gradient(90deg, #ff5a1f, #ff7a3e);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 30px;
+  box-shadow: 0 3px 8px rgba(0,0,0,.2);
+}
+header h2 {
+  font-weight: 700;
+  font-size: 20px;
+  margin: 0;
+}
+header div {
+  display: flex;
+  gap: 10px;
+}
+header button {
+  background: white;
+  color: #ff5a1f;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .3s;
+}
+header button:hover {
+  background: #ffe4d2;
+}
+main {
+  max-width: 1100px;
+  margin: 30px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #ff5a1f;
+  font-size: 26px;
+  font-weight: 700;
+}
+section {
+  margin-top: 40px;
+}
+h3 {
+  color: #ff5a1f;
+  margin-bottom: 10px;
+}
+.btn-novo {
+  background: #ff5a1f;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .3s;
+}
+.btn-novo:hover {
+  background: #ff7a3e;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+th, td {
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+th {
+  background: #ff7a3e;
+  color: white;
+}
+tr:nth-child(even) {
+  background: #f8fafc;
+}
+a {
+  color: #0284c7;
+  text-decoration: none;
+  font-weight: 600;
+}
+a:hover {
+  text-decoration: underline;
+}
+.action-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: 600;
+  color: white;
+}
+.edit { background: #0284c7; }
+.delete { background: #ef4444; }
+.edit:hover { background: #0369a1; }
+.delete:hover { background: #b91c1c; }
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.55);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 420px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.modal-content h3 {
+  margin-top: 0;
+  color: #ff5a1f;
+  text-align: center;
+}
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+}
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+.btn-salvar {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 10px;
+}
+.btn-salvar:hover { background: #15803d; }
+.btn-cancelar {
+  background: #475569;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 8px;
+}
 </style>
 </head>
 
@@ -96,7 +232,7 @@ textarea{resize:vertical;min-height:60px;}
     <h3 id="tituloModal">Novo Registro</h3>
     <input id="nome" placeholder="Nome do Projeto">
     <input id="status" placeholder="Descrição">
-    <input id="responsavel" placeholder="Link do Vídeo">
+    <input id="responsavel" placeholder="Link do Vídeo (opcional)">
     <textarea id="descricao" placeholder="Descrição detalhada..."></textarea>
     <input id="prazo" type="date">
     <div style="text-align:right;">
@@ -137,34 +273,28 @@ window.fecharModal = ()=>document.getElementById("modalForm").style.display="non
 
 document.getElementById("btnSalvar").addEventListener("click", async()=>{
   const nome=document.getElementById("nome").value.trim();
-  const status=document.getElementById("status").value.trim(); // descrição
-  const responsavel=document.getElementById("responsavel").value.trim(); // vídeo
+  const status=document.getElementById("status").value.trim();
+  const responsavel=document.getElementById("responsavel").value.trim();
   const descricao=document.getElementById("descricao").value.trim();
   const prazo=document.getElementById("prazo").value;
 
   if(!nome) return alert("⚠️ Informe o nome do projeto!");
 
-  const dados={
-    nome,
-    status, // descrição
-    responsavel, // vídeo
-    doc: descricao,
-    prazo,
-    area
-  };
+  const dados={ nome, status, responsavel, doc: descricao, prazo, area };
 
   const result = idEditando
-    ? await supabase.from("projetos").update(dados).eq("id",idEditando)
-    : await supabase.from("projetos").insert([dados]);
+    ? await supabase.from("documentacao").update(dados).eq("id",idEditando)
+    : await supabase.from("documentacao").insert([dados]);
 
   if(result.error) alert("❌ Erro: "+result.error.message);
   else { alert("✅ Registro salvo com sucesso!"); fecharModal(); carregar(); }
 });
 
 async function carregar(){
-  const {data:projetos}=await supabase.from("projetos").select("*").order("created_at",{ascending:false});
-  const atas=projetos.filter(p=>p.area==="Ata");
-  const requisitos=projetos.filter(p=>p.area==="Requisito");
+  const {data:documentacao, error} = await supabase.from("documentacao").select("*").order("created_at",{ascending:false});
+  if(error){ alert("Erro ao carregar: "+error.message); return; }
+  const atas=documentacao.filter(p=>p.area==="Ata");
+  const requisitos=documentacao.filter(p=>p.area==="Requisito");
   preencherTabela("tabelaAtas",atas);
   preencherTabela("tabelaRequisitos",requisitos);
 }
@@ -189,11 +319,12 @@ function preencherTabela(id,dados){
 
 window.excluir=async(id)=>{
   if(confirm("Excluir este registro?")){
-    const {error}=await supabase.from("projetos").delete().eq("id",id);
+    const {error}=await supabase.from("documentacao").delete().eq("id",id);
     if(error) alert("Erro: "+error.message);
     else { alert("Registro removido!"); carregar(); }
   }
 };
+
 carregar();
 </script>
 </body>
