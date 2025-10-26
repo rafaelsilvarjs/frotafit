@@ -1,331 +1,273 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📘 LogFit – Documentação de Projetos</title>
-<link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📘 Tela de Documentação – LogFit</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<style>
-body {
-  font-family: "Segoe UI", sans-serif;
-  background: #f8fafc;
-  margin: 0;
-  color: #0f172a;
-}
-header {
-  background: linear-gradient(90deg, #ff5a1f, #ff7a3e);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 30px;
-  box-shadow: 0 3px 8px rgba(0,0,0,.2);
-}
-header h2 {
-  font-weight: 700;
-  font-size: 20px;
-  margin: 0;
-}
-header div {
-  display: flex;
-  gap: 10px;
-}
-header button {
-  background: white;
-  color: #ff5a1f;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: .3s;
-}
-header button:hover {
-  background: #ffe4d2;
-}
-main {
-  max-width: 1100px;
-  margin: 30px auto;
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-}
-h1 {
-  text-align: center;
-  margin-bottom: 25px;
-  color: #ff5a1f;
-  font-size: 26px;
-  font-weight: 700;
-}
-section {
-  margin-top: 40px;
-}
-h3 {
-  color: #ff5a1f;
-  margin-bottom: 10px;
-}
-.btn-novo {
-  background: #ff5a1f;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: .3s;
-}
-.btn-novo:hover {
-  background: #ff7a3e;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 12px;
-  border-radius: 8px;
-  overflow: hidden;
-}
-th, td {
-  padding: 10px;
-  text-align: left;
-  font-size: 14px;
-  border-bottom: 1px solid #e2e8f0;
-}
-th {
-  background: #ff7a3e;
-  color: white;
-}
-tr:nth-child(even) {
-  background: #f8fafc;
-}
-a {
-  color: #0284c7;
-  text-decoration: none;
-  font-weight: 600;
-}
-a:hover {
-  text-decoration: underline;
-}
-.action-btn {
-  border: none;
-  border-radius: 6px;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-weight: 600;
-  color: white;
-}
-.edit { background: #0284c7; }
-.delete { background: #ef4444; }
-.edit:hover { background: #0369a1; }
-.delete:hover { background: #b91c1c; }
-.modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.55);
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 420px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-.modal-content h3 {
-  margin-top: 0;
-  color: #ff5a1f;
-  text-align: center;
-}
-input, textarea {
-  width: 100%;
-  padding: 8px;
-  margin-top: 6px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 14px;
-}
-textarea {
-  resize: vertical;
-  min-height: 60px;
-}
-.btn-salvar {
-  background: #16a34a;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  margin-top: 10px;
-}
-.btn-salvar:hover { background: #15803d; }
-.btn-cancelar {
-  background: #475569;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  margin-left: 8px;
-}
-</style>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f8fafc;
+      margin: 0;
+      color: #0f172a;
+    }
+    header {
+      background: linear-gradient(90deg, #ff5a1f, #ff7a3e);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 30px;
+      box-shadow: 0 3px 8px rgba(0,0,0,.2);
+    }
+    header h2 {
+      font-weight: 700;
+      margin: 0;
+    }
+    header div {
+      display: flex;
+      gap: 10px;
+    }
+    header button {
+      background: white;
+      color: #ff5a1f;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    header button:hover {
+      background: #ffe4d6;
+    }
+
+    main {
+      padding: 30px;
+    }
+    h3 {
+      color: #ff5a1f;
+      margin-top: 0;
+    }
+    .secao {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      margin-bottom: 30px;
+    }
+    button.add {
+      background: #ff5a1f;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button.add:hover {
+      background: #ff7a3e;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+    th {
+      background: #ff7a3e;
+      color: white;
+    }
+    tr:hover td {
+      background: #fdf2ec;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.2);
+      animation: fadeIn .3s ease;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.9);}
+      to {opacity: 1; transform: scale(1);}
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-family: inherit;
+    }
+    .botoes {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .btn-salvar {
+      background: #16a34a;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-cancelar {
+      background: #475569;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .acoes button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: #ff5a1f;
+      font-weight: 600;
+    }
+  </style>
 </head>
 
 <body>
-<header>
-  <h2>📘 Tela de Documentação – LogFit</h2>
-  <div>
-    <button onclick="location.href='home.html'">🏠 Home</button>
-    <button onclick="location.href='etapas.html'">📅 Sprint / Etapas</button>
-  </div>
-</header>
+  <header>
+    <h2>📘 Tela de Documentação – LogFit</h2>
+    <div>
+      <button onclick="window.location.href='home.html'">🏠 Home</button>
+      <button onclick="window.location.href='sprint.html'">📅 Sprint / Etapas</button>
+    </div>
+  </header>
 
-<main>
-  <h1>📄 Cadastro de Atas e Requisitos</h1>
+  <main>
+    <div class="secao">
+      <h3>Atas e Documentações</h3>
+      <button class="add" onclick="abrirModal()">+ Nova Ata</button>
+      <table id="tabelaDocumentacao">
+        <thead>
+          <tr>
+            <th>Projeto</th>
+            <th>Descrição</th>
+            <th>Link de Vídeo</th>
+            <th>Descrição Detalhada</th>
+            <th>Prazo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
 
-  <!-- ATAS -->
-  <section>
-    <h3>Atas</h3>
-    <button class="btn-novo" onclick="abrirModal('Ata')">+ Nova Ata</button>
-    <table id="tabelaAtas">
-      <thead>
-        <tr>
-          <th>Projeto</th>
-          <th>Descrição</th>
-          <th>Vídeo</th>
-          <th>Prazo</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
-
-  <!-- REQUISITOS -->
-  <section>
-    <h3>Requisitos</h3>
-    <button class="btn-novo" onclick="abrirModal('Requisito')">+ Novo Requisito</button>
-    <table id="tabelaRequisitos">
-      <thead>
-        <tr>
-          <th>Projeto</th>
-          <th>Descrição</th>
-          <th>Vídeo</th>
-          <th>Prazo</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
-</main>
-
-<!-- MODAL -->
-<div class="modal" id="modalForm">
-  <div class="modal-content">
-    <h3 id="tituloModal">Novo Registro</h3>
-    <input id="nome" placeholder="Nome do Projeto">
-    <input id="status" placeholder="Descrição">
-    <input id="responsavel" placeholder="Link do Vídeo (opcional)">
-    <textarea id="descricao" placeholder="Descrição detalhada..."></textarea>
-    <input id="prazo" type="date">
-    <div style="text-align:right;">
-      <button class="btn-salvar" id="btnSalvar">Salvar</button>
-      <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+  <!-- Modal -->
+  <div class="modal" id="modalNovaAta">
+    <div class="modal-content">
+      <h3>Nova Ata</h3>
+      <input type="text" id="projeto" placeholder="Projeto" />
+      <input type="text" id="descricao" placeholder="Descrição" />
+      <input type="text" id="video" placeholder="Link do Vídeo (opcional)" />
+      <textarea id="descricao_detalhada" placeholder="Descrição detalhada..."></textarea>
+      <input type="date" id="prazo" />
+      <div class="botoes">
+        <button class="btn-salvar" onclick="salvarRegistro()">Salvar</button>
+        <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+  <script>
+    const supabaseUrl = "https://cczuqesooeguvqimeoks.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-<script>
-const supabase = window.supabase.createClient(
-  "https://cczuqesooeguvqimeoks.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg"
-);
+    async function carregarDocumentos() {
+      const { data, error } = await supabase
+        .from("documentacao_atas")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-let area = "";
-let idEditando = null;
+      if (error) {
+        alert("Erro ao carregar registros: " + error.message);
+        return;
+      }
 
-window.abrirModal = (tipo, item=null) => {
-  area = tipo;
-  idEditando = item ? item.id : null;
-  document.getElementById("tituloModal").innerText = idEditando ? "Editar Registro" : `Nova ${tipo}`;
-  document.getElementById("modalForm").style.display = "flex";
-  document.querySelectorAll("#modalForm input, #modalForm textarea").forEach(i=>i.value="");
-  if(item){
-    document.getElementById("nome").value=item.nome||"";
-    document.getElementById("status").value=item.status||"";
-    document.getElementById("responsavel").value=item.responsavel||"";
-    document.getElementById("descricao").value=item.doc||"";
-    document.getElementById("prazo").value=item.prazo||"";
-  }
-};
+      const tbody = document.querySelector("#tabelaDocumentacao tbody");
+      tbody.innerHTML = "";
 
-window.fecharModal = ()=>document.getElementById("modalForm").style.display="none";
+      data.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.nome || ""}</td>
+          <td>${item.status || ""}</td>
+          <td>${item.responsavel || ""}</td>
+          <td>${item.doc || ""}</td>
+          <td>${item.prazo || ""}</td>
+          <td class="acoes">
+            <button onclick="excluirRegistro('${item.id}')">🗑️ Excluir</button>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+    }
 
-document.getElementById("btnSalvar").addEventListener("click", async()=>{
-  const nome=document.getElementById("nome").value.trim();
-  const status=document.getElementById("status").value.trim();
-  const responsavel=document.getElementById("responsavel").value.trim();
-  const descricao=document.getElementById("descricao").value.trim();
-  const prazo=document.getElementById("prazo").value;
+    async function salvarRegistro() {
+      const nome = document.getElementById("projeto").value;
+      const status = document.getElementById("descricao").value;
+      const responsavel = document.getElementById("video").value;
+      const doc = document.getElementById("descricao_detalhada").value;
+      const prazo = document.getElementById("prazo").value;
 
-  if(!nome) return alert("⚠️ Informe o nome do projeto!");
+      const { error } = await supabase
+        .from("documentacao_atas")
+        .insert([{ nome, status, responsavel, doc, prazo }]);
 
-  const dados={ nome, status, responsavel, doc: descricao, prazo, area };
+      if (error) {
+        alert("Erro ao salvar: " + error.message);
+      } else {
+        alert("✅ Registro salvo com sucesso!");
+        fecharModal();
+        carregarDocumentos();
+      }
+    }
 
-  const result = idEditando
-    ? await supabase.from("documentacao").update(dados).eq("id",idEditando)
-    : await supabase.from("documentacao").insert([dados]);
+    async function excluirRegistro(id) {
+      if (!confirm("Excluir este registro?")) return;
+      const { error } = await supabase.from("documentacao_atas").delete().eq("id", id);
+      if (error) {
+        alert("Erro ao excluir: " + error.message);
+      } else {
+        carregarDocumentos();
+      }
+    }
 
-  if(result.error) alert("❌ Erro: "+result.error.message);
-  else { alert("✅ Registro salvo com sucesso!"); fecharModal(); carregar(); }
-});
+    function abrirModal() {
+      document.getElementById("modalNovaAta").style.display = "flex";
+    }
+    function fecharModal() {
+      document.getElementById("modalNovaAta").style.display = "none";
+      document.querySelectorAll("input, textarea").forEach(el => el.value = "");
+    }
 
-async function carregar(){
-  const {data:documentacao, error} = await supabase.from("documentacao").select("*").order("created_at",{ascending:false});
-  if(error){ alert("Erro ao carregar: "+error.message); return; }
-  const atas=documentacao.filter(p=>p.area==="Ata");
-  const requisitos=documentacao.filter(p=>p.area==="Requisito");
-  preencherTabela("tabelaAtas",atas);
-  preencherTabela("tabelaRequisitos",requisitos);
-}
-
-function preencherTabela(id,dados){
-  const tbody=document.querySelector(`#${id} tbody`);
-  tbody.innerHTML="";
-  dados?.forEach(p=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td>${p.nome||"-"}</td>
-      <td>${p.status||"-"}</td>
-      <td>${p.responsavel ? `<a href="${p.responsavel}" target="_blank">🎬 Abrir Vídeo</a>` : "-"}</td>
-      <td>${p.prazo||"-"}</td>
-      <td>
-        <button class="action-btn edit" onclick='abrirModal("${p.area}", ${JSON.stringify(p)})'>✏️</button>
-        <button class="action-btn delete" onclick="excluir('${p.id}')">🗑️</button>
-      </td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-window.excluir=async(id)=>{
-  if(confirm("Excluir este registro?")){
-    const {error}=await supabase.from("documentacao").delete().eq("id",id);
-    if(error) alert("Erro: "+error.message);
-    else { alert("Registro removido!"); carregar(); }
-  }
-};
-
-carregar();
-</script>
+    carregarDocumentos();
+  </script>
 </body>
 </html>
