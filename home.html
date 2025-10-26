@@ -253,11 +253,11 @@ const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
 
 // 🔒 LOGIN
-const { data:{session} } = await supabase.auth.getSession();
+const { data:{session} }=await supabase.auth.getSession();
 if(!session) window.location.href="login.html";
 
 // 📦 CARREGAR PROJETOS
-const { data: projetos, error } = await supabase.from('projetos').select('*').order('id',{ascending:true});
+const { data:projetos,error }=await supabase.from('projetos').select('*').order('id',{ascending:true});
 if(error) console.error(error);
 
 // Atualiza contadores
@@ -289,45 +289,50 @@ function renderTabela(lista){
     tr.innerHTML=`
       <td><span class="toggle-btn">⯈</span></td>
       <td>${p.nome}</td>
-      <td>${p.area}</td>
-      <td><span style="background:${cor};padding:4px 8px;border-radius:6px;font-weight:600;">${p.prioridade}</span></td>
-      <td>${p.status}</td>
+      <td>${p.area||"—"}</td>
+      <td><span style="background:${cor};padding:4px 8px;border-radius:6px;font-weight:600;">${p.prioridade||"—"}</span></td>
+      <td>${p.status||"—"}</td>
       <td>${p.responsavel||"—"}</td>
       <td>${p.prazo||"—"}</td>
       <td>${p.doc?`<a href="${p.doc}" target="_blank">Abrir</a>`:"—"}</td>`;
     tbody.appendChild(tr);
 
-    // ====== LINHA DE ETAPAS (expansível) ======
-    if(p.etapas && Array.isArray(p.etapas) && p.etapas.length>0){
+    // ✅ Conversão de etapas para array
+    let etapas=[];
+    if(Array.isArray(p.etapas)) etapas=p.etapas;
+    else if(typeof p.etapas==="string"){
+      try{ etapas=JSON.parse(p.etapas)||[]; }catch{ etapas=[]; }
+    }
+
+    if(etapas.length>0){
       const etapasTr=document.createElement("tr");
       etapasTr.classList.add("etapas-row");
       etapasTr.style.display="none";
       etapasTr.innerHTML=`
         <td colspan="8">
           <ul style="list-style:none;margin:0;padding:0;">
-            ${p.etapas.map(e=>`
+            ${etapas.map(e=>`
               <li style="padding:6px 0;border-bottom:1px solid #ddd;">
                 <b>${e.nome||"Etapa sem nome"}</b> • 
                 <span class="status-badge status-${e.status||'Pendente'}">${e.status||'Pendente'}</span> • 
                 <small>${e.responsavel||'—'} • ${e.prazo||'—'}</small>
                 ${e.anexo?` • <a href="${e.anexo}" target="_blank">📎 Anexo</a>`:""}
-              </li>
-            `).join('')}
+              </li>`).join('')}
           </ul>
         </td>`;
       tbody.appendChild(etapasTr);
 
-      // evento de abrir/recolher
+      // Evento abrir/recolher
       tr.querySelector('.toggle-btn').addEventListener('click',()=>{
-        const aberto = etapasTr.style.display === "table-row";
-        etapasTr.style.display = aberto ? "none" : "table-row";
-        tr.querySelector('.toggle-btn').textContent = aberto ? "⯈" : "⯆";
+        const aberto=etapasTr.style.display==="table-row";
+        etapasTr.style.display=aberto?"none":"table-row";
+        tr.querySelector('.toggle-btn').textContent=aberto?"⯈":"⯆";
       });
     }
   });
 }
 
-// ====== FILTRAGEM ======
+// FILTRAGEM
 function filtrarTabela(){
   const nome=document.getElementById("filtroProjeto").value.toLowerCase();
   const areas=[...document.querySelectorAll("#areaDropdown input:checked")].map(i=>i.value);
@@ -348,10 +353,7 @@ document.querySelectorAll('.dropdown input, #filtroProjeto').forEach(el=>el.addE
 
 // Dropdown abrir/fechar
 document.querySelectorAll('.dropdown-button').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const dd=btn.parentElement;
-    dd.classList.toggle('open');
-  });
+  btn.addEventListener('click',()=>btn.parentElement.classList.toggle('open'));
 });
 document.addEventListener('click',e=>{
   document.querySelectorAll('.dropdown').forEach(dd=>{
