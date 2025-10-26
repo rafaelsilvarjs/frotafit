@@ -60,11 +60,9 @@ textarea{resize:vertical;min-height:60px;}
     <table id="tabelaAtas">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Projeto</th>
-          <th>Status</th>
-          <th>Responsável</th>
           <th>Descrição</th>
+          <th>Vídeo</th>
           <th>Prazo</th>
           <th>Ações</th>
         </tr>
@@ -80,11 +78,9 @@ textarea{resize:vertical;min-height:60px;}
     <table id="tabelaRequisitos">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Projeto</th>
-          <th>Status</th>
-          <th>Responsável</th>
           <th>Descrição</th>
+          <th>Vídeo</th>
           <th>Prazo</th>
           <th>Ações</th>
         </tr>
@@ -99,8 +95,8 @@ textarea{resize:vertical;min-height:60px;}
   <div class="modal-content">
     <h3 id="tituloModal">Novo Registro</h3>
     <input id="nome" placeholder="Nome do Projeto">
-    <input id="status" placeholder="Status">
-    <input id="responsavel" placeholder="Responsável">
+    <input id="status" placeholder="Descrição">
+    <input id="responsavel" placeholder="Link do Vídeo">
     <textarea id="descricao" placeholder="Descrição detalhada..."></textarea>
     <input id="prazo" type="date">
     <div style="text-align:right;">
@@ -141,8 +137,8 @@ window.fecharModal = ()=>document.getElementById("modalForm").style.display="non
 
 document.getElementById("btnSalvar").addEventListener("click", async()=>{
   const nome=document.getElementById("nome").value.trim();
-  const status=document.getElementById("status").value.trim();
-  const responsavel=document.getElementById("responsavel").value.trim();
+  const status=document.getElementById("status").value.trim(); // descrição
+  const responsavel=document.getElementById("responsavel").value.trim(); // vídeo
   const descricao=document.getElementById("descricao").value.trim();
   const prazo=document.getElementById("prazo").value;
 
@@ -150,8 +146,8 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
 
   const dados={
     nome,
-    status,
-    responsavel,
+    status, // descrição
+    responsavel, // vídeo
     doc: descricao,
     prazo,
     area
@@ -179,11 +175,9 @@ function preencherTabela(id,dados){
   dados?.forEach(p=>{
     const tr=document.createElement("tr");
     tr.innerHTML=`
-      <td>${p.id||"-"}</td>
       <td>${p.nome||"-"}</td>
       <td>${p.status||"-"}</td>
-      <td>${p.responsavel||"-"}</td>
-      <td>${p.doc||"-"}</td>
+      <td>${p.responsavel ? `<a href="${p.responsavel}" target="_blank">🎬 Abrir Vídeo</a>` : "-"}</td>
       <td>${p.prazo||"-"}</td>
       <td>
         <button class="action-btn edit" onclick='abrirModal("${p.area}", ${JSON.stringify(p)})'>✏️</button>
