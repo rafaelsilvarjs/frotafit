@@ -116,9 +116,6 @@ input{width:100%;padding:8px;margin-top:6px;border:1px solid #cbd5e1;border-radi
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
 
 <script>
-/* ======================================================
-   🔗 CONEXÃO SUPABASE
-   ====================================================== */
 const supabase = window.supabase.createClient(
   "https://cczuqesooeguvqimeoks.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg"
@@ -127,9 +124,6 @@ const supabase = window.supabase.createClient(
 let tipoRegistro = "";
 let idEditando = null;
 
-/* ========================
-   ⚙️ ABRIR / FECHAR MODAL
-   ======================== */
 window.abrirModal = (tipo, item = null) => {
   tipoRegistro = tipo;
   idEditando = item ? item.id : null;
@@ -156,9 +150,6 @@ window.fecharModal = () => {
   document.getElementById("modalForm").style.display = "none";
 };
 
-/* ==============================
-   💾 SALVAR / EDITAR REGISTRO
-   ============================== */
 document.getElementById("btnSalvar").addEventListener("click", async () => {
   const nome = document.getElementById("nomeProjeto").value.trim();
   const status = document.getElementById("status").value.trim();
@@ -172,21 +163,17 @@ document.getElementById("btnSalvar").addEventListener("click", async () => {
 
   let linkDocFinal = docManual;
 
-  // Upload opcional no Storage
   if (arquivo) {
     const bucket = tipoRegistro === "ata" ? "atas" : "requisitos";
     const nomeArquivo = `${Date.now()}_${arquivo.name}`;
     const { error: uploadError } = await supabase.storage.from(bucket).upload(nomeArquivo, arquivo);
-    if (uploadError) {
-      alert("❌ Erro ao fazer upload: " + uploadError.message);
-      return;
-    }
+    if (uploadError) return alert("❌ Erro ao fazer upload: " + uploadError.message);
     const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(nomeArquivo);
     linkDocFinal = urlData.publicUrl;
   }
 
   const dados = { nome, status, area, responsavel, prazo, doc: linkDocFinal };
-  const tabela = tipoRegistro === "ata" ? "documentacao_atas" : "documentacao_requisitos";
+  const tabela = tipoRegistro === "ata" ? "atas" : "requisitos";
 
   let result;
   if (idEditando)
@@ -203,11 +190,8 @@ document.getElementById("btnSalvar").addEventListener("click", async () => {
   }
 });
 
-/* ======================
-   🧾 EXCLUIR REGISTRO
-   ====================== */
 window.excluir = async (tipo, id) => {
-  const tabela = tipo === "ata" ? "documentacao_atas" : "documentacao_requisitos";
+  const tabela = tipo === "ata" ? "atas" : "requisitos";
   if (confirm("Excluir este registro?")) {
     const { error } = await supabase.from(tabela).delete().eq("id", id);
     if (error) alert("Erro: " + error.message);
@@ -215,9 +199,6 @@ window.excluir = async (tipo, id) => {
   }
 };
 
-/* ===========================
-   🔁 ATUALIZAR E LISTAR TABELAS
-   =========================== */
 async function atualizarTabelas() {
   document.querySelector("#tabelaAtas tbody").innerHTML = "";
   document.querySelector("#tabelaRequisitos tbody").innerHTML = "";
@@ -225,8 +206,8 @@ async function atualizarTabelas() {
 }
 
 async function carregar() {
-  const { data: atas } = await supabase.from("documentacao_atas").select("*").order("id", { ascending: false });
-  const { data: requisitos } = await supabase.from("documentacao_requisitos").select("*").order("id", { ascending: false });
+  const { data: atas } = await supabase.from("atas").select("*").order("id", { ascending: false });
+  const { data: requisitos } = await supabase.from("requisitos").select("*").order("id", { ascending: false });
   atas?.forEach(p => { p.tipo = "ata"; adicionarNaTabela(p); });
   requisitos?.forEach(p => { p.tipo = "requisito"; adicionarNaTabela(p); });
 }
@@ -250,7 +231,6 @@ function adicionarNaTabela(p) {
   tbody.appendChild(tr);
 }
 
-/* Inicializa */
 carregar();
 </script>
 </body>
