@@ -300,7 +300,7 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
     area:area,
     status:status,
     responsavel:responsavel,
-    descricao_requesito:descricao_requesito,
+    descricao:descricao,
     prazo:prazo,
     doc:doc,
     id_ata: tipoRegistro==="ata"?crypto.randomUUID():null,
@@ -322,6 +322,7 @@ async function carregar(){
   preencherTabela("tabelaAtas",atas,"ata");
   preencherTabela("tabelaRequisitos",requisitos,"requisito");
 }
+
 function preencherTabela(id,dados,tipo){
   const tbody=document.querySelector(`#${id} tbody`);
   tbody.innerHTML="";
@@ -343,14 +344,9 @@ function preencherTabela(id,dados,tipo){
     tbody.appendChild(tr);
   });
 }
+
 window.excluir=async(tipo,id)=>{
   if(confirm("Excluir este registro?")){
     const {error}=await supabase.from("projetos").delete().eq("id",id);
     if(error) alert("Erro: "+error.message);
-    else { alert("Registro removido!"); carregar(); }
-  }
-};
-carregar();
-</script>
-</body>
-</html>
+    else { alert("Registro removido!"); carregar
