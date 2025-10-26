@@ -119,6 +119,7 @@ a:hover {
 .delete { background: #ef4444; }
 .edit:hover { background: #0369a1; }
 .delete:hover { background: #b91c1c; }
+
 .modal {
   display: none;
   position: fixed;
@@ -191,7 +192,6 @@ textarea {
 <main>
   <h1>📄 Cadastro de Atas e Requisitos</h1>
 
-  <!-- ATAS -->
   <section>
     <h3>Atas</h3>
     <button class="btn-novo" onclick="abrirModal('ata')">+ Nova Ata</button>
@@ -213,7 +213,6 @@ textarea {
     </table>
   </section>
 
-  <!-- REQUISITOS -->
   <section>
     <h3>Requisitos</h3>
     <button class="btn-novo" onclick="abrirModal('requisito')">+ Novo Requisito</button>
@@ -317,8 +316,8 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
 
 async function carregar(){
   const {data:projetos}=await supabase.from("projetos").select("*").order("created_at",{ascending:false});
-  const atas=projetos.filter(p=>p.id_ata!==null);
-  const requisitos=projetos.filter(p=>p.id_requisito!==null);
+  const atas=projetos.filter(p=>p.id_ata);
+  const requisitos=projetos.filter(p=>p.id_requisito);
   preencherTabela("tabelaAtas",atas,"ata");
   preencherTabela("tabelaRequisitos",requisitos,"requisito");
 }
@@ -349,4 +348,10 @@ window.excluir=async(tipo,id)=>{
   if(confirm("Excluir este registro?")){
     const {error}=await supabase.from("projetos").delete().eq("id",id);
     if(error) alert("Erro: "+error.message);
-    else { alert("Registro removido!"); carregar
+    else { alert("Registro removido!"); carregar(); }
+  }
+};
+carregar();
+</script>
+</body>
+</html>
