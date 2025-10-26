@@ -312,11 +312,12 @@ function renderTabela(lista){
         <td colspan="8">
           <ul style="list-style:none;margin:0;padding:0;">
             ${etapas.map(e=>`
-              <li style="padding:6px 0;border-bottom:1px solid #ddd;">
+              <li style="padding:8px 0;border-bottom:1px solid #ddd;">
                 <b>${e.nome||"Etapa sem nome"}</b> • 
                 <span class="status-badge status-${e.status||'Pendente'}">${e.status||'Pendente'}</span> • 
-                <small>${e.responsavel||'—'} • ${e.prazo||'—'}</small>
-                ${e.anexo?` • <a href="${e.anexo}" target="_blank">📎 Anexo</a>`:""}
+                <small>${e.responsavel||'—'} • ${e.prazo||'—'}</small><br>
+                <small style="color:#475569;display:block;margin-top:3px;">📝 ${e.descricao||"Sem descrição"}</small>
+                ${e.anexo?`<div style="margin-top:4px;"><a href="${e.anexo}" target="_blank">📎 Anexo</a></div>`:""}
               </li>`).join('')}
           </ul>
         </td>`;
