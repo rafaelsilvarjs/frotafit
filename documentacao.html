@@ -7,37 +7,160 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 
 <style>
-body { font-family:"Segoe UI",sans-serif;background:#f8fafc;margin:0;color:#0f172a; }
-header { background:linear-gradient(90deg,#ff5a1f,#ff7a3e);color:white;display:flex;justify-content:space-between;align-items:center;padding:16px 30px;box-shadow:0 3px 8px rgba(0,0,0,.2);}
-header h2{font-weight:700;font-size:20px;margin:0;}
-header div{display:flex;gap:10px;}
-header button{background:white;color:#ff5a1f;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
-header button:hover{background:#ffe4d2;}
-main{max-width:1100px;margin:30px auto;background:white;padding:30px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,0.1);}
-h1{text-align:center;margin-bottom:25px;color:#ff5a1f;font-size:26px;font-weight:700;}
-section{margin-top:40px;}
-h3{color:#ff5a1f;margin-bottom:10px;}
-.btn-novo{background:#ff5a1f;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
-.btn-novo:hover{background:#ff7a3e;}
-table{width:100%;border-collapse:collapse;margin-top:12px;border-radius:8px;overflow:hidden;}
-th,td{padding:10px;text-align:left;font-size:14px;border-bottom:1px solid #e2e8f0;}
-th{background:#ff7a3e;color:white;}
-tr:nth-child(even){background:#f8fafc;}
-a{color:#0284c7;text-decoration:none;font-weight:600;}
-a:hover{text-decoration:underline;}
-.action-btn{border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-weight:600;color:white;}
-.edit{background:#0284c7;}
-.delete{background:#ef4444;}
-.edit:hover{background:#0369a1;}
-.delete:hover{background:#b91c1c;}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);justify-content:center;align-items:center;z-index:1000;}
-.modal-content{background:white;padding:20px;border-radius:10px;width:420px;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
-.modal-content h3{margin-top:0;color:#ff5a1f;text-align:center;}
-input,textarea{width:100%;padding:8px;margin-top:6px;border:1px solid #cbd5e1;border-radius:6px;}
-textarea{resize:none;height:80px;}
-.btn-salvar{background:#16a34a;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:10px;}
-.btn-salvar:hover{background:#15803d;}
-.btn-cancelar{background:#475569;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-left:8px;}
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f8fafc;
+  margin: 0;
+  color: #0f172a;
+}
+header {
+  background: linear-gradient(90deg, #ff5a1f, #ff7a3e);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 30px;
+  box-shadow: 0 3px 8px rgba(0,0,0,.2);
+}
+header h2 {
+  font-weight: 700;
+  font-size: 20px;
+  margin: 0;
+}
+header div {
+  display: flex;
+  gap: 10px;
+}
+header button {
+  background: white;
+  color: #ff5a1f;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .3s;
+}
+header button:hover { background: #ffe4d2; }
+
+main {
+  max-width: 1100px;
+  margin: 30px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #ff5a1f;
+  font-size: 26px;
+  font-weight: 700;
+}
+section { margin-top: 40px; }
+h3 { color: #ff5a1f; margin-bottom: 10px; }
+
+.btn-novo {
+  background: #ff5a1f;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .3s;
+}
+.btn-novo:hover { background: #ff7a3e; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+th, td {
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+th { background: #ff7a3e; color: white; }
+tr:nth-child(even) { background: #f8fafc; }
+
+a { color: #0284c7; text-decoration: none; font-weight: 600; }
+a:hover { text-decoration: underline; }
+
+.action-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: 600;
+  color: white;
+}
+.edit { background: #0284c7; }
+.delete { background: #ef4444; }
+.edit:hover { background: #0369a1; }
+.delete:hover { background: #b91c1c; }
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.55);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 420px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.modal-content h3 {
+  margin-top: 0;
+  color: #ff5a1f;
+  text-align: center;
+}
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-family: "Segoe UI", sans-serif;
+}
+textarea { height: 70px; resize: vertical; }
+
+.btn-salvar {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 10px;
+}
+.btn-salvar:hover { background: #15803d; }
+
+.btn-cancelar {
+  background: #475569;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 8px;
+}
 </style>
 </head>
 
@@ -48,3 +171,219 @@ textarea{resize:none;height:80px;}
     <button onclick="location.href='home.html'">🏠 Home</button>
     <button onclick="location.href='etapas.html'">📅 Sprint / Etapas</button>
   </div>
+</header>
+
+<main>
+  <h1>📄 Cadastro de Atas e Requisitos</h1>
+
+  <!-- SEÇÃO ATAS -->
+  <section>
+    <h3>Atas</h3>
+    <button class="btn-novo" onclick="abrirModal('ata')">+ Nova Ata</button>
+    <table id="tabelaAtas">
+      <thead>
+        <tr>
+          <th>Projeto</th>
+          <th>Categoria</th>
+          <th>Área</th>
+          <th>Responsável</th>
+          <th>Descrição</th>
+          <th>Prazo</th>
+          <th>Anexo</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- SEÇÃO REQUISITOS -->
+  <section>
+    <h3>Requisitos</h3>
+    <button class="btn-novo" onclick="abrirModal('requisito')">+ Novo Requisito</button>
+    <table id="tabelaRequisitos">
+      <thead>
+        <tr>
+          <th>Projeto</th>
+          <th>Categoria</th>
+          <th>Área</th>
+          <th>Responsável</th>
+          <th>Descrição</th>
+          <th>Prazo</th>
+          <th>Anexo</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</main>
+
+<!-- MODAL -->
+<div class="modal" id="modalForm">
+  <div class="modal-content">
+    <h3 id="tituloModal">Nova Ata</h3>
+    <input id="nomeProjeto" placeholder="Nome do Projeto">
+    <input id="status" placeholder="Categoria">
+    <input id="area" placeholder="Área">
+    <input id="responsavel" placeholder="Responsável">
+    <textarea id="descricao" placeholder="Descrição"></textarea>
+    <input id="prazo" type="date">
+    <input id="linkDoc" placeholder="Link (opcional)">
+    <label style="margin-top:10px;font-weight:600;">📎 Upload de Arquivo:</label>
+    <input id="arquivo" type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+    <div style="text-align:right;">
+      <button class="btn-salvar" id="btnSalvar">Salvar</button>
+      <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ SDK Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+
+<script>
+/* ======================================================
+   🔗 CONEXÃO SUPABASE
+   ====================================================== */
+const supabase = window.supabase.createClient(
+  "https://cczuqesooeguvqimeoks.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg"
+);
+
+let tipoRegistro = "";
+let idEditando = null;
+
+/* ========================
+   ⚙️ ABRIR / FECHAR MODAL
+   ======================== */
+window.abrirModal = (tipo, item = null) => {
+  tipoRegistro = tipo;
+  idEditando = item ? item.id : null;
+
+  document.getElementById("tituloModal").innerText = idEditando
+    ? "Editar Registro"
+    : (tipo === "ata" ? "Nova Ata" : "Novo Requisito");
+
+  document.getElementById("modalForm").style.display = "flex";
+
+  if (item) {
+    document.getElementById("nomeProjeto").value = item.nome || "";
+    document.getElementById("status").value = item.status || "";
+    document.getElementById("area").value = item.area || "";
+    document.getElementById("responsavel").value = item.responsavel || "";
+    document.getElementById("descricao").value = item.descricao || "";
+    document.getElementById("prazo").value = item.prazo || "";
+    document.getElementById("linkDoc").value = item.doc || "";
+  } else {
+    document.querySelectorAll("#modalForm input, #modalForm textarea").forEach(i => i.value = "");
+  }
+};
+
+window.fecharModal = () => {
+  document.getElementById("modalForm").style.display = "none";
+};
+
+/* ==============================
+   💾 SALVAR / EDITAR REGISTRO
+   ============================== */
+document.getElementById("btnSalvar").addEventListener("click", async () => {
+  const nome = document.getElementById("nomeProjeto").value.trim();
+  const status = document.getElementById("status").value.trim();
+  const area = document.getElementById("area").value.trim();
+  const responsavel = document.getElementById("responsavel").value.trim();
+  const descricao = document.getElementById("descricao").value.trim();
+  const prazo = document.getElementById("prazo").value || null;
+  const docManual = document.getElementById("linkDoc").value.trim();
+  const arquivo = document.getElementById("arquivo").files[0];
+
+  if (!nome) return alert("⚠️ Informe o nome do projeto!");
+
+  let linkDocFinal = docManual;
+
+  // Upload opcional no Storage
+  if (arquivo) {
+    const bucket = tipoRegistro === "ata" ? "atas" : "requisitos";
+    const nomeArquivo = `${Date.now()}_${arquivo.name}`;
+    const { error: uploadError } = await supabase.storage.from(bucket).upload(nomeArquivo, arquivo);
+    if (uploadError) {
+      alert("❌ Erro ao fazer upload: " + uploadError.message);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(nomeArquivo);
+    linkDocFinal = urlData.publicUrl;
+  }
+
+  const dados = { nome, status, area, responsavel, descricao, prazo, doc: linkDocFinal };
+  const tabela = tipoRegistro === "ata" ? "atas" : "requisitos";
+
+  let result;
+  if (idEditando)
+    result = await supabase.from(tabela).update(dados).eq("id", idEditando);
+  else
+    result = await supabase.from(tabela).insert([dados]).select().single();
+
+  if (result.error)
+    alert("❌ Erro: " + result.error.message);
+  else {
+    alert("✅ Registro salvo com sucesso!");
+    fecharModal();
+    atualizarTabelas();
+  }
+});
+
+/* ======================
+   🧾 EXCLUIR REGISTRO
+   ====================== */
+window.excluir = async (tipo, id) => {
+  const tabela = tipo === "ata" ? "atas" : "requisitos";
+  if (confirm("Excluir este registro?")) {
+    const { error } = await supabase.from(tabela).delete().eq("id", id);
+    if (error) alert("Erro: " + error.message);
+    else { alert("Registro removido!"); atualizarTabelas(); }
+  }
+};
+
+/* ===========================
+   🔁 ATUALIZAR E LISTAR TABELAS
+   =========================== */
+async function atualizarTabelas() {
+  document.querySelector("#tabelaAtas tbody").innerHTML = "";
+  document.querySelector("#tabelaRequisitos tbody").innerHTML = "";
+  await carregar();
+}
+
+async function carregar() {
+  const { data: atas } = await supabase.from("atas").select("*").order("id", { ascending: false });
+  const { data: requisitos } = await supabase.from("requisitos").select("*").order("id", { ascending: false });
+
+  atas?.forEach(p => { p.tipo = "ata"; adicionarNaTabela(p); });
+  requisitos?.forEach(p => { p.tipo = "requisito"; adicionarNaTabela(p); });
+}
+
+function adicionarNaTabela(p) {
+  const tbody = p.tipo === "ata"
+    ? document.querySelector("#tabelaAtas tbody")
+    : document.querySelector("#tabelaRequisitos tbody");
+
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${p.nome || ""}</td>
+    <td>${p.status || "-"}</td>
+    <td>${p.area || "-"}</td>
+    <td>${p.responsavel || "-"}</td>
+    <td>${p.descricao || "-"}</td>
+    <td>${p.prazo || "-"}</td>
+    <td>${p.doc ? `<a href="${p.doc}" target="_blank">📎 Abrir</a>` : "-"}</td>
+    <td>
+      <button class="action-btn edit" onclick='abrirModal("${p.tipo}", ${JSON.stringify(p)})'>✏️</button>
+      <button class="action-btn delete" onclick="excluir('${p.tipo}','${p.id}')">🗑️</button>
+    </td>`;
+  tbody.appendChild(tr);
+}
+
+/* Inicializa */
+carregar();
+</script>
+</body>
+</html>
