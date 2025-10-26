@@ -7,176 +7,37 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 
 <style>
-body {
-  font-family: "Segoe UI", sans-serif;
-  background: #f8fafc;
-  margin: 0;
-  color: #0f172a;
-}
-header {
-  background: linear-gradient(90deg, #ff5a1f, #ff7a3e);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 30px;
-  box-shadow: 0 3px 8px rgba(0,0,0,.2);
-}
-header h2 {
-  font-weight: 700;
-  font-size: 20px;
-  margin: 0;
-}
-header div {
-  display: flex;
-  gap: 10px;
-}
-header button {
-  background: white;
-  color: #ff5a1f;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: .3s;
-}
-header button:hover {
-  background: #ffe4d2;
-}
-main {
-  max-width: 1100px;
-  margin: 30px auto;
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-}
-h1 {
-  text-align: center;
-  margin-bottom: 25px;
-  color: #ff5a1f;
-  font-size: 26px;
-  font-weight: 700;
-}
-section {
-  margin-top: 40px;
-}
-h3 {
-  color: #ff5a1f;
-  margin-bottom: 10px;
-}
-.btn-novo {
-  background: #ff5a1f;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: .3s;
-}
-.btn-novo:hover {
-  background: #ff7a3e;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 12px;
-  border-radius: 8px;
-  overflow: hidden;
-}
-th, td {
-  padding: 10px;
-  text-align: left;
-  font-size: 14px;
-  border-bottom: 1px solid #e2e8f0;
-}
-th {
-  background: #ff7a3e;
-  color: white;
-}
-tr:nth-child(even) {
-  background: #f8fafc;
-}
-a {
-  color: #0284c7;
-  text-decoration: none;
-  font-weight: 600;
-}
-a:hover {
-  text-decoration: underline;
-}
-.action-btn {
-  border: none;
-  border-radius: 6px;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-weight: 600;
-  color: white;
-}
-.edit { background: #0284c7; }
-.delete { background: #ef4444; }
-.edit:hover { background: #0369a1; }
-.delete:hover { background: #b91c1c; }
-
-.modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.55);
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 420px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-.modal-content h3 {
-  margin-top: 0;
-  color: #ff5a1f;
-  text-align: center;
-}
-input, textarea {
-  width: 100%;
-  padding: 8px;
-  margin-top: 6px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 14px;
-}
-textarea {
-  resize: vertical;
-  min-height: 60px;
-}
-.btn-salvar {
-  background: #16a34a;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  margin-top: 10px;
-}
-.btn-salvar:hover {
-  background: #15803d;
-}
-.btn-cancelar {
-  background: #475569;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  margin-left: 8px;
-}
+body {font-family:"Segoe UI",sans-serif;background:#f8fafc;margin:0;color:#0f172a;}
+header {background:linear-gradient(90deg,#ff5a1f,#ff7a3e);color:white;display:flex;justify-content:space-between;align-items:center;padding:16px 30px;box-shadow:0 3px 8px rgba(0,0,0,.2);}
+header h2{font-weight:700;font-size:20px;margin:0;}
+header div{display:flex;gap:10px;}
+header button{background:white;color:#ff5a1f;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
+header button:hover{background:#ffe4d2;}
+main{max-width:1100px;margin:30px auto;background:white;padding:30px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+h1{text-align:center;margin-bottom:25px;color:#ff5a1f;font-size:26px;font-weight:700;}
+section{margin-top:40px;}
+h3{color:#ff5a1f;margin-bottom:10px;}
+.btn-novo{background:#ff5a1f;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:.3s;}
+.btn-novo:hover{background:#ff7a3e;}
+table{width:100%;border-collapse:collapse;margin-top:12px;border-radius:8px;overflow:hidden;}
+th,td{padding:10px;text-align:left;font-size:14px;border-bottom:1px solid #e2e8f0;}
+th{background:#ff7a3e;color:white;}
+tr:nth-child(even){background:#f8fafc;}
+a{color:#0284c7;text-decoration:none;font-weight:600;}
+a:hover{text-decoration:underline;}
+.action-btn{border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-weight:600;color:white;}
+.edit{background:#0284c7;}
+.delete{background:#ef4444;}
+.edit:hover{background:#0369a1;}
+.delete:hover{background:#b91c1c;}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);justify-content:center;align-items:center;z-index:1000;}
+.modal-content{background:white;padding:20px;border-radius:10px;width:420px;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.modal-content h3{margin-top:0;color:#ff5a1f;text-align:center;}
+input,textarea{width:100%;padding:8px;margin-top:6px;border:1px solid #cbd5e1;border-radius:6px;font-size:14px;}
+textarea{resize:vertical;min-height:60px;}
+.btn-salvar{background:#16a34a;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:10px;}
+.btn-salvar:hover{background:#15803d;}
+.btn-cancelar{background:#475569;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;margin-left:8px;}
 </style>
 </head>
 
@@ -192,6 +53,7 @@ textarea {
 <main>
   <h1>📄 Cadastro de Atas e Requisitos</h1>
 
+  <!-- ATAS -->
   <section>
     <h3>Atas</h3>
     <button class="btn-novo" onclick="abrirModal('ata')">+ Nova Ata</button>
@@ -203,7 +65,7 @@ textarea {
           <th>Área</th>
           <th>Status</th>
           <th>Responsável</th>
-          <th>Descrição</th>
+          <th>Descrição da Ata</th>
           <th>Prazo</th>
           <th>Anexo</th>
           <th>Ações</th>
@@ -213,6 +75,7 @@ textarea {
     </table>
   </section>
 
+  <!-- REQUISITOS -->
   <section>
     <h3>Requisitos</h3>
     <button class="btn-novo" onclick="abrirModal('requisito')">+ Novo Requisito</button>
@@ -224,7 +87,7 @@ textarea {
           <th>Área</th>
           <th>Status</th>
           <th>Responsável</th>
-          <th>Descrição</th>
+          <th>Descrição do Requisito</th>
           <th>Prazo</th>
           <th>Anexo</th>
           <th>Ações</th>
@@ -276,7 +139,7 @@ window.abrirModal = (tipo, item=null) => {
     document.getElementById("area").value=item.area||"";
     document.getElementById("status").value=item.status||"";
     document.getElementById("responsavel").value=item.responsavel||"";
-    document.getElementById("descricao").value=item.descricao||"";
+    document.getElementById("descricao").value=tipo==="ata"?item.descricao_atas||"":item.descricao_requesito||"";
     document.getElementById("prazo").value=item.prazo||"";
     document.getElementById("linkDoc").value=item.doc||"";
   }
@@ -288,7 +151,7 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
   const area=document.getElementById("area").value.trim();
   const status=document.getElementById("status").value.trim();
   const responsavel=document.getElementById("responsavel").value.trim();
-  const descricao=document.getElementById("descricao_requesito").value.trim();
+  const descricao=document.getElementById("descricao").value.trim();
   const prazo=document.getElementById("prazo").value;
   const doc=document.getElementById("linkDoc").value.trim();
 
@@ -299,7 +162,8 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
     area:area,
     status:status,
     responsavel:responsavel,
-    descricao_requisito:descricao_requesito,
+    descricao_atas: tipoRegistro==="ata"?descricao:null,
+    descricao_requesito: tipoRegistro==="requisito"?descricao:null,
     prazo:prazo,
     doc:doc,
     id_ata: tipoRegistro==="ata"?crypto.randomUUID():null,
@@ -333,7 +197,7 @@ function preencherTabela(id,dados,tipo){
       <td>${p.area||"-"}</td>
       <td>${p.status||"-"}</td>
       <td>${p.responsavel||"-"}</td>
-      <td>${p.descricao||"-"}</td>
+      <td>${tipo==="ata"?(p.descricao_atas||"-"):(p.descricao_requesito||"-")}</td>
       <td>${p.prazo||"-"}</td>
       <td>${p.doc?`<a href="${p.doc}" target="_blank">📎 Abrir</a>`:"-"}</td>
       <td>
