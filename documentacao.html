@@ -139,7 +139,7 @@ window.abrirModal = (tipo, item=null) => {
     document.getElementById("area").value=item.area||"";
     document.getElementById("status").value=item.status||"";
     document.getElementById("responsavel").value=item.responsavel||"";
-    document.getElementById("descricao").value=tipo==="ata"?item.descricao_atas||"":item.descricao_requesito||"";
+    document.getElementById("descricao").value=tipo==="ata"?item.descricao_atas||"":item.doc||"";
     document.getElementById("prazo").value=item.prazo||"";
     document.getElementById("linkDoc").value=item.doc||"";
   }
@@ -197,7 +197,7 @@ function preencherTabela(id,dados,tipo){
       <td>${p.area||"-"}</td>
       <td>${p.status||"-"}</td>
       <td>${p.responsavel||"-"}</td>
-      <td>${tipo==="ata"?(p.descricao_atas||"-"):(p.descricao_requesito||"-")}</td>
+      <td>${tipo==="ata"?(p.doc||"-"):(p.doc||"-")}</td>
       <td>${p.prazo||"-"}</td>
       <td>${p.doc?`<a href="${p.doc}" target="_blank">📎 Abrir</a>`:"-"}</td>
       <td>
