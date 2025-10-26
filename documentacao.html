@@ -62,7 +62,6 @@ textarea{resize:vertical;min-height:60px;}
         <tr>
           <th>ID</th>
           <th>Projeto</th>
-          <th>Área</th>
           <th>Status</th>
           <th>Responsável</th>
           <th>Descrição</th>
@@ -83,7 +82,6 @@ textarea{resize:vertical;min-height:60px;}
         <tr>
           <th>ID</th>
           <th>Projeto</th>
-          <th>Área</th>
           <th>Status</th>
           <th>Responsável</th>
           <th>Descrição</th>
@@ -101,7 +99,6 @@ textarea{resize:vertical;min-height:60px;}
   <div class="modal-content">
     <h3 id="tituloModal">Novo Registro</h3>
     <input id="nome" placeholder="Nome do Projeto">
-    <input id="area" placeholder="Área">
     <input id="status" placeholder="Status">
     <input id="responsavel" placeholder="Responsável">
     <textarea id="descricao" placeholder="Descrição detalhada..."></textarea>
@@ -122,18 +119,17 @@ const supabase = window.supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg"
 );
 
-let video = "";
+let area = "";
 let idEditando = null;
 
 window.abrirModal = (tipo, item=null) => {
-  video = tipo;
+  area = tipo;
   idEditando = item ? item.id : null;
   document.getElementById("tituloModal").innerText = idEditando ? "Editar Registro" : `Nova ${tipo}`;
   document.getElementById("modalForm").style.display = "flex";
   document.querySelectorAll("#modalForm input, #modalForm textarea").forEach(i=>i.value="");
   if(item){
     document.getElementById("nome").value=item.nome||"";
-    document.getElementById("area").value=item.area||"";
     document.getElementById("status").value=item.status||"";
     document.getElementById("responsavel").value=item.responsavel||"";
     document.getElementById("descricao").value=item.doc||"";
@@ -145,7 +141,6 @@ window.fecharModal = ()=>document.getElementById("modalForm").style.display="non
 
 document.getElementById("btnSalvar").addEventListener("click", async()=>{
   const nome=document.getElementById("nome").value.trim();
-  const area=document.getElementById("area").value.trim();
   const status=document.getElementById("status").value.trim();
   const responsavel=document.getElementById("responsavel").value.trim();
   const descricao=document.getElementById("descricao").value.trim();
@@ -155,12 +150,11 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
 
   const dados={
     nome,
-    area,
     status,
     responsavel,
     doc: descricao,
     prazo,
-    video
+    area
   };
 
   const result = idEditando
@@ -173,8 +167,8 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
 
 async function carregar(){
   const {data:projetos}=await supabase.from("projetos").select("*").order("created_at",{ascending:false});
-  const atas=projetos.filter(p=>p.video==="Ata");
-  const requisitos=projetos.filter(p=>p.video==="Requisito");
+  const atas=projetos.filter(p=>p.area==="Ata");
+  const requisitos=projetos.filter(p=>p.area==="Requisito");
   preencherTabela("tabelaAtas",atas);
   preencherTabela("tabelaRequisitos",requisitos);
 }
@@ -187,13 +181,12 @@ function preencherTabela(id,dados){
     tr.innerHTML=`
       <td>${p.id||"-"}</td>
       <td>${p.nome||"-"}</td>
-      <td>${p.area||"-"}</td>
       <td>${p.status||"-"}</td>
       <td>${p.responsavel||"-"}</td>
       <td>${p.doc||"-"}</td>
       <td>${p.prazo||"-"}</td>
       <td>
-        <button class="action-btn edit" onclick='abrirModal("${p.video}", ${JSON.stringify(p)})'>✏️</button>
+        <button class="action-btn edit" onclick='abrirModal("${p.area}", ${JSON.stringify(p)})'>✏️</button>
         <button class="action-btn delete" onclick="excluir('${p.id}')">🗑️</button>
       </td>`;
     tbody.appendChild(tr);
