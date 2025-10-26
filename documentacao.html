@@ -53,6 +53,7 @@ textarea{resize:vertical;min-height:60px;}
 <main>
   <h1>📄 Cadastro de Atas e Requisitos</h1>
 
+  <!-- ATAS -->
   <section>
     <h3>Atas</h3>
     <button class="btn-novo" onclick="abrirModal('Ata')">+ Nova Ata</button>
@@ -73,6 +74,7 @@ textarea{resize:vertical;min-height:60px;}
     </table>
   </section>
 
+  <!-- REQUISITOS -->
   <section>
     <h3>Requisitos</h3>
     <button class="btn-novo" onclick="abrirModal('Requisito')">+ Novo Requisito</button>
@@ -94,6 +96,7 @@ textarea{resize:vertical;min-height:60px;}
   </section>
 </main>
 
+<!-- MODAL -->
 <div class="modal" id="modalForm">
   <div class="modal-content">
     <h3 id="tituloModal">Novo Registro</h3>
@@ -110,6 +113,7 @@ textarea{resize:vertical;min-height:60px;}
   </div>
 </div>
 
+<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
 
 <script>
@@ -118,13 +122,13 @@ const supabase = window.supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg"
 );
 
-let tipoRegistro = "";
+let categoria = "";
 let idEditando = null;
 
 window.abrirModal = (tipo, item=null) => {
-  tipoRegistro = tipo;
+  categoria = tipo;
   idEditando = item ? item.id : null;
-  document.getElementById("tituloModal").innerText = idEditando ? "Editar Registro" : `Novo ${tipo}`;
+  document.getElementById("tituloModal").innerText = idEditando ? "Editar Registro" : `Nova ${tipo}`;
   document.getElementById("modalForm").style.display = "flex";
   document.querySelectorAll("#modalForm input, #modalForm textarea").forEach(i=>i.value="");
   if(item){
@@ -156,7 +160,7 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
     responsavel,
     doc: descricao,
     prazo,
-    tipo: tipoRegistro
+    categoria
   };
 
   const result = idEditando
@@ -169,8 +173,8 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
 
 async function carregar(){
   const {data:projetos}=await supabase.from("projetos").select("*").order("created_at",{ascending:false});
-  const atas=projetos.filter(p=>p.tipo==="Ata");
-  const requisitos=projetos.filter(p=>p.tipo==="Requisito");
+  const atas=projetos.filter(p=>p.categoria==="Ata");
+  const requisitos=projetos.filter(p=>p.categoria==="Requisito");
   preencherTabela("tabelaAtas",atas);
   preencherTabela("tabelaRequisitos",requisitos);
 }
@@ -189,7 +193,7 @@ function preencherTabela(id,dados){
       <td>${p.doc||"-"}</td>
       <td>${p.prazo||"-"}</td>
       <td>
-        <button class="action-btn edit" onclick='abrirModal("${p.tipo}", ${JSON.stringify(p)})'>✏️</button>
+        <button class="action-btn edit" onclick='abrirModal("${p.categoria}", ${JSON.stringify(p)})'>✏️</button>
         <button class="action-btn delete" onclick="excluir('${p.id}')">🗑️</button>
       </td>`;
     tbody.appendChild(tr);
