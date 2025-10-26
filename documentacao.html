@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>📘 LogFit – Documentação de Projetos</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
+
 <style>
 body{font-family:"Segoe UI",sans-serif;background:#f8fafc;margin:0;color:#0f172a;}
 header{background:linear-gradient(90deg,#ff5a1f,#ff7a3e);color:white;display:flex;justify-content:space-between;align-items:center;padding:16px 30px;box-shadow:0 3px 8px rgba(0,0,0,.2);}
@@ -54,11 +55,11 @@ textarea{resize:vertical;min-height:60px;}
 
   <section>
     <h3>Atas</h3>
-    <button class="btn-novo" onclick="abrirModal('ata')">+ Nova Ata</button>
+    <button class="btn-novo" onclick="abrirModal('Ata')">+ Nova Ata</button>
     <table id="tabelaAtas">
       <thead>
         <tr>
-          <th>ID Ata</th>
+          <th>ID</th>
           <th>Projeto</th>
           <th>Área</th>
           <th>Status</th>
@@ -74,11 +75,11 @@ textarea{resize:vertical;min-height:60px;}
 
   <section>
     <h3>Requisitos</h3>
-    <button class="btn-novo" onclick="abrirModal('requisito')">+ Novo Requisito</button>
+    <button class="btn-novo" onclick="abrirModal('Requisito')">+ Novo Requisito</button>
     <table id="tabelaRequisitos">
       <thead>
         <tr>
-          <th>ID Requisito</th>
+          <th>ID</th>
           <th>Projeto</th>
           <th>Área</th>
           <th>Status</th>
@@ -93,10 +94,9 @@ textarea{resize:vertical;min-height:60px;}
   </section>
 </main>
 
-<!-- MODAL -->
 <div class="modal" id="modalForm">
   <div class="modal-content">
-    <h3 id="tituloModal">Nova Ata</h3>
+    <h3 id="tituloModal">Novo Registro</h3>
     <input id="nome" placeholder="Nome do Projeto">
     <input id="area" placeholder="Área">
     <input id="status" placeholder="Status">
@@ -110,7 +110,6 @@ textarea{resize:vertical;min-height:60px;}
   </div>
 </div>
 
-<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
 
 <script>
@@ -125,7 +124,7 @@ let idEditando = null;
 window.abrirModal = (tipo, item=null) => {
   tipoRegistro = tipo;
   idEditando = item ? item.id : null;
-  document.getElementById("tituloModal").innerText = idEditando ? "Editar Registro" : (tipo==="ata"?"Nova Ata":"Novo Requisito");
+  document.getElementById("tituloModal").innerText = idEditando ? "Editar Registro" : `Novo ${tipo}`;
   document.getElementById("modalForm").style.display = "flex";
   document.querySelectorAll("#modalForm input, #modalForm textarea").forEach(i=>i.value="");
   if(item){
@@ -133,11 +132,12 @@ window.abrirModal = (tipo, item=null) => {
     document.getElementById("area").value=item.area||"";
     document.getElementById("status").value=item.status||"";
     document.getElementById("responsavel").value=item.responsavel||"";
-    document.getElementById("descricao").value=item.doc||""; // usa o campo doc
+    document.getElementById("descricao").value=item.doc||"";
     document.getElementById("prazo").value=item.prazo||"";
   }
 };
-window.fecharModal=()=>document.getElementById("modalForm").style.display="none";
+
+window.fecharModal = ()=>document.getElementById("modalForm").style.display="none";
 
 document.getElementById("btnSalvar").addEventListener("click", async()=>{
   const nome=document.getElementById("nome").value.trim();
@@ -154,13 +154,12 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
     area,
     status,
     responsavel,
-    doc: descricao, // salva descrição no campo doc
+    doc: descricao,
     prazo,
-    id_ata: tipoRegistro==="ata"?crypto.randomUUID():null,
-    id_requisito: tipoRegistro==="requisito"?crypto.randomUUID():null
+    tipo: tipoRegistro
   };
 
-  const result=idEditando
+  const result = idEditando
     ? await supabase.from("projetos").update(dados).eq("id",idEditando)
     : await supabase.from("projetos").insert([dados]);
 
@@ -170,19 +169,19 @@ document.getElementById("btnSalvar").addEventListener("click", async()=>{
 
 async function carregar(){
   const {data:projetos}=await supabase.from("projetos").select("*").order("created_at",{ascending:false});
-  const atas=projetos.filter(p=>p.id_ata);
-  const requisitos=projetos.filter(p=>p.id_requisito);
-  preencherTabela("tabelaAtas",atas,"ata");
-  preencherTabela("tabelaRequisitos",requisitos,"requisito");
+  const atas=projetos.filter(p=>p.tipo==="Ata");
+  const requisitos=projetos.filter(p=>p.tipo==="Requisito");
+  preencherTabela("tabelaAtas",atas);
+  preencherTabela("tabelaRequisitos",requisitos);
 }
 
-function preencherTabela(id,dados,tipo){
+function preencherTabela(id,dados){
   const tbody=document.querySelector(`#${id} tbody`);
   tbody.innerHTML="";
   dados?.forEach(p=>{
     const tr=document.createElement("tr");
     tr.innerHTML=`
-      <td>${tipo==="ata"?p.id_ata||"-":p.id_requisito||"-"}</td>
+      <td>${p.id||"-"}</td>
       <td>${p.nome||"-"}</td>
       <td>${p.area||"-"}</td>
       <td>${p.status||"-"}</td>
@@ -190,14 +189,14 @@ function preencherTabela(id,dados,tipo){
       <td>${p.doc||"-"}</td>
       <td>${p.prazo||"-"}</td>
       <td>
-        <button class="action-btn edit" onclick='abrirModal("${tipo}", ${JSON.stringify(p)})'>✏️</button>
-        <button class="action-btn delete" onclick="excluir('${tipo}','${p.id}')">🗑️</button>
+        <button class="action-btn edit" onclick='abrirModal("${p.tipo}", ${JSON.stringify(p)})'>✏️</button>
+        <button class="action-btn delete" onclick="excluir('${p.id}')">🗑️</button>
       </td>`;
     tbody.appendChild(tr);
   });
 }
 
-window.excluir=async(tipo,id)=>{
+window.excluir=async(id)=>{
   if(confirm("Excluir este registro?")){
     const {error}=await supabase.from("projetos").delete().eq("id",id);
     if(error) alert("Erro: "+error.message);
