@@ -68,7 +68,6 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
   justify-content:center;
   gap:12px;
   margin-bottom:20px;
-  position:relative;
 }
 .filtros input[type="text"] {
   padding:8px 10px;
@@ -93,9 +92,7 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
   justify-content:space-between;
   min-width:180px;
 }
-.dropdown-button:hover {
-  background:#f1f5f9;
-}
+.dropdown-button:hover {background:#f1f5f9;}
 .dropdown-content {
   display:none;
   position:absolute;
@@ -118,9 +115,7 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
   margin-bottom:5px;
   color:#334155;
 }
-.dropdown.open .dropdown-content {
-  display:block;
-}
+.dropdown.open .dropdown-content {display:block;}
 .filtros .limpar {
   background:var(--azul);
   color:#fff;
@@ -134,9 +129,7 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
   align-items:center;
   gap:6px;
 }
-.filtros .limpar:hover {
-  background:#1e293b;
-}
+.filtros .limpar:hover {background:#1e293b;}
 /* ===== TABELA ===== */
 table {
   width:100%;
@@ -260,11 +253,11 @@ const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
 
 // 🔒 LOGIN
-const {data:{session}}=await supabase.auth.getSession();
+const { data:{session} } = await supabase.auth.getSession();
 if(!session) window.location.href="login.html";
 
 // 📦 CARREGAR PROJETOS
-const {data:projetos,error}=await supabase.from('projetos').select('*').order('id',{ascending:true});
+const { data: projetos, error } = await supabase.from('projetos').select('*').order('id',{ascending:true});
 if(error) console.error(error);
 
 // Atualiza contadores
@@ -284,7 +277,7 @@ const respDiv=document.getElementById("responsavelChecks");
 const tbody=document.querySelector("#tabelaProjetos tbody");
 renderTabela(projetos);
 
-// Renderização
+// ====== Renderização ======
 function renderTabela(lista){
   tbody.innerHTML="";
   lista.forEach(p=>{
@@ -292,6 +285,7 @@ function renderTabela(lista){
     let cor="#86efac";
     if(p.prioridade==="Alta") cor="#fca5a5";
     else if(p.prioridade==="Média") cor="#fde68a";
+
     tr.innerHTML=`
       <td><span class="toggle-btn">⯈</span></td>
       <td>${p.nome}</td>
@@ -302,10 +296,38 @@ function renderTabela(lista){
       <td>${p.prazo||"—"}</td>
       <td>${p.doc?`<a href="${p.doc}" target="_blank">Abrir</a>`:"—"}</td>`;
     tbody.appendChild(tr);
+
+    // ====== LINHA DE ETAPAS (expansível) ======
+    if(p.etapas && Array.isArray(p.etapas) && p.etapas.length>0){
+      const etapasTr=document.createElement("tr");
+      etapasTr.classList.add("etapas-row");
+      etapasTr.style.display="none";
+      etapasTr.innerHTML=`
+        <td colspan="8">
+          <ul style="list-style:none;margin:0;padding:0;">
+            ${p.etapas.map(e=>`
+              <li style="padding:6px 0;border-bottom:1px solid #ddd;">
+                <b>${e.nome||"Etapa sem nome"}</b> • 
+                <span class="status-badge status-${e.status||'Pendente'}">${e.status||'Pendente'}</span> • 
+                <small>${e.responsavel||'—'} • ${e.prazo||'—'}</small>
+                ${e.anexo?` • <a href="${e.anexo}" target="_blank">📎 Anexo</a>`:""}
+              </li>
+            `).join('')}
+          </ul>
+        </td>`;
+      tbody.appendChild(etapasTr);
+
+      // evento de abrir/recolher
+      tr.querySelector('.toggle-btn').addEventListener('click',()=>{
+        const aberto = etapasTr.style.display === "table-row";
+        etapasTr.style.display = aberto ? "none" : "table-row";
+        tr.querySelector('.toggle-btn').textContent = aberto ? "⯈" : "⯆";
+      });
+    }
   });
 }
 
-// FILTRAGEM
+// ====== FILTRAGEM ======
 function filtrarTabela(){
   const nome=document.getElementById("filtroProjeto").value.toLowerCase();
   const areas=[...document.querySelectorAll("#areaDropdown input:checked")].map(i=>i.value);
