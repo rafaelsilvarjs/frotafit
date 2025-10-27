@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📘 LogFit – Documentação de Projetos</title>
+<title>📘 LogFit – Documentação de Atas</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 
 <style>
@@ -55,9 +55,6 @@ h1 {
   font-size: 26px;
   font-weight: 700;
 }
-section { margin-top: 40px; }
-h3 { color: #ff5a1f; margin-bottom: 10px; }
-
 .btn-novo {
   background: #ff5a1f;
   color: white;
@@ -130,7 +127,7 @@ a:hover { text-decoration: underline; }
   color: #ff5a1f;
   text-align: center;
 }
-input {
+input, textarea, select {
   width: 100%;
   padding: 8px;
   margin-top: 6px;
@@ -163,7 +160,7 @@ input {
 
 <body>
 <header>
-  <h2>📘 Tela de Documentação – LogFit</h2>
+  <h2>📘 Tela de Atas – LogFit</h2>
   <div>
     <button onclick="location.href='home.html'">🏠 Home</button>
     <button onclick="location.href='etapas.html'">📅 Sprint / Etapas</button>
@@ -171,59 +168,37 @@ input {
 </header>
 
 <main>
-  <h1>📄 Cadastro de Atas e Requisitos</h1>
+  <h1>🗂️ Cadastro de Atas</h1>
+  <button class="btn-novo" onclick="abrirModal()">+ Nova Ata</button>
 
-  <!-- SEÇÃO ATAS -->
-  <section>
-    <h3>Atas</h3>
-    <button class="btn-novo" onclick="abrirModal('ata')">+ Nova Ata</button>
-    <table id="tabelaAtas">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Categoria</th>
-          <th>Área</th>
-          <th>Responsável</th>
-          <th>Prazo</th>
-          <th>Anexo</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
-
-  <!-- SEÇÃO REQUISITOS -->
-  <section>
-    <h3>Requisitos</h3>
-    <button class="btn-novo" onclick="abrirModal('requisito')">+ Novo Requisito</button>
-    <table id="tabelaRequisitos">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Categoria</th>
-          <th>Área</th>
-          <th>Responsável</th>
-          <th>Prazo</th>
-          <th>Anexo</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
+  <table id="tabelaAtas">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Status</th>
+        <th>Área</th>
+        <th>Responsável</th>
+        <th>Descrição</th>
+        <th>Prazo</th>
+        <th>Anexo</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </main>
 
 <!-- MODAL -->
 <div class="modal" id="modalForm">
   <div class="modal-content">
     <h3 id="tituloModal">Nova Ata</h3>
-    <input id="nome" placeholder="Nome">
-    <input id="categoria" placeholder="Categoria">
+    <input id="nome" placeholder="Nome da Ata">
+    <input id="status" placeholder="Status (Ex: Pendente, Concluída)">
     <input id="area" placeholder="Área">
     <input id="responsavel" placeholder="Responsável">
+    <textarea id="descricao" placeholder="Descrição"></textarea>
     <input id="prazo" type="date">
-    <input id="anexo" placeholder="Link do Documento (Anexo)">
+    <input id="doc" placeholder="Link do Documento (Anexo)">
     <div style="text-align:right;">
       <button class="btn-salvar" id="btnSalvar">Salvar</button>
       <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
@@ -231,174 +206,118 @@ input {
   </div>
 </div>
 
-<!-- ✅ SDK Supabase -->
+<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
 
-<!-- ✅ Script principal -->
 <script>
 const supabase = window.supabase.createClient(
   "https://cczuqesooeguvqimeoks.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg"
 );
 
-let tipoRegistro = "";
 let idEditando = null;
 
-// 🔹 Abrir modal
-window.abrirModal = (tipo, item = null) => {
-  tipoRegistro = tipo;
+// 🔹 Abrir Modal
+function abrirModal(item = null) {
+  document.getElementById("modalForm").style.display = "flex";
+  document.getElementById("tituloModal").innerText = item ? "Editar Ata" : "Nova Ata";
   idEditando = item ? item.id : null;
 
-  document.getElementById("tituloModal").innerText = idEditando
-    ? "Editar Registro"
-    : (tipo === "ata" ? "Nova Ata" : "Novo Requisito");
-
-  document.getElementById("modalForm").style.display = "flex";
-
+  document.querySelectorAll("#modalForm input, #modalForm textarea").forEach(i => i.value = "");
   if (item) {
     document.getElementById("nome").value = item.nome || "";
-    document.getElementById("categoria").value = item.categoria || "";
+    document.getElementById("status").value = item.status || "";
     document.getElementById("area").value = item.area || "";
     document.getElementById("responsavel").value = item.responsavel || "";
+    document.getElementById("descricao").value = item.descricao || "";
     document.getElementById("prazo").value = item.prazo || "";
-    document.getElementById("anexo").value = item.anexo || "";
-  } else {
-    document.querySelectorAll("#modalForm input").forEach(i => i.value = "");
+    document.getElementById("doc").value = item.doc || "";
   }
-};
+}
 
-// 🔹 Fechar modal
-window.fecharModal = () => {
+// 🔹 Fechar Modal
+function fecharModal() {
   document.getElementById("modalForm").style.display = "none";
-};
+}
 
 // 🔹 Salvar
 document.getElementById("btnSalvar").addEventListener("click", async () => {
-  const nome = document.getElementById("nome").value.trim();
-  const categoria = document.getElementById("categoria").value.trim();
+  const nome = nome.value.trim();
+  const status = document.getElementById("status").value.trim();
   const area = document.getElementById("area").value.trim();
   const responsavel = document.getElementById("responsavel").value.trim();
+  const descricao = document.getElementById("descricao").value.trim();
   const prazo = document.getElementById("prazo").value || null;
-  const anexo = document.getElementById("anexo").value.trim();
+  const doc = document.getElementById("doc").value.trim();
 
-  if (!nome) return alert("⚠️ Informe o nome!");
+  if (!nome) return alert("⚠️ Informe o nome da ata!");
 
-  let dados = {};
+  const dados = { nome, status, area, responsavel, descricao, prazo, doc };
 
-  if (tipoRegistro === "ata") {
-    dados = {
-      nome_ata: nome,
-      categoria_ata: categoria,
-      area_ata: area,
-      responsavel_a: responsavel,
-      prazo_ata: prazo,
-      anexo_ata: anexo,
-      tipo: "ata"
-    };
-  } else {
-    dados = {
-      nome_requisit: nome,
-      categoria_req: categoria,
-      area_requisito: area,
-      responsavel_r: responsavel,
-      prazo_requisit: prazo,
-      anexo_requisit: anexo,
-      tipo: "requisito"
-    };
-  }
+  try {
+    let result;
+    if (idEditando)
+      result = await supabase.from("documentacao_atas").update(dados).eq("id", idEditando);
+    else
+      result = await supabase.from("documentacao_atas").insert([dados]);
 
-  let result;
-  if (idEditando)
-    result = await supabase.from("documentacao_requisitos").update(dados).eq("id", idEditando);
-  else
-    result = await supabase.from("documentacao_requisitos").insert([dados]).select().single();
+    if (result.error) throw result.error;
 
-  if (result.error) {
-    alert("❌ Erro: " + result.error.message);
-  } else {
-    alert("✅ Registro salvo!");
+    alert("✅ Ata salva com sucesso!");
     fecharModal();
-    atualizarTabelas();
+    carregarAtas();
+  } catch (err) {
+    alert("❌ Erro: " + err.message);
   }
 });
 
-// 🔹 Renderizar
-function adicionarNaTabela(p) {
-  const tbody = p.tipo === "ata"
-    ? document.querySelector("#tabelaAtas tbody")
-    : document.querySelector("#tabelaRequisitos tbody");
-
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td>${p.nome || ""}</td>
-    <td>${p.categoria || "-"}</td>
-    <td>${p.area || "-"}</td>
-    <td>${p.responsavel || "-"}</td>
-    <td>${p.prazo || "-"}</td>
-    <td>${p.anexo ? `<a href="${p.anexo}" target="_blank">📎 Abrir</a>` : "-"}</td>
-    <td>
-      <button class="action-btn edit" onclick='abrirModal("${p.tipo}", ${JSON.stringify(p)})'>✏️</button>
-      <button class="action-btn delete" onclick="excluir('${p.id}')">🗑️</button>
-    </td>
-  `;
-  tbody.appendChild(tr);
-}
-
 // 🔹 Excluir
-window.excluir = async (id) => {
-  if (confirm("Excluir este registro?")) {
-    const { error } = await supabase.from("documentacao_requisitos").delete().eq("id", id);
-    if (error) alert("Erro: " + error.message);
+async function excluir(id) {
+  if (confirm("Deseja excluir esta ata?")) {
+    const { error } = await supabase.from("documentacao_atas").delete().eq("id", id);
+    if (error) alert("Erro ao excluir: " + error.message);
     else {
-      alert("Registro removido!");
-      atualizarTabelas();
+      alert("🗑️ Ata removida!");
+      carregarAtas();
     }
   }
-};
-
-// 🔹 Atualizar tabelas
-async function atualizarTabelas() {
-  document.querySelector("#tabelaAtas tbody").innerHTML = "";
-  document.querySelector("#tabelaRequisitos tbody").innerHTML = "";
-  await carregar();
 }
 
-// 🔹 Carregar registros
-async function carregar() {
-  const { data, error } = await supabase.from("documentacao_requisitos").select("*");
-  if (error) {
-    console.error(error.message);
-    return;
-  }
-
-  data?.forEach(p => {
-    if (p.tipo === "ata") {
-      adicionarNaTabela({
-        id: p.id,
-        nome: p.nome_ata,
-        categoria: p.categoria_ata,
-        area: p.area_ata,
-        responsavel: p.responsavel_a,
-        prazo: p.prazo_ata,
-        anexo: p.anexo_ata,
-        tipo: "ata"
-      });
-    } else if (p.tipo === "requisito") {
-      adicionarNaTabela({
-        id: p.id,
-        nome: p.nome_requisit,
-        categoria: p.categoria_req,
-        area: p.area_requisito,
-        responsavel: p.responsavel_r,
-        prazo: p.prazo_requisit,
-        anexo: p.anexo_requisit,
-        tipo: "requisito"
-      });
-    }
+// 🔹 Renderizar
+function renderizar(atas) {
+  const tbody = document.querySelector("#tabelaAtas tbody");
+  tbody.innerHTML = "";
+  atas.forEach(a => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${a.nome}</td>
+      <td>${a.status || "-"}</td>
+      <td>${a.area || "-"}</td>
+      <td>${a.responsavel || "-"}</td>
+      <td>${a.descricao || "-"}</td>
+      <td>${a.prazo || "-"}</td>
+      <td>${a.doc ? `<a href="${a.doc}" target="_blank">📎</a>` : "-"}</td>
+      <td>
+        <button class="action-btn edit" onclick='abrirModal(${JSON.stringify(a)})'>✏️</button>
+        <button class="action-btn delete" onclick='excluir(${a.id})'>🗑️</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
   });
 }
 
-carregar();
+// 🔹 Carregar dados
+async function carregarAtas() {
+  const { data, error } = await supabase.from("documentacao_atas").select("*").order("id", { ascending: false });
+  if (error) {
+    console.error(error.message);
+    alert("❌ Falha ao carregar dados: " + error.message);
+    return;
+  }
+  renderizar(data);
+}
+
+carregarAtas();
 </script>
 </body>
 </html>
