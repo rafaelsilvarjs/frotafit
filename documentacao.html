@@ -238,7 +238,7 @@ input {
 <script>
 const supabase = window.supabase.createClient(
   "https://cczuqesooeguvqimeoks.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg"
+  "SUA_CHAVE_PUBLICA_AQUI"
 );
 
 let tipoRegistro = "";
@@ -309,9 +309,9 @@ document.getElementById("btnSalvar").addEventListener("click", async () => {
 
   let result;
   if (idEditando)
-    result = await supabase.from("projetos").update(dados).eq("id", idEditando);
+    result = await supabase.from("documentacao_requisitos").update(dados).eq("id", idEditando);
   else
-    result = await supabase.from("projetos").insert([dados]).select().single();
+    result = await supabase.from("documentacao_requisitos").insert([dados]).select().single();
 
   if (result.error) {
     alert("❌ Erro: " + result.error.message);
@@ -347,7 +347,7 @@ function adicionarNaTabela(p) {
 // 🔹 Excluir
 window.excluir = async (id) => {
   if (confirm("Excluir este registro?")) {
-    const { error } = await supabase.from("projetos").delete().eq("id", id);
+    const { error } = await supabase.from("documentacao_requisitos").delete().eq("id", id);
     if (error) alert("Erro: " + error.message);
     else {
       alert("Registro removido!");
@@ -365,7 +365,7 @@ async function atualizarTabelas() {
 
 // 🔹 Carregar registros
 async function carregar() {
-  const { data, error } = await supabase.from("projetos").select("*");
+  const { data, error } = await supabase.from("documentacao_requisitos").select("*");
   if (error) {
     console.error(error.message);
     return;
