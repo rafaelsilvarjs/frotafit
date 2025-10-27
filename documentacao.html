@@ -242,7 +242,7 @@ function fecharModal() {
 
 // 🔹 Salvar
 document.getElementById("btnSalvar").addEventListener("click", async () => {
-  const nome = nome.value.trim();
+  const nome = document.getElementById("nome").value.trim();
   const status = document.getElementById("status").value.trim();
   const area = document.getElementById("area").value.trim();
   const responsavel = document.getElementById("responsavel").value.trim();
