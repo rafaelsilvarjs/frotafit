@@ -187,7 +187,7 @@ footer {
 </header>
 
 <main>
-  <!-- ===== CARDS DE STATUS ===== -->
+  <!-- ===== CARDS ===== -->
   <section class="cards">
     <div class="card"><h3>Total</h3><span id="total">0</span></div>
     <div class="card"><h3>📁 Backlog</h3><span id="backlog">0</span></div>
@@ -275,27 +275,24 @@ if(!session) window.location.href="login.html";
 const { data:projetos,error }=await supabase.from('projetos').select('*').order('id',{ascending:true});
 if(error) console.error(error);
 
-// ===== Atualiza contadores =====
-document.getElementById("total").textContent = projetos.length;
-document.getElementById("backlog").textContent = projetos.filter(p => p.status === "Backlog").length;
-document.getElementById("documentacao").textContent = projetos.filter(p => p.status === "Documentação").length;
-document.getElementById("deploy").textContent = projetos.filter(p => p.status === "Pronto p/ Deploy").length;
-document.getElementById("qa").textContent = projetos.filter(p => p.status === "Em QA/Testes").length;
-document.getElementById("desenvolvendo").textContent = projetos.filter(p => p.status === "Desenvolvendo").length;
-document.getElementById("concluidos").textContent = projetos.filter(p => p.status === "Concluído").length;
-
-// Popula responsáveis
-const respDiv=document.getElementById("responsavelChecks");
-[...new Set(projetos.map(p=>p.responsavel).filter(Boolean))].forEach(r=>{
-  const label=document.createElement("label");
-  label.innerHTML=`<input type="checkbox" value="${r}">${r}`;
-  respDiv.appendChild(label);
-});
-
 const tbody=document.querySelector("#tabelaProjetos tbody");
 renderTabela(projetos);
+atualizarCards(projetos);
 
-// ====== Renderização ======
+// ===== FUNÇÕES =====
+
+// Atualiza os cards dinamicamente
+function atualizarCards(lista){
+  document.getElementById("total").textContent = lista.length;
+  document.getElementById("backlog").textContent = lista.filter(p => p.status === "Backlog").length;
+  document.getElementById("documentacao").textContent = lista.filter(p => p.status === "Documentação").length;
+  document.getElementById("deploy").textContent = lista.filter(p => p.status === "Pronto p/ Deploy").length;
+  document.getElementById("qa").textContent = lista.filter(p => p.status === "Em QA/Testes").length;
+  document.getElementById("desenvolvendo").textContent = lista.filter(p => p.status === "Desenvolvendo").length;
+  document.getElementById("concluidos").textContent = lista.filter(p => p.status === "Concluído").length;
+}
+
+// Renderização da tabela
 function renderTabela(lista){
   tbody.innerHTML="";
   lista.forEach(p=>{
@@ -315,7 +312,6 @@ function renderTabela(lista){
       <td>${p.doc?`<a href="${p.doc}" target="_blank">Abrir</a>`:"—"}</td>`;
     tbody.appendChild(tr);
 
-    // ✅ Conversão de etapas para array
     let etapas=[];
     if(Array.isArray(p.etapas)) etapas=p.etapas;
     else if(typeof p.etapas==="string"){
@@ -341,7 +337,6 @@ function renderTabela(lista){
         </td>`;
       tbody.appendChild(etapasTr);
 
-      // Evento abrir/recolher
       tr.querySelector('.toggle-btn').addEventListener('click',()=>{
         const aberto=etapasTr.style.display==="table-row";
         etapasTr.style.display=aberto?"none":"table-row";
@@ -351,7 +346,7 @@ function renderTabela(lista){
   });
 }
 
-// FILTRAGEM
+// FILTRAGEM + ATUALIZAÇÃO DOS CARDS
 function filtrarTabela(){
   const nome=document.getElementById("filtroProjeto").value.toLowerCase();
   const areas=[...document.querySelectorAll("#areaDropdown input:checked")].map(i=>i.value);
@@ -366,8 +361,11 @@ function filtrarTabela(){
     (prioridades.length===0||prioridades.includes(p.prioridade)) &&
     (responsaveis.length===0||responsaveis.includes(p.responsavel))
   );
+
   renderTabela(filtrados);
+  atualizarCards(filtrados);
 }
+
 document.querySelectorAll('.dropdown input, #filtroProjeto').forEach(el=>el.addEventListener('input',filtrarTabela));
 
 // Dropdown abrir/fechar
@@ -387,6 +385,7 @@ window.limparFiltros=function(){
     if(el.type==="checkbox") el.checked=false;
   });
   renderTabela(projetos);
+  atualizarCards(projetos);
 }
 
 // LOGOUT
