@@ -173,7 +173,7 @@ function renderTabela(projetos){
         ${["Alta","Média","Baixa"].map(a=>`<option ${a===p.prioridade?"selected":""}>${a}</option>`).join("")}
       </select></td>
       <td><select onchange="editar(${p.id},'status',this.value)">
-        ${["Backlog","Desenvolvendo","Concluído"].map(a=>`<option ${a===p.status?"selected":""}>${a}</option>`).join("")}
+        ${["Backlog","Documentação","Pronto p/ Deploy","Em QA/Testes","Desenvolvendo","Concluído"].map(a=>`<option ${a===p.status?"selected":""}>${a}</option>`).join("")}
       </select></td>
       <td><select multiple onchange="salvarResponsaveis(${p.id},this)">
         ${RESPONSAVEIS_FIXOS.map(r=>`<option ${responsaveis.includes(r)?"selected":""}>${r}</option>`).join("")}
@@ -261,7 +261,7 @@ function criarLinhaEtapa(et={}){
   div.innerHTML=`
     <span onclick="this.parentElement.remove()">🗑️</span>
     <label>Nome:</label><input type="text" value="${et.nome||""}">
-    <label>Status:</label><select>${["Pendente","Desenvolvendo","Concluído"].map(s=>`<option ${s===et.status?"selected":""}>${s}</option>`).join("")}</select>
+    <label>Status:</label><select>${["Pendente","Desenvolvendo","Concluído","Em QA/Testes","Backlog","Pausado","Bloqueado","Aguardando Externo",].map(s=>`<option ${s===et.status?"selected":""}>${s}</option>`).join("")}</select>
     <label>Responsável:</label><select multiple>${RESPONSAVEIS_FIXOS.map(r=>`<option ${et.responsavel&&et.responsavel.includes(r)?"selected":""}>${r}</option>`).join("")}</select>
     <label>Prazo:</label><input type="date" value="${et.prazo||""}">
     <label>Descrição:</label><textarea>${et.descricao||""}</textarea>
