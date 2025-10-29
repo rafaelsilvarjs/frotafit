@@ -61,12 +61,12 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
 }
 .card h3 {margin:0;font-size:16px;color:#475569;}
 .card span {display:block;font-size:28px;font-weight:700;color:var(--azul);margin-top:5px;}
-.card:nth-child(2){border-top:4px solid #3b82f6;} /* Backlog */
-.card:nth-child(3){border-top:4px solid #8b5cf6;} /* Documentação */
-.card:nth-child(4){border-top:4px solid #06b6d4;} /* Deploy */
-.card:nth-child(5){border-top:4px solid #eab308;} /* QA */
-.card:nth-child(6){border-top:4px solid #f97316;} /* Desenvolvendo */
-.card:nth-child(7){border-top:4px solid #22c55e;} /* Concluído */
+.card:nth-child(2){border-top:4px solid #3b82f6;}
+.card:nth-child(3){border-top:4px solid #8b5cf6;}
+.card:nth-child(4){border-top:4px solid #06b6d4;}
+.card:nth-child(5){border-top:4px solid #eab308;}
+.card:nth-child(6){border-top:4px solid #f97316;}
+.card:nth-child(7){border-top:4px solid #22c55e;}
 /* ===== FILTROS ===== */
 .filtros {
   display:flex;
@@ -82,9 +82,7 @@ main {max-width:1300px;margin:30px auto;padding:0 20px;}
   font-size:14px;
   width:240px;
 }
-.dropdown {
-  position:relative;
-}
+.dropdown {position:relative;}
 .dropdown-button {
   background:#fff;
   border:1px solid var(--cinza2);
@@ -187,7 +185,6 @@ footer {
 </header>
 
 <main>
-  <!-- ===== CARDS ===== -->
   <section class="cards">
     <div class="card"><h3>Total</h3><span id="total">0</span></div>
     <div class="card"><h3>📁 Backlog</h3><span id="backlog">0</span></div>
@@ -198,7 +195,6 @@ footer {
     <div class="card"><h3>✅ Concluídos</h3><span id="concluidos">0</span></div>
   </section>
 
-  <!-- ===== FILTROS ===== -->
   <div class="filtros">
     <input type="text" id="filtroProjeto" placeholder="🔍 Filtrar por nome do projeto...">
     <div class="dropdown" id="areaDropdown">
@@ -267,11 +263,9 @@ const SUPABASE_URL='https://cczuqesooeguvqimeoks.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjenVxZXNvb2VndXZxaW1lb2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzM1OTYsImV4cCI6MjA3NjAwOTU5Nn0.zd4PY5BNZu6AVAB5xsBS_lBPSWRf6JkHqGr60Ri6oIg';
 const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
 
-// 🔒 LOGIN
 const { data:{session} }=await supabase.auth.getSession();
 if(!session) window.location.href="login.html";
 
-// 📦 CARREGAR PROJETOS
 const { data:projetos,error }=await supabase.from('projetos').select('*').order('id',{ascending:true});
 if(error) console.error(error);
 
@@ -279,9 +273,16 @@ const tbody=document.querySelector("#tabelaProjetos tbody");
 renderTabela(projetos);
 atualizarCards(projetos);
 
-// ===== FUNÇÕES =====
+// 🔹 Preenche filtro de RESPONSÁVEL dinamicamente
+const responsavelContainer=document.getElementById("responsavelChecks");
+const responsaveisUnicos=[...new Set(projetos.map(p=>p.responsavel).filter(Boolean))].sort();
+responsaveisUnicos.forEach(nome=>{
+  const label=document.createElement("label");
+  label.innerHTML=`<input type="checkbox" value="${nome}">${nome}`;
+  responsavelContainer.appendChild(label);
+});
 
-// Atualiza os cards dinamicamente
+// ===== FUNÇÕES =====
 function atualizarCards(lista){
   document.getElementById("total").textContent = lista.length;
   document.getElementById("backlog").textContent = lista.filter(p => p.status === "Backlog").length;
@@ -292,7 +293,6 @@ function atualizarCards(lista){
   document.getElementById("concluidos").textContent = lista.filter(p => p.status === "Concluído").length;
 }
 
-// Renderização da tabela
 function renderTabela(lista){
   tbody.innerHTML="";
   lista.forEach(p=>{
@@ -300,7 +300,6 @@ function renderTabela(lista){
     let cor="#86efac";
     if(p.prioridade==="Alta") cor="#fca5a5";
     else if(p.prioridade==="Média") cor="#fde68a";
-
     tr.innerHTML=`
       <td><span class="toggle-btn">⯈</span></td>
       <td>${p.nome}</td>
@@ -346,7 +345,6 @@ function renderTabela(lista){
   });
 }
 
-// FILTRAGEM + ATUALIZAÇÃO DOS CARDS
 function filtrarTabela(){
   const nome=document.getElementById("filtroProjeto").value.toLowerCase();
   const areas=[...document.querySelectorAll("#areaDropdown input:checked")].map(i=>i.value);
@@ -361,14 +359,12 @@ function filtrarTabela(){
     (prioridades.length===0||prioridades.includes(p.prioridade)) &&
     (responsaveis.length===0||responsaveis.includes(p.responsavel))
   );
-
   renderTabela(filtrados);
   atualizarCards(filtrados);
 }
 
 document.querySelectorAll('.dropdown input, #filtroProjeto').forEach(el=>el.addEventListener('input',filtrarTabela));
 
-// Dropdown abrir/fechar
 document.querySelectorAll('.dropdown-button').forEach(btn=>{
   btn.addEventListener('click',()=>btn.parentElement.classList.toggle('open'));
 });
@@ -378,7 +374,6 @@ document.addEventListener('click',e=>{
   });
 });
 
-// LIMPAR
 window.limparFiltros=function(){
   document.querySelectorAll('.dropdown input, #filtroProjeto').forEach(el=>{
     if(el.type==="text") el.value="";
@@ -388,7 +383,6 @@ window.limparFiltros=function(){
   atualizarCards(projetos);
 }
 
-// LOGOUT
 window.logout=async function(){
   await supabase.auth.signOut();
   window.location.href="login.html";
