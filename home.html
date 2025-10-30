@@ -313,7 +313,7 @@ function renderTabela(lista){
 
     let etapas=[];
     if(Array.isArray(p.etapas)) etapas=p.etapas;
-    else if(typeof p.etapas==="string"){
+    else if(typeof p.etapas==="string" && p.etapas.trim().startsWith("[")){
       try{ etapas=JSON.parse(p.etapas)||[]; }catch{ etapas=[]; }
     }
 
@@ -345,7 +345,7 @@ function renderTabela(lista){
   });
 }
 
-// ✅ NOVA FUNÇÃO DE FILTRO "CONTÉM"
+// ✅ Função corrigida — agora o filtro "contém" funciona em nome, responsável e etapas
 function filtrarTabela(){
   const nome=document.getElementById("filtroProjeto").value.toLowerCase();
   const areas=[...document.querySelectorAll("#areaDropdown input:checked")].map(i=>i.value);
@@ -354,9 +354,11 @@ function filtrarTabela(){
   const responsaveis=[...document.querySelectorAll("#responsavelDropdown input:checked")].map(i=>i.value);
 
   const filtrados=projetos.filter(p=>{
-    const etapas = Array.isArray(p.etapas)
-      ? p.etapas
-      : (typeof p.etapas === "string" ? JSON.parse(p.etapas || "[]") : []);
+    let etapas=[];
+    if(Array.isArray(p.etapas)) etapas=p.etapas;
+    else if(typeof p.etapas==="string" && p.etapas.trim().startsWith("[")){
+      try{ etapas=JSON.parse(p.etapas)||[]; }catch{ etapas=[]; }
+    }
 
     const contemNome =
       !nome ||
@@ -394,4 +396,16 @@ document.addEventListener('click',e=>{
 window.limparFiltros=function(){
   document.querySelectorAll('.dropdown input, #filtroProjeto').forEach(el=>{
     if(el.type==="text") el.value="";
-    if(el.type==="checkbox")
+    if(el.type==="checkbox") el.checked=false;
+  });
+  renderTabela(projetos);
+  atualizarCards(projetos);
+}
+
+window.logout=async function(){
+  await supabase.auth.signOut();
+  window.location.href="login.html";
+};
+</script>
+</body>
+</html>
