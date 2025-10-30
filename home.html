@@ -345,6 +345,7 @@ function renderTabela(lista){
   });
 }
 
+// ✅ NOVA FUNÇÃO DE FILTRO "CONTÉM"
 function filtrarTabela(){
   const nome=document.getElementById("filtroProjeto").value.toLowerCase();
   const areas=[...document.querySelectorAll("#areaDropdown input:checked")].map(i=>i.value);
@@ -352,13 +353,29 @@ function filtrarTabela(){
   const prioridades=[...document.querySelectorAll("#prioridadeDropdown input:checked")].map(i=>i.value);
   const responsaveis=[...document.querySelectorAll("#responsavelDropdown input:checked")].map(i=>i.value);
 
-  const filtrados=projetos.filter(p=>
-    (!nome||p.nome?.toLowerCase().includes(nome)) &&
-    (areas.length===0||areas.includes(p.area)) &&
-    (status.length===0||status.includes(p.status)) &&
-    (prioridades.length===0||prioridades.includes(p.prioridade)) &&
-    (responsaveis.length===0||responsaveis.includes(p.responsavel))
-  );
+  const filtrados=projetos.filter(p=>{
+    const etapas = Array.isArray(p.etapas)
+      ? p.etapas
+      : (typeof p.etapas === "string" ? JSON.parse(p.etapas || "[]") : []);
+
+    const contemNome =
+      !nome ||
+      (p.nome && p.nome.toLowerCase().includes(nome)) ||
+      (p.responsavel && p.responsavel.toLowerCase().includes(nome)) ||
+      etapas.some(e =>
+        (e.nome && e.nome.toLowerCase().includes(nome)) ||
+        (e.responsavel && e.responsavel.toLowerCase().includes(nome))
+      );
+
+    return (
+      contemNome &&
+      (areas.length===0||areas.includes(p.area)) &&
+      (status.length===0||status.includes(p.status)) &&
+      (prioridades.length===0||prioridades.includes(p.prioridade)) &&
+      (responsaveis.length===0||responsaveis.includes(p.responsavel))
+    );
+  });
+
   renderTabela(filtrados);
   atualizarCards(filtrados);
 }
@@ -377,16 +394,4 @@ document.addEventListener('click',e=>{
 window.limparFiltros=function(){
   document.querySelectorAll('.dropdown input, #filtroProjeto').forEach(el=>{
     if(el.type==="text") el.value="";
-    if(el.type==="checkbox") el.checked=false;
-  });
-  renderTabela(projetos);
-  atualizarCards(projetos);
-}
-
-window.logout=async function(){
-  await supabase.auth.signOut();
-  window.location.href="login.html";
-};
-</script>
-</body>
-</html>
+    if(el.type==="checkbox")
